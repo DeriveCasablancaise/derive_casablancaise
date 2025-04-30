@@ -1,0 +1,569 @@
+%!Adobe-FontList 1.24
+%Locale:0x409
+
+%BeginFont
+Handler:DirectoryHandler
+FontType:Type1
+FontName:AdobeArabic-Bold
+FamilyName:Adobe Arabic
+StyleName:Bold
+MenuName:Adobe Arabic
+StyleBits:2
+WeightClass:700
+WidthClass:5
+AngleClass:0
+FullName:Adobe Arabic Bold
+FamilyNameNative:
+StyleNameNative:Bold
+FullNameNative:
+WritingScript:Arabic
+OutlineFileName:/Users/pilon/Documents/DARJA/DERIVES 2024/Charte graphique/Dossier_DC_Identité visuelle_240524/Document fonts/AdobeArabic-Bold.otf
+DataFormat:sfntData
+UsesStandardEncoding:yes
+isCFF:yes
+hasSVG:no
+hasSBIX:no
+hasCOLR:no
+VariableFontType:NonVariableFont
+FileLength:307228
+FileModTime:732118179
+NameArray:0,Mac,4,Adobe Arabic Bold
+NameArray:0,Win,1,Adobe Arabic
+%EndFont
+
+%BeginFont
+Handler:DirectoryHandler
+FontType:Type1
+FontName:AdobeArabic-Regular
+FamilyName:Adobe Arabic
+StyleName:Regular
+MenuName:Adobe Arabic
+StyleBits:0
+WeightClass:400
+WidthClass:5
+AngleClass:0
+FullName:Adobe Arabic Regular
+FamilyNameNative:
+StyleNameNative:Regular
+FullNameNative:
+WritingScript:Arabic
+OutlineFileName:/Users/pilon/Documents/DARJA/DERIVES 2024/Charte graphique/Dossier_DC_Identité visuelle_240524/Document fonts/AdobeArabic-Regular.otf
+DataFormat:sfntData
+UsesStandardEncoding:yes
+isCFF:yes
+hasSVG:no
+hasSBIX:no
+hasCOLR:no
+VariableFontType:NonVariableFont
+FileLength:299680
+FileModTime:670242926
+NameArray:0,Mac,18,Adobe Arabic
+NameArray:0,Mac,4,Adobe Arabic Regular
+NameArray:0,Win,1,Adobe Arabic
+%EndFont
+
+%BeginFont
+Handler:DirectoryHandler
+FontType:Invalid
+OutlineFileName:/Users/pilon/Documents/DARJA/DERIVES 2024/Charte graphique/Dossier_DC_Identité visuelle_240524/Document fonts/AdobeFnt24.lst
+FileLength:12948
+FileModTime:738236923
+%EndFont
+
+%BeginFont
+Handler:DirectoryHandler
+FontType:TrueType
+FontName:ArialMT
+FamilyName:Arial
+StyleName:Regular
+MenuName:Arial
+StyleBits:0
+WeightClass:400
+WidthClass:5
+AngleClass:0
+FullName:Arial
+WritingScript:Roman
+OutlineFileName:/Users/pilon/Documents/DARJA/DERIVES 2024/Charte graphique/Dossier_DC_Identité visuelle_240524/Document fonts/Arial.ttf
+DataFormat:sfntData
+hasSVG:no
+hasSBIX:no
+hasCOLR:no
+VariableFontType:NonVariableFont
+FileLength:773236
+FileModTime:738236922
+NameArray:0,Mac,4,Arial
+NameArray:0,Win,1,Arial
+%EndFont
+
+%BeginFont
+Handler:DirectoryHandler
+FontType:TrueType
+FontName:EBGaramond-Bold
+FamilyName:EB Garamond
+StyleName:Bold
+MenuName:EB Garamond
+StyleBits:2
+WeightClass:700
+WidthClass:5
+AngleClass:0
+FullName:EB Garamond Bold
+WritingScript:Roman
+OutlineFileName:/Users/pilon/Documents/DARJA/DERIVES 2024/Charte graphique/Dossier_DC_Identité visuelle_240524/Document fonts/EBGaramond-Bold.ttf
+DataFormat:sfntData
+hasSVG:no
+hasSBIX:no
+hasCOLR:no
+VariableFontType:NonVariableFont
+FileLength:563352
+FileModTime:322527600
+NameArray:0,Win,1,EB Garamond
+%EndFont
+
+%BeginFont
+Handler:DirectoryHandler
+FontType:TrueType
+FontName:EBGaramond-Medium
+FamilyName:EB Garamond
+StyleName:Medium
+MenuName:EB Garamond Medium
+StyleBits:0
+WeightClass:500
+WidthClass:5
+AngleClass:0
+FullName:EB Garamond Medium
+WritingScript:Roman
+OutlineFileName:/Users/pilon/Documents/DARJA/DERIVES 2024/Charte graphique/Dossier_DC_Identité visuelle_240524/Document fonts/EBGaramond-Medium.ttf
+DataFormat:sfntData
+hasSVG:no
+hasSBIX:no
+hasCOLR:no
+VariableFontType:NonVariableFont
+FileLength:563428
+FileModTime:322527600
+NameArray:0,Win,1,EB Garamond Medium
+NameArray:0,Win,16,EB Garamond
+%EndFont
+
+%BeginFont
+Handler:DirectoryHandler
+FontType:TrueType
+FontName:EBGaramond-Regular
+FamilyName:EB Garamond
+StyleName:Regular
+MenuName:EB Garamond
+StyleBits:0
+WeightClass:400
+WidthClass:5
+AngleClass:0
+FullName:EB Garamond Regular
+WritingScript:Roman
+OutlineFileName:/Users/pilon/Documents/DARJA/DERIVES 2024/Charte graphique/Dossier_DC_Identité visuelle_240524/Document fonts/EBGaramond-Regular.ttf
+DataFormat:sfntData
+hasSVG:no
+hasSBIX:no
+hasCOLR:no
+VariableFontType:NonVariableFont
+FileLength:560544
+FileModTime:322527600
+NameArray:0,Win,1,EB Garamond
+%EndFont
+
+%BeginFont
+Handler:DirectoryHandler
+FontType:TrueType
+FontName:EBGaramond-SemiBold
+FamilyName:EB Garamond
+StyleName:SemiBold
+MenuName:EB Garamond SemiBold
+StyleBits:0
+WeightClass:600
+WidthClass:5
+AngleClass:0
+FullName:EB Garamond SemiBold
+WritingScript:Roman
+OutlineFileName:/Users/pilon/Documents/DARJA/DERIVES 2024/Charte graphique/Dossier_DC_Identité visuelle_240524/Document fonts/EBGaramond-SemiBold.ttf
+DataFormat:sfntData
+hasSVG:no
+hasSBIX:no
+hasCOLR:no
+VariableFontType:NonVariableFont
+FileLength:563720
+FileModTime:322527600
+NameArray:0,Win,1,EB Garamond SemiBold
+NameArray:0,Win,16,EB Garamond
+%EndFont
+
+%BeginFont
+Handler:DirectoryHandler
+FontType:Type1
+FontName:FedraSerifMultiscript-Bold
+FamilyName:Fedra Serif Multiscript
+StyleName:Bold
+MenuName:Fedra Serif Multiscript
+StyleBits:2
+WeightClass:700
+WidthClass:5
+AngleClass:0
+FullName:Fedra Serif Multiscript Bold
+WritingScript:Roman
+OutlineFileName:/Users/pilon/Documents/DARJA/DERIVES 2024/Charte graphique/Dossier_DC_Identité visuelle_240524/Document fonts/FedraSerifMultiscript Bold.otf
+DataFormat:sfntData
+UsesStandardEncoding:yes
+isCFF:yes
+hasSVG:no
+hasSBIX:no
+hasCOLR:no
+VariableFontType:NonVariableFont
+FileLength:354776
+FileModTime:213567116
+NameArray:0,Mac,4,Fedra Serif Multiscript Bold
+NameArray:0,Win,1,Fedra Serif Multiscript
+%EndFont
+
+%BeginFont
+Handler:DirectoryHandler
+FontType:Type1
+FontName:FedraSerifMultiscript-Book
+FamilyName:Fedra Serif Multiscript
+StyleName:Book
+MenuName:Fedra Serif Multiscript
+StyleBits:0
+WeightClass:350
+WidthClass:5
+AngleClass:0
+FullName:Fedra Serif Multiscript Book
+WritingScript:Roman
+OutlineFileName:/Users/pilon/Documents/DARJA/DERIVES 2024/Charte graphique/Dossier_DC_Identité visuelle_240524/Document fonts/FedraSerifMultiscript Book.otf
+DataFormat:sfntData
+UsesStandardEncoding:yes
+isCFF:yes
+hasSVG:no
+hasSBIX:no
+hasCOLR:no
+VariableFontType:NonVariableFont
+FileLength:351340
+FileModTime:213566730
+NameArray:0,Mac,4,Fedra Serif Multiscript Book
+NameArray:0,Win,1,Fedra Serif Multiscript
+%EndFont
+
+%BeginFont
+Handler:DirectoryHandler
+FontType:TrueType
+FontName:PlusJakartaSans-Bold
+FamilyName:Plus Jakarta Sans
+StyleName:Bold
+MenuName:Plus Jakarta Sans
+StyleBits:2
+WeightClass:700
+WidthClass:5
+AngleClass:0
+FullName:Plus Jakarta Sans Bold
+WritingScript:Roman
+OutlineFileName:/Users/pilon/Documents/DARJA/DERIVES 2024/Charte graphique/Dossier_DC_Identité visuelle_240524/Document fonts/PlusJakartaSans-Bold.ttf
+DataFormat:sfntData
+hasSVG:no
+hasSBIX:no
+hasCOLR:no
+VariableFontType:NonVariableFont
+FileLength:94444
+FileModTime:669744000
+NameArray:0,Win,1,Plus Jakarta Sans
+%EndFont
+
+%BeginFont
+Handler:DirectoryHandler
+FontType:TrueType
+FontName:Poppins-Bold
+FamilyName:Poppins
+StyleName:Bold
+MenuName:Poppins
+StyleBits:2
+WeightClass:700
+WidthClass:5
+AngleClass:0
+FullName:Poppins Bold
+WritingScript:Roman
+OutlineFileName:/Users/pilon/Documents/DARJA/DERIVES 2024/Charte graphique/Dossier_DC_Identité visuelle_240524/Document fonts/Poppins-Bold.ttf
+DataFormat:sfntData
+hasSVG:no
+hasSBIX:no
+hasCOLR:no
+VariableFontType:NonVariableFont
+FileLength:153900
+FileModTime:454975200
+NameArray:0,Win,1,Poppins
+%EndFont
+
+%BeginFont
+Handler:DirectoryHandler
+FontType:TrueType
+FontName:Poppins-Light
+FamilyName:Poppins
+StyleName:Light
+MenuName:Poppins Light
+StyleBits:0
+WeightClass:300
+WidthClass:5
+AngleClass:0
+FullName:Poppins Light
+WritingScript:Roman
+OutlineFileName:/Users/pilon/Documents/DARJA/DERIVES 2024/Charte graphique/Dossier_DC_Identité visuelle_240524/Document fonts/Poppins-Light.ttf
+DataFormat:sfntData
+hasSVG:no
+hasSBIX:no
+hasCOLR:no
+VariableFontType:NonVariableFont
+FileLength:159848
+FileModTime:454975200
+NameArray:0,Win,1,Poppins Light
+NameArray:0,Win,16,Poppins
+%EndFont
+
+%BeginFont
+Handler:DirectoryHandler
+FontType:TrueType
+FontName:Poppins-Regular
+FamilyName:Poppins
+StyleName:Regular
+MenuName:Poppins
+StyleBits:0
+WeightClass:400
+WidthClass:5
+AngleClass:0
+FullName:Poppins Regular
+WritingScript:Roman
+OutlineFileName:/Users/pilon/Documents/DARJA/DERIVES 2024/Charte graphique/Dossier_DC_Identité visuelle_240524/Document fonts/Poppins-Regular.ttf
+DataFormat:sfntData
+hasSVG:no
+hasSBIX:no
+hasCOLR:no
+VariableFontType:NonVariableFont
+FileLength:158192
+FileModTime:454975200
+NameArray:0,Win,1,Poppins
+%EndFont
+
+%BeginFont
+Handler:DirectoryHandler
+FontType:TrueType
+FontName:Poppins-SemiBold
+FamilyName:Poppins
+StyleName:SemiBold
+MenuName:Poppins SemiBold
+StyleBits:0
+WeightClass:600
+WidthClass:5
+AngleClass:0
+FullName:Poppins SemiBold
+WritingScript:Roman
+OutlineFileName:/Users/pilon/Documents/DARJA/DERIVES 2024/Charte graphique/Dossier_DC_Identité visuelle_240524/Document fonts/Poppins-SemiBold.ttf
+DataFormat:sfntData
+hasSVG:no
+hasSBIX:no
+hasCOLR:no
+VariableFontType:NonVariableFont
+FileLength:155192
+FileModTime:454975200
+NameArray:0,Win,1,Poppins SemiBold
+NameArray:0,Win,16,Poppins
+%EndFont
+
+%BeginFont
+Handler:DirectoryHandler
+FontType:Type1
+FontName:Replica-Light
+FamilyName:Replica-Light
+StyleName:Regular
+MenuName:Replica-Light
+StyleBits:0
+WeightClass:400
+WidthClass:5
+AngleClass:0
+FullName:Replica-Light
+WritingScript:Roman
+OutlineFileName:/Users/pilon/Documents/DARJA/DERIVES 2024/Charte graphique/Dossier_DC_Identité visuelle_240524/Document fonts/RepLt___.otf
+DataFormat:sfntData
+UsesStandardEncoding:yes
+isCFF:yes
+hasSVG:no
+hasSBIX:no
+hasCOLR:no
+VariableFontType:NonVariableFont
+FileLength:89892
+FileModTime:244043140
+NameArray:0,Mac,4,Replica-Light
+NameArray:0,Win,1,Replica-Light
+%EndFont
+
+%BeginFont
+Handler:DirectoryHandler
+FontType:TrueType
+FontName:Rowdies-Bold
+FamilyName:Rowdies
+StyleName:Bold
+MenuName:Rowdies
+StyleBits:2
+WeightClass:700
+WidthClass:5
+AngleClass:0
+FullName:Rowdies Bold
+WritingScript:Roman
+OutlineFileName:/Users/pilon/Documents/DARJA/DERIVES 2024/Charte graphique/Dossier_DC_Identité visuelle_240524/Document fonts/Rowdies-Bold.ttf
+DataFormat:sfntData
+hasSVG:no
+hasSBIX:no
+hasCOLR:no
+VariableFontType:NonVariableFont
+FileLength:75724
+FileModTime:714678684
+NameArray:0,Win,1,Rowdies
+%EndFont
+
+%BeginFont
+Handler:DirectoryHandler
+FontType:TrueType
+FontName:Rowdies-Light
+FamilyName:Rowdies
+StyleName:Light
+MenuName:Rowdies Light
+StyleBits:0
+WeightClass:300
+WidthClass:5
+AngleClass:0
+FullName:Rowdies Light
+WritingScript:Roman
+OutlineFileName:/Users/pilon/Documents/DARJA/DERIVES 2024/Charte graphique/Dossier_DC_Identité visuelle_240524/Document fonts/Rowdies-Light.ttf
+DataFormat:sfntData
+hasSVG:no
+hasSBIX:no
+hasCOLR:no
+VariableFontType:NonVariableFont
+FileLength:75564
+FileModTime:714678684
+NameArray:0,Win,1,Rowdies Light
+NameArray:0,Win,16,Rowdies
+%EndFont
+
+%BeginFont
+Handler:DirectoryHandler
+FontType:TrueType
+FontName:Rowdies-Regular
+FamilyName:Rowdies
+StyleName:Regular
+MenuName:Rowdies
+StyleBits:0
+WeightClass:400
+WidthClass:5
+AngleClass:0
+FullName:Rowdies Regular
+WritingScript:Roman
+OutlineFileName:/Users/pilon/Documents/DARJA/DERIVES 2024/Charte graphique/Dossier_DC_Identité visuelle_240524/Document fonts/Rowdies-Regular.ttf
+DataFormat:sfntData
+hasSVG:no
+hasSBIX:no
+hasCOLR:no
+VariableFontType:NonVariableFont
+FileLength:75784
+FileModTime:714678684
+NameArray:0,Win,1,Rowdies
+%EndFont
+
+%BeginFont
+Handler:DirectoryHandler
+FontType:TrueType
+FontName:Rubik-Bold
+FamilyName:Rubik
+StyleName:Bold
+MenuName:Rubik
+StyleBits:2
+WeightClass:700
+WidthClass:5
+AngleClass:0
+FullName:Rubik Bold
+WritingScript:Roman
+OutlineFileName:/Users/pilon/Documents/DARJA/DERIVES 2024/Charte graphique/Dossier_DC_Identité visuelle_240524/Document fonts/Rubik-Bold.ttf
+DataFormat:sfntData
+hasSVG:no
+hasSBIX:no
+hasCOLR:no
+VariableFontType:NonVariableFont
+FileLength:136068
+FileModTime:459208800
+NameArray:0,Win,1,Rubik
+%EndFont
+
+%BeginFont
+Handler:DirectoryHandler
+FontType:TrueType
+FontName:Rubik-Light
+FamilyName:Rubik
+StyleName:Light
+MenuName:Rubik Light
+StyleBits:0
+WeightClass:300
+WidthClass:5
+AngleClass:0
+FullName:Rubik Light
+WritingScript:Roman
+OutlineFileName:/Users/pilon/Documents/DARJA/DERIVES 2024/Charte graphique/Dossier_DC_Identité visuelle_240524/Document fonts/Rubik-Light.ttf
+DataFormat:sfntData
+hasSVG:no
+hasSBIX:no
+hasCOLR:no
+VariableFontType:NonVariableFont
+FileLength:130688
+FileModTime:459208800
+NameArray:0,Win,1,Rubik Light
+NameArray:0,Win,16,Rubik
+%EndFont
+
+%BeginFont
+Handler:DirectoryHandler
+FontType:TrueType
+FontName:Rubik-Medium
+FamilyName:Rubik
+StyleName:Medium
+MenuName:Rubik Medium
+StyleBits:0
+WeightClass:500
+WidthClass:5
+AngleClass:0
+FullName:Rubik Medium
+WritingScript:Roman
+OutlineFileName:/Users/pilon/Documents/DARJA/DERIVES 2024/Charte graphique/Dossier_DC_Identité visuelle_240524/Document fonts/Rubik-Medium.ttf
+DataFormat:sfntData
+hasSVG:no
+hasSBIX:no
+hasCOLR:no
+VariableFontType:NonVariableFont
+FileLength:136332
+FileModTime:459208800
+NameArray:0,Win,1,Rubik Medium
+NameArray:0,Win,16,Rubik
+%EndFont
+
+%BeginFont
+Handler:DirectoryHandler
+FontType:TrueType
+FontName:Rubik-Regular
+FamilyName:Rubik
+StyleName:Regular
+MenuName:Rubik
+StyleBits:0
+WeightClass:400
+WidthClass:5
+AngleClass:0
+FullName:Rubik Regular
+WritingScript:Roman
+OutlineFileName:/Users/pilon/Documents/DARJA/DERIVES 2024/Charte graphique/Dossier_DC_Identité visuelle_240524/Document fonts/Rubik-Regular.ttf
+DataFormat:sfntData
+hasSVG:no
+hasSBIX:no
+hasCOLR:no
+VariableFontType:NonVariableFont
+FileLength:133376
+FileModTime:459208800
+NameArray:0,Win,1,Rubik
+%EndFont
+
