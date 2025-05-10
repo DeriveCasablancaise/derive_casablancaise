@@ -112,7 +112,9 @@ const SlidingImages = ({ artists }: SlidingImagesProps) => {
           {slider1Artists.map((artist, index) => (
             <div
               key={index}
-              className={cn('w-1/4 h-[20vw] flex justify-center items-center')}
+              className={cn(
+                'w-1/4 size-[22vw] flex justify-center items-center'
+              )}
               style={{
                 backgroundImage:
                   'linear-gradient(135deg, #094142 0%, #00b0db 100%)',
@@ -120,15 +122,28 @@ const SlidingImages = ({ artists }: SlidingImagesProps) => {
             >
               <Link
                 href={`/${locale}/community/${artist._id}`}
-                className="w-full h-full flex justify-center items-center group"
+                className="w-full h-full flex justify-center items-center group p-2 relative"
               >
-                <div className={cn('relative w-[80%] h-[80%] overflow-hidden')}>
+                <div className={cn('relative size-full overflow-hidden')}>
                   <Image
                     fill={true}
                     alt={'image'}
                     src={artist.images[0]}
                     className="object-cover transition duration-700 group-hover:scale-110"
                   />
+
+                  <div
+                    dir={isArabic ? 'rtl' : 'ltr'}
+                    className={cn(
+                      'absolute bottom-2 text-lg text-white z-20',
+                      isArabic
+                        ? 'right-2 arabic-subtitle-bold'
+                        : 'left-2 latin-subtitle-bold'
+                    )}
+                  >
+                    {isArabic ? artist.arabicName : artist.frenchName}
+                  </div>
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#094142]/90 via-transparent to-transparent" />
                 </div>
               </Link>
             </div>
@@ -171,7 +186,9 @@ const SlidingImages = ({ artists }: SlidingImagesProps) => {
           {slider2Artists.map((artist, index) => (
             <div
               key={index}
-              className={cn('w-1/4 h-[20vw] flex justify-center items-center')}
+              className={cn(
+                'w-1/4 size-[22vw] flex justify-center items-center'
+              )}
               style={{
                 backgroundImage:
                   'linear-gradient(135deg, #094142 0%, #00b0db 100%)',
@@ -179,15 +196,27 @@ const SlidingImages = ({ artists }: SlidingImagesProps) => {
             >
               <Link
                 href={`/${locale}/community/${artist._id}`}
-                className="w-full h-full flex justify-center items-center group"
+                className="w-full h-full flex justify-center items-center group p-2"
               >
-                <div className={cn('relative w-[80%] h-[80%] overflow-hidden')}>
+                <div className={cn('relative size-full overflow-hidden')}>
                   <Image
                     fill={true}
                     alt={'image'}
                     src={artist.images[0]}
                     className="object-cover transition duration-700 group-hover:scale-110"
                   />
+                  <div
+                    dir={isArabic ? 'rtl' : 'ltr'}
+                    className={cn(
+                      'absolute bottom-2 text-lg text-white z-20',
+                      isArabic
+                        ? 'right-2 arabic-subtitle-bold'
+                        : 'left-2 latin-subtitle-bold'
+                    )}
+                  >
+                    {isArabic ? artist.arabicName : artist.frenchName}
+                  </div>
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#094142]/90 via-transparent to-transparent" />
                 </div>
               </Link>
             </div>

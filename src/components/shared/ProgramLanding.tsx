@@ -1,6 +1,6 @@
 'use client';
 
-import { cn, descOpacity, landingSlideUp } from '@/lib/utils';
+import { cn, descOpacity } from '@/lib/utils';
 import { useInView, motion, useTransform, useScroll } from 'framer-motion';
 import React, { useEffect, useRef, useState } from 'react';
 import SubHeader from './SubHeader';
@@ -129,6 +129,9 @@ const ProgramLanding = () => {
       <div className="w-full flex justify-center items-center my-8 md:my-10 xl:my-12">
         <motion.div
           variants={fadeIn('up', 0.1)}
+          initial="hidden"
+          whileInView="show"
+          viewport={{ once: true, amount: 0.3 }}
           className="relative flex justify-center items-center shadow-md cursor-pointer group"
           onClick={() => openModal()}
         >
@@ -137,9 +140,29 @@ const ProgramLanding = () => {
             width={600}
             height={600}
             alt="tease_thumbnail"
-            className="w-full md:w-[80vw] object-contain"
+            className="w-full md:w-[80vw] object-contain rounded-lg"
           />
-          <PlayCircleIcon className="size-12 absolute top-1/2 left-1/2 text-[#094142] transition-all group-hover:scale-110 duration-700 transform -translate-x-1/2 -translate-y-1/2 animate-pulse" />
+          <div className="absolute inset-0 bg-gradient-to-t from-[#094142]/50 via-transparent to-transparent rounded-lg"></div>
+          <motion.div
+            initial={{ scale: 0.8, opacity: 0.8 }}
+            whileHover={{ scale: 1.1, opacity: 1 }}
+            className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white/20 backdrop-blur-sm rounded-full p-4"
+          >
+            <PlayCircleIcon className="size-12 text-[#094142] transition-all group-hover:scale-110 duration-700 animate-pulse" />
+          </motion.div>
+          <motion.div
+            initial={{ y: 20, opacity: 0 }}
+            whileInView={{ y: 0, opacity: 1 }}
+            transition={{ delay: 0.2 }}
+            className={cn(
+              'absolute bottom-6 text-white text-xl md:text-2xl font-bold',
+              isArabic ? 'arabic-subtitle-bold' : 'latin-subtitle-bold'
+            )}
+          >
+            {isArabic
+              ? 'إعلان دعائي لـلمنعطف البيضاوي 2024'
+              : 'Teaser Dérive Casablancaise 2024'}
+          </motion.div>
         </motion.div>
       </div>
       <TeaserModal isOpen={isOpen} onClose={closeModal} />

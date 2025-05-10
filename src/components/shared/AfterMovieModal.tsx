@@ -1,16 +1,19 @@
 'use client';
 
 import React, { useEffect } from 'react';
-import { AnimatePresence, motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { X } from 'lucide-react';
-import { fadeIn } from '@/variants';
+import { fadeIn } from '../../variants';
 
-interface VideoModalProps {
+interface AfterMovieModalProps {
   isOpen: boolean;
   onClose: () => void;
 }
 
-const TeaserModal: React.FC<VideoModalProps> = ({ isOpen, onClose }) => {
+const AfterMovieModal: React.FC<AfterMovieModalProps> = ({
+  isOpen,
+  onClose,
+}) => {
   // Lock body scroll when modal is open
   useEffect(() => {
     if (isOpen) {
@@ -82,8 +85,9 @@ const TeaserModal: React.FC<VideoModalProps> = ({ isOpen, onClose }) => {
             <div className="absolute bottom-0 left-0 w-6 h-6 border-b-2 border-l-2 border-[#00b0db]"></div>
             <div className="absolute bottom-0 right-0 w-6 h-6 border-b-2 border-r-2 border-[#00b0db]"></div>
 
+            {/* Iframe with YouTube video */}
             <iframe
-              src={`https://www.youtube.com/embed/chv70l147CE?autoplay=1`}
+              src="https://www.youtube.com/embed/YOUR_AFTERMOVIE_VIDEO_ID?autoplay=1"
               width="100%"
               height="100%"
               frameBorder={0}
@@ -98,4 +102,4 @@ const TeaserModal: React.FC<VideoModalProps> = ({ isOpen, onClose }) => {
   );
 };
 
-export default TeaserModal;
+export default AfterMovieModal;

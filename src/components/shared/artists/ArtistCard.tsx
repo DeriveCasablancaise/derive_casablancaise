@@ -44,7 +44,7 @@ export const ArtistCard = ({
           }}
         />
         {artist.images && (
-          <div className="absolute inset-6 flex justify-center items-center overflow-hidden">
+          <div className="absolute inset-2 flex justify-center items-center overflow-hidden">
             <Image
               src={artist.images[0]}
               alt={isArabic ? artist.arabicName : artist.frenchName}

@@ -1,204 +1,203 @@
 {
-    "Layout": {
-      "Navigation": {
-        "home": {
-          "title": "Accueil",
-          "href": "/"
-        },
-        "about": {
-          "title": "A propos",
-          "href": "/about"
-        },
-        "derive" : {
-          "title": "Dérive 2024",
-          "href": "/derive-2024"
-        },
-        "previous": {
-          "title": "Editions précédentes",
-          "href": "/previous"
-        },
-        "darja": {
-          "title": "Qui sommes-nous ?",
-          "href": "/ar2d"
-        },
-        "community": {
-          "title": "Artistes & Intervenants",
-          "href": "/community"
-        },
-        "contact": {
-          "title": "Contact",
-          "href": "/contact"
-        },
-        "derivecasa": "Dérive Casablancaise"
+  "Layout": {
+    "Navigation": {
+      "home": {
+        "title": "Accueil",
+        "href": "/"
       },
-      "Menu": {
-        "menu" : "menu",
-        "close": "fermer"
-       },
+      "about": {
+        "title": "A propos",
+        "href": "/about"
+      },
+      "derive": {
+        "title": "Dérive 2024",
+        "href": "/derive-2024"
+      },
+      "previous": {
+        "title": "Editions précédentes",
+        "href": "/previous"
+      },
+      "darja": {
+        "title": "Qui sommes-nous ?",
+        "href": "/ar2d"
+      },
+      "community": {
+        "title": "Artistes & Intervenants",
+        "href": "/community"
+      },
+      "contact": {
+        "title": "Contact",
+        "href": "/contact"
+      },
+      "derivecasa": "Dérive Casablancaise"
+    },
+    "Menu": {
+      "menu": "menu",
+      "close": "fermer"
+    },
+    "Socials": {
+      "instagram": {
+        "url": "https://instagram.com/",
+        "title": "Instagram"
+      },
+      "facebook": {
+        "url": "https://facebook.com/",
+        "title": "Facebook"
+      },
+      "whatsapp": {
+        "url": "https://wa.me/+21297830605",
+        "title": "Whatsapp"
+      }
+    },
+    "SubHeader": {
+      "derive": "Dérive",
+      "casa": "Casablancaise 2024",
+      "date": "04 - 08.12.2024",
+      "lieu": "Casablanca"
+    },
+    "Download": "Télécharger Le Programme"
+  },
+  "HomePage": {
+    "Hero": {
+      "title": "Bienvenue à la Dérive Casablancaise 2024",
+      "description": "Dérive casablancaise est un temps de partage de créations et de débats. Sa première édition en 2022 a rassemblé des artistes (écritures contemporaines et arts vivants) et des acteurs culturels du pourtour méditerranéen.",
+      "subtitle": "Ce projet, initié et organisé depuis 2018 par le Théâtre des 13 Vents - Centre dramatique national de Montpellier, France, sous forme de Rencontres des Arts de la Scène en Méditerranée puis d’une Biennale des arts de la scène en Méditerranée, constitue un véritable moment de rassemblement et de partage.",
+      "subtitle2": "Dérive Casablancaise est un temps de partage, de créations et de débats, né du désir d'offrir un écho extra-muros à l'esprit des Rencontres des Arts de la Scène en Méditerranée, initiées et organisées depuis 2018 par le Théâtre des 13 Vents• Centre dramatique national de Montpellier.",
+
+      "subtitle3": "La 1e édition, en 2022, a permis de créer, à partir de Casablanca et pendant 5 jours, un espace où des questions artistiques et politiques appartenant à la création en Méditerranée ont été réfléchies entre artistes tandis que des œuvres de théâtre, danse, musique, cinéma et poésie ont été partagées avec le public dans différents lieux de la ville.",
+      "subtitle4": "Dérive Casablancaise est un temps de partage, de créations et de débats, né du désir d'offrir un écho extra-muros à l'esprit des Rencontres des Arts de la Scène en Méditerranée, initiées et organisées depuis 2018 par le Théâtre des 13 Vents - Centre dramatique national de Montpellier.",
+      "subtitle5": "La 1ère édition, en 2022, a permis de créer, à partir de Casablanca et pendant 5 jours, un espace où des questions artistiques et politiques appartenant à la création en Méditerranée ont été réfléchies entre artistes tandis que des œuvres de théâtre, danse, musique, cinéma et poésie ont été partagées avec le public dans différents lieux de la ville.",
+      "about": "A propos"
+    },
+    "Work": {
+      "work1": {
+        "title": "C2 Montréal",
+        "category": "Amazigh Folk"
+      },
+      "work2": {
+        "title": "Office Studio",
+        "category": "Bluesy Weekend"
+      },
+      "work3": {
+        "title": "Locomotive",
+        "category": "Ahwach"
+      },
+      "work4": {
+        "title": "Silencio",
+        "category": "Darja Prod"
+      },
+      "moreWork": "Voir Programme",
+      "heading": "Programme",
+      "view": "Voir"
+    },
+    "Community": {
+      "heading": "Artistes & Intervenants"
+    },
+    "Contact": {
+      "heading": "Contactez-nous",
+      "action": "Contact",
       "Socials": {
+        "title": "Réseaux",
         "instagram": {
-          "url": "https://instagram.com/",
-          "title": "Instagram"
+          "title": "Instagram",
+          "url": "https://instagram.com/"
         },
         "facebook": {
-          "url": "https://facebook.com/",
-          "title": "Facebook"
+          "title": "Facebook",
+          "url": "https://facebook.com/"
         },
         "whatsapp": {
-          "url": "https://wa.me/+21297830605",
-          "title": "Whatsapp"
+          "title": "Whatsapp",
+          "url": "https://wa.me/+21297830605"
         }
       },
-      "SubHeader": {
-        "derive": "Dérive",
-        "casa": "Casablancaise 2024",
-        "date": "04 - 08.12.2024",
-        "lieu": "Casablanca"
-      },
-      "Download": "Télécharger Le Programme"
-    },
-    "HomePage": {
-      "Hero": {
-        "title": "Bienvenue à la Dérive Casablancaise 2024",
-        "description": "Dérive casablancaise est un temps de partage de créations et de débats. Sa première édition en 2022 a rassemblé des artistes (écritures contemporaines et arts vivants) et des acteurs culturels du pourtour méditerranéen.",
-        "subtitle": "Ce projet, initié et organisé depuis 2018 par le Théâtre des 13 Vents - Centre dramatique national de Montpellier, France, sous forme de Rencontres des Arts de la Scène en Méditerranée puis d’une Biennale des arts de la scène en Méditerranée, constitue un véritable moment de rassemblement et de partage.",
-        "subtitle2": "Dérive Casablancaise est un temps de partage, de créations et de débats, né du désir d'offrir un écho extra-muros à l'esprit des Rencontres des Arts de la Scène en Méditerranée, initiées et organisées depuis 2018 par le Théâtre des 13 Vents• Centre dramatique national de Montpellier.",
-          
-        "subtitle3": "La 1e édition, en 2022, a permis de créer, à partir de Casablanca et pendant 5 jours, un espace où des questions artistiques et politiques appartenant à la création en Méditerranée ont été réfléchies entre artistes tandis que des œuvres de théâtre, danse, musique, cinéma et poésie ont été partagées avec le public dans différents lieux de la ville.",
-        "subtitle4": "Dérive Casablancaise est un temps de partage, de créations et de débats, né du désir d'offrir un écho extra-muros à l'esprit des Rencontres des Arts de la Scène en Méditerranée, initiées et organisées depuis 2018 par le Théâtre des 13 Vents - Centre dramatique national de Montpellier.",
-        "subtitle5": "La 1ère édition, en 2022, a permis de créer, à partir de Casablanca et pendant 5 jours, un espace où des questions artistiques et politiques appartenant à la création en Méditerranée ont été réfléchies entre artistes tandis que des œuvres de théâtre, danse, musique, cinéma et poésie ont été partagées avec le public dans différents lieux de la ville.",
-        "about": "A propos"
-      },
-      "Work": {
-        "work1": {
-          "title": "C2 Montréal",
-          "category": "Amazigh Folk"
-        },
-        "work2": {
-          "title": "Office Studio",
-          "category": "Bluesy Weekend"
-        },
-        "work3": {
-          "title": "Locomotive",
-          "category": "Ahwach"
-        },
-        "work4": {
-          "title": "Silencio",
-          "category": "Darja Prod"
-        },
-        "moreWork": "Voir Programme",
-        "heading": "Programme",
-        "view": "Voir"
-      },
-      "Community": {
-        "heading": "Artistes & Intervenants"
-      },
-      "Contact": {
-        "heading": "Contactez-nous",
-        "action": "Contact",
-        "Socials": {
-          "title": "Réseaux",
-          "instagram": {
-            "title": "Instagram",
-            "url": "https://instagram.com/"
-          },
-          "facebook": {
-            "title":"Facebook",
-            "url":"https://facebook.com/"
-          },
-          "whatsapp": {
-            "title": "Whatsapp",
-            "url":"https://wa.me/+21297830605"
-          }
-        },
-        "version":"Version",
-        "edition": "2024 © Edition"
-      }
-    },
-    "AboutPage": {
-      "Section": {
-        "title": "A propos de AR2D",
-        "description": "Darja apporte un profond élan d’espoir à tous ceux qui traversent son espace (enfants des rues, artistes professionnels et amateurs, femmes au foyer…) Les moments passés à Darja sont magiques, rares, intenses.",
-        "suspense": "Veuillez continuer la lecture"
-      },
-      "About": {
-        "title":"A propos de Darja",
-        "desc1": "Darja c’est un lieu, niché au sixième étage du 113 de l’avenue Mers Sultan. Darja, traduisez « la marche » (d’escalier !) en français, c’est justement celle qui manquait à la ville blanche pour qu’enfin les danseurs et chorégraphes du monde entier puissent avoir accès à un espace dédié corps et âmes à la danse contemporaine.",
-        "desc2": "Darja, c’est un lieu pour l’exploration et la découverte, pour l’ouverture vers de nouvelles perspectives pour l’art chorégraphique marocain, mais c’est aussi un désir, celui de la danseuse-chorégraphe Meryem Jazouli de faire résonner la danse au coeur de Casablanca à travers un espace de création, de production et de développement. Lieu de pratiques, de formation, d’expérimentations et de rencontres, Darja propose depuis 2012, résidences de création, ateliers, « temps-forts », restitutions et projets hors les murs, qui se succèdent, et s’entremêlent aussi parfois, pour tracer les chemins de jeunes danseurs en devenir, pour tisser un réseau porteur de créativité et de dialogue, propice à l’émergence d’une scène marocaine aussi dynamique que talentueuse.",
-        "desc3": "Et si transmettre est au coeur de la philosophie Darja, c’est autour d’une vraie réflexion sur les pratiques de la danse contemporaine et de leur imbrication dans le contexte du Maroc que s’articulent ses activités. Et si chaque résidence est empreinte d’expériences et de partages, c’est bien parce que chacune d’elles constitue un jalon pour inventer et réinventer le passionnant voyage artistique qu’a initié Darja au pays de la création."
-      },
-      "Residence": {
-        "title": "Résidence",
-        "description": "Expérimenter, élaborer, questionner, construire et inventer, c’est ce lieu de création que l’Espace Darja souhaite offrir aux résidents qu’il accueille. Un lieu où l’acte artistique fait preuve d’ouverture et de générosité; un lieu qui plonge dans la ville blanche, qui la frôle et s’en extrait, pour laisser chaque artiste choisir quelle place il lui laissera. Un territoire de rencontres, aussi, avec et autour de la danse, entre ceux qui la pratiquent et ceux qui la découvrent."
-      },
-      "Creation": {
-        "title": "Création",
-        "description": "Matrice de création soucieuse de placer les dialogues et échanges au centre de ses actions, l’Espace Darja réunit les acteurs culturels, artistes et disciplines artistiques autour de projets communs, engendrant naturellement croisements et débats. Catalyseur d’énergies créatives, l’association accueille des créations, les diffuse, les partage, les intègre… Les artistes en résidence ont alors l’occasion de revenir présenter l’aboutissement de leur travail dans des lieux culturels de la ville blanche, d’intégrer la programmation d’événements ponctuels consacrés à la danse, de développer des activités mutuelles d’un bord à l’autre de la Méditerranée. La vocation de Darja est aussi de rendre le dialogue fécond avec tous les autres arts, de favoriser toutes les rencontres possibles autour des questions que la danse pose ou que l’on souhaiterait poser à la danse. C’est pourquoi chaque résidence se clôture par un échange où le danseur offre le produit de sa réflexion aux regards des spectateurs. Ces rencontres, initiées à l’automne 2012, sous le nom de « Parole décomplexée autour de la danse » donnent lieu à des débats avec un artiste, un acteur culturel, un journaliste… convoqué en tant que témoin, qui interroge les cheminements de la création pour en éclairer la dynamique et l’essence."
-      },
-      "Transmission": {
-        "title": "Transmission",
-        "description": "Vecteur de transmission et de sensibilisation à la danse, Darja se consacre à la formation, à travers son projet « AI…Projet Labo », qui permet aux jeunes danseurs marocains de se professionnaliser, et aux débutants ou amateurs de se familiariser avec cette discipline artistique. Ainsi, de nombreux ateliers organisés durant l’année offrent à chacun un regard particulier et une initiation aux différents registres de cet art pluriel qu’est la danse. C’est l’occasion pour les danseurs et chorégraphes d’échanger autour de leurs pratiques en s’intéressant à d’autres formes pour enrichir leur formation et lui donner des prolongements qui s’inscriront naturellement dans leur travail de création. « AI…Projet Labo » s’articule en trois volets : le volet création-transmission, qui offre l’occasion aux jeunes danseurs marocains d’intégrer le travail d’un chorégraphe reconnu ; le volet Temps Fort, qui permet à ces derniers de bénéficier d’une semaine de workshop, à raison d’une session par mois en moyenne, et enfin le volet ateliers tout public, qui propose une initiation à la danse contemporaine."
-      }
-
-    },
-    "ContactPage": {
-      "heading": "Contactez-nous",
-      "ContactForm": {
-        "name": "Quel est votre nom ?",
-        "namePlaceholder": "John Doe",
-        "email": "Votre adresse email ?",
-        "message": "Votre message",
-        "messagePlaceholder": "Bonjour, je suis ..."
-      },
-      "submitBtn": "Envoyer",
-      "info": "Informations pratiques",
-      "contact": "Coordonnées",
-      "success": "Email envoyé avec succès"
-    },
-    "Derive2024": {
-      "heading": "Programme 2024" ,
-      "work": "Nos travaux",
-      "artists": "Artistes",
-      "more": "lire plus",
-      "background": {
-        "heading": "Nous sommes en 2024",
-        "text1": "Nous, une poignée d'artistes de la Méditerranée, occupé.es, préoccupé.es et concerné.es par l'état du monde, nous sommes posé la question suivante : quelles formes d'actions sont possibles à partir de notre place, nos contextes et nos domaines de travail dans cette période historique accablante nous rendant témoins de la situation tragique en Palestine et au Liban.",
-        "text2": "Nous tentons une réponse possible, celle d'une action. Dérive Casablancaise en est une.",
-        "text3": "L'action de rassembler, réunir, écouter, regarder et surtout l'action de débattre. Débattre pour questionner les niveaux de cohérence dans nos démarches artistiques et certainement politiques, à travers nos choix, nos multiples ressources, nos matières de travail et les outils avec lesquels nous fabriquons des langues et des langages.",
-        "text4": "Cette action porte en elle le souhait d'être fertile à d'autres actions qui en découleront et qui se définiront dans la durée et la continuité, mais aussi dans la pensée, la construction et la fabrication des œuvres à venir.",
-        "text5": "Car le travail artistique est un long processus, dont une grande partie consiste à se confronter à nos histoires, nos mémoires, nos imaginaires, nos désirs et nos positionnements en tant que citoyen.nes.",
-        "text6": "Il est toujours en étroite relation avec le présent et l'histoire qui s'écrit au présent, et peut même être dans l'anticipation de ce présent et/ou dans la re-lecture du passé au regard du présent. ",
-        "text7": "Et aujourd'hui, malgré un présent tragique, nous continuons de croire dans la nécessité d'initier des rencontres et de partager des réflexions qui nourrissent nos choix et nos convictions. ",
-        "text8":"Cette deuxième édition de Dérive Casablancaise porte une attention particulière au travail et aux démarches d'artistes palestinien.nes, libanais.es et marocain.es ",
-        "text9":"Une attention qui prend sa source dans des alliances fraternelles, artistiques, sensibles, à raviver au vu d'une actualité toujours plus pesante et qui oblige la plupart des artistes invité.e.s à venir d'un autre pays que le leur. Et même si d'autres continuent les allers-retours et que certain.es par choix ou contraint.es restent dans leur pays d'origine, nous partageons toutes et tous, et où que nous soyons aujourd'hui, des inquiétudes, des peurs, des doutes, des espoirs, des désirs, des échecs et des convictions mais aussi, et surtout, des tentatives. ",
-        "text10":"Comme celle de déployer des imaginaires qui nous permettent d'associer  des gestes, des images, des sons, des mots et tant d'autres ressources… ",
-        "text11":"Ou encore la tentative de réinjecter du mouvement dans tout ce que cette époque fige en nous mais aussi autour, nous empêchant trop souvent de nous relier les uns aux autres. ",
-        "text12":"Pour toutes ces raisons et bien d'autres, nous vous convions pendant Dérive Casablancaise du 4 au 8 décembre à découvrir les œuvres de théâtre, de danse, de poésie, de littérature, de musique et de cinéma de tous ces artistes. Il s'agira de témoigner et d'être témoins, il s'agira de faire naître d'autres possibles en nous retrouvant pendant ces 5 jours dans les différents lieux de Casablanca et il s’agira enfin de faire que la rencontre et le débat puissent encore avoir lieu. Merci aux artistes, aux technicien.es, aux bénévoles, aux partenaires et à vous, Public. ",
-        "bottom": "L'équipe de Dérive casablancaise"
-      }
-    },
-    "ArtistsPage": {
-      "heading": "Nos Artistes"
-    },
-    "Previous": {
-      "heading": "Editions Précédentes"
-    },
-    "LanguageSwitcher": {
-      "heading": "Langue",
-      "french": "Français",
-      "arabic": "Arabe"
-    },
-    "Footer": {
-      "quicklinks": "Quicklinks",
-      "programme2024": "Programme 2024",
-      "previousEditions": "Éditions précédentes",
-      "community": "Communauté",
-      "associationAR2D": "L'association AR2D",
-      "admin": "Admin",
-      "newsletterSignup": "S'inscrire à la newsletter",
-      "emailPlaceholder": "Votre email",
-      "subscribe": "S'inscrire",
-      "followUs": "Suivez-nous",
-      "contact": "Contact"
+      "version": "Version",
+      "edition": "2024 © Edition"
     }
+  },
+  "AboutPage": {
+    "Section": {
+      "title": "A propos de AR2D",
+      "description": "Darja apporte un profond élan d’espoir à tous ceux qui traversent son espace (enfants des rues, artistes professionnels et amateurs, femmes au foyer…) Les moments passés à Darja sont magiques, rares, intenses.",
+      "suspense": "Veuillez continuer la lecture"
+    },
+    "About": {
+      "title": "A propos de Darja",
+      "desc1": "Darja c’est un lieu, niché au sixième étage du 113 de l’avenue Mers Sultan. Darja, traduisez « la marche » (d’escalier !) en français, c’est justement celle qui manquait à la ville blanche pour qu’enfin les danseurs et chorégraphes du monde entier puissent avoir accès à un espace dédié corps et âmes à la danse contemporaine.",
+      "desc2": "Darja, c’est un lieu pour l’exploration et la découverte, pour l’ouverture vers de nouvelles perspectives pour l’art chorégraphique marocain, mais c’est aussi un désir, celui de la danseuse-chorégraphe Meryem Jazouli de faire résonner la danse au coeur de Casablanca à travers un espace de création, de production et de développement. Lieu de pratiques, de formation, d’expérimentations et de rencontres, Darja propose depuis 2012, résidences de création, ateliers, « temps-forts », restitutions et projets hors les murs, qui se succèdent, et s’entremêlent aussi parfois, pour tracer les chemins de jeunes danseurs en devenir, pour tisser un réseau porteur de créativité et de dialogue, propice à l’émergence d’une scène marocaine aussi dynamique que talentueuse.",
+      "desc3": "Et si transmettre est au coeur de la philosophie Darja, c’est autour d’une vraie réflexion sur les pratiques de la danse contemporaine et de leur imbrication dans le contexte du Maroc que s’articulent ses activités. Et si chaque résidence est empreinte d’expériences et de partages, c’est bien parce que chacune d’elles constitue un jalon pour inventer et réinventer le passionnant voyage artistique qu’a initié Darja au pays de la création."
+    },
+    "Residence": {
+      "title": "Résidence",
+      "description": "Expérimenter, élaborer, questionner, construire et inventer, c’est ce lieu de création que l’Espace Darja souhaite offrir aux résidents qu’il accueille. Un lieu où l’acte artistique fait preuve d’ouverture et de générosité; un lieu qui plonge dans la ville blanche, qui la frôle et s’en extrait, pour laisser chaque artiste choisir quelle place il lui laissera. Un territoire de rencontres, aussi, avec et autour de la danse, entre ceux qui la pratiquent et ceux qui la découvrent."
+    },
+    "Creation": {
+      "title": "Création",
+      "description": "Matrice de création soucieuse de placer les dialogues et échanges au centre de ses actions, l’Espace Darja réunit les acteurs culturels, artistes et disciplines artistiques autour de projets communs, engendrant naturellement croisements et débats. Catalyseur d’énergies créatives, l’association accueille des créations, les diffuse, les partage, les intègre… Les artistes en résidence ont alors l’occasion de revenir présenter l’aboutissement de leur travail dans des lieux culturels de la ville blanche, d’intégrer la programmation d’événements ponctuels consacrés à la danse, de développer des activités mutuelles d’un bord à l’autre de la Méditerranée. La vocation de Darja est aussi de rendre le dialogue fécond avec tous les autres arts, de favoriser toutes les rencontres possibles autour des questions que la danse pose ou que l’on souhaiterait poser à la danse. C’est pourquoi chaque résidence se clôture par un échange où le danseur offre le produit de sa réflexion aux regards des spectateurs. Ces rencontres, initiées à l’automne 2012, sous le nom de « Parole décomplexée autour de la danse » donnent lieu à des débats avec un artiste, un acteur culturel, un journaliste… convoqué en tant que témoin, qui interroge les cheminements de la création pour en éclairer la dynamique et l’essence."
+    },
+    "Transmission": {
+      "title": "Transmission",
+      "description": "Vecteur de transmission et de sensibilisation à la danse, Darja se consacre à la formation, à travers son projet « AI…Projet Labo », qui permet aux jeunes danseurs marocains de se professionnaliser, et aux débutants ou amateurs de se familiariser avec cette discipline artistique. Ainsi, de nombreux ateliers organisés durant l’année offrent à chacun un regard particulier et une initiation aux différents registres de cet art pluriel qu’est la danse. C’est l’occasion pour les danseurs et chorégraphes d’échanger autour de leurs pratiques en s’intéressant à d’autres formes pour enrichir leur formation et lui donner des prolongements qui s’inscriront naturellement dans leur travail de création. « AI…Projet Labo » s’articule en trois volets : le volet création-transmission, qui offre l’occasion aux jeunes danseurs marocains d’intégrer le travail d’un chorégraphe reconnu ; le volet Temps Fort, qui permet à ces derniers de bénéficier d’une semaine de workshop, à raison d’une session par mois en moyenne, et enfin le volet ateliers tout public, qui propose une initiation à la danse contemporaine."
+    }
+  },
+  "ContactPage": {
+    "heading": "Contactez-nous",
+    "ContactForm": {
+      "name": "Quel est votre nom ?",
+      "namePlaceholder": "John Doe",
+      "email": "Votre adresse email ?",
+      "message": "Votre message",
+      "messagePlaceholder": "Bonjour, je suis ..."
+    },
+    "submitBtn": "Envoyer",
+    "info": "Informations pratiques",
+    "contact": "Coordonnées",
+    "success": "Email envoyé avec succès"
+  },
+  "Derive2024": {
+    "heading": "Programme 2024",
+    "work": "Nos travaux",
+    "artists": "Artistes",
+    "more": "lire plus",
+    "background": {
+      "heading": "Nous sommes en 2024",
+      "text1": "Nous, une poignée d'artistes de la Méditerranée, occupé.es, préoccupé.es et concerné.es par l'état du monde, nous sommes posé la question suivante : quelles formes d'actions sont possibles à partir de notre place, nos contextes et nos domaines de travail dans cette période historique accablante nous rendant témoins de la situation tragique en Palestine et au Liban.",
+      "text2": "Nous tentons une réponse possible, celle d'une action. Dérive Casablancaise en est une.",
+      "text3": "L'action de rassembler, réunir, écouter, regarder et surtout l'action de débattre. Débattre pour questionner les niveaux de cohérence dans nos démarches artistiques et certainement politiques, à travers nos choix, nos multiples ressources, nos matières de travail et les outils avec lesquels nous fabriquons des langues et des langages.",
+      "text4": "Cette action porte en elle le souhait d'être fertile à d'autres actions qui en découleront et qui se définiront dans la durée et la continuité, mais aussi dans la pensée, la construction et la fabrication des œuvres à venir.",
+      "text5": "Car le travail artistique est un long processus, dont une grande partie consiste à se confronter à nos histoires, nos mémoires, nos imaginaires, nos désirs et nos positionnements en tant que citoyen.nes.",
+      "text6": "Il est toujours en étroite relation avec le présent et l'histoire qui s'écrit au présent, et peut même être dans l'anticipation de ce présent et/ou dans la re-lecture du passé au regard du présent. ",
+      "text7": "Et aujourd'hui, malgré un présent tragique, nous continuons de croire dans la nécessité d'initier des rencontres et de partager des réflexions qui nourrissent nos choix et nos convictions. ",
+      "text8": "Cette deuxième édition de Dérive Casablancaise porte une attention particulière au travail et aux démarches d'artistes palestinien.nes, libanais.es et marocain.es ",
+      "text9": "Une attention qui prend sa source dans des alliances fraternelles, artistiques, sensibles, à raviver au vu d'une actualité toujours plus pesante et qui oblige la plupart des artistes invité.e.s à venir d'un autre pays que le leur. Et même si d'autres continuent les allers-retours et que certain.es par choix ou contraint.es restent dans leur pays d'origine, nous partageons toutes et tous, et où que nous soyons aujourd'hui, des inquiétudes, des peurs, des doutes, des espoirs, des désirs, des échecs et des convictions mais aussi, et surtout, des tentatives. ",
+      "text10": "Comme celle de déployer des imaginaires qui nous permettent d'associer  des gestes, des images, des sons, des mots et tant d'autres ressources… ",
+      "text11": "Ou encore la tentative de réinjecter du mouvement dans tout ce que cette époque fige en nous mais aussi autour, nous empêchant trop souvent de nous relier les uns aux autres. ",
+      "text12": "Pour toutes ces raisons et bien d'autres, nous vous convions pendant Dérive Casablancaise du 4 au 8 décembre à découvrir les œuvres de théâtre, de danse, de poésie, de littérature, de musique et de cinéma de tous ces artistes. Il s'agira de témoigner et d'être témoins, il s'agira de faire naître d'autres possibles en nous retrouvant pendant ces 5 jours dans les différents lieux de Casablanca et il s’agira enfin de faire que la rencontre et le débat puissent encore avoir lieu. Merci aux artistes, aux technicien.es, aux bénévoles, aux partenaires et à vous, Public. ",
+      "bottom": "L'équipe de Dérive casablancaise"
+    }
+  },
+  "ArtistsPage": {
+    "heading": "Artistes & Intervenants"
+  },
+  "Previous": {
+    "heading": "Editions Précédentes"
+  },
+  "LanguageSwitcher": {
+    "heading": "Langue",
+    "french": "Français",
+    "arabic": "Arabe"
+  },
+  "Footer": {
+    "quicklinks": "Quicklinks",
+    "programme2024": "Programme 2024",
+    "previousEditions": "Éditions précédentes",
+    "community": "Communauté",
+    "associationAR2D": "L'association AR2D",
+    "admin": "Admin",
+    "newsletterSignup": "S'inscrire à la newsletter",
+    "emailPlaceholder": "Votre email",
+    "subscribe": "S'inscrire",
+    "followUs": "Suivez-nous",
+    "contact": "Contact"
   }
+}
