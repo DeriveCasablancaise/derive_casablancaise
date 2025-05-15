@@ -89,7 +89,7 @@ const AfterMovieSection = () => {
             <div className="absolute inset-0 bg-gradient-to-t from-[#094142]/70 via-transparent to-transparent"></div>
 
             {/* Play Button */}
-            <div className="absolute inset-0 flex items-center justify-center">
+            <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 flex items-center justify-center">
               <motion.div
                 initial={{ scale: 0.8, opacity: 0.8 }}
                 whileHover={{ scale: 1.1, opacity: 1 }}

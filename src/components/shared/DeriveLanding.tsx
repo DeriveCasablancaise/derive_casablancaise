@@ -173,8 +173,6 @@ const DeriveLanding = () => {
             'lg:absolute lg:left-0  lg:h-auto lg:bg-[#E9EAEB] lg:w-[40%] bg-white/70 h-fit   lg:flex flex-col justify-start py-4 lg:py-6 items-start gap-4 2xl:gap-8 text-[#00b0db] md:text-black/90 px-4 lg:px-6',
             isArabic ? 'lg:bottom-0' : 'lg:-top-32'
           )}
-          // variants={descOpacity}
-          // animate={isInView2 ? 'open' : 'closed'}
         >
           <motion.p
             variants={descOpacity}
