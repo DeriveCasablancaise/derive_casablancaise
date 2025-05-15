@@ -143,13 +143,16 @@ const ProgramLanding = () => {
             className="w-full md:w-[80vw] object-contain rounded-lg"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-[#094142]/50 via-transparent to-transparent rounded-lg"></div>
-          <motion.div
-            initial={{ scale: 0.8, opacity: 0.8 }}
-            whileHover={{ scale: 1.1, opacity: 1 }}
-            className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white/20 backdrop-blur-sm rounded-full p-4"
-          >
-            <PlayCircleIcon className="size-12 text-[#094142] transition-all group-hover:scale-110 duration-700 animate-pulse" />
-          </motion.div>
+          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 flex items-center justify-center">
+            <motion.div
+              initial={{ scale: 0.8, opacity: 0.8 }}
+              whileHover={{ scale: 1.1, opacity: 1 }}
+              transition={{ type: 'spring', stiffness: 400, damping: 10 }}
+              className="bg-white/20 backdrop-blur-md rounded-full p-6"
+            >
+              <PlayCircleIcon className="h-16 w-16 md:h-20 md:w-20 text-[#094142]" />
+            </motion.div>
+          </div>
           <motion.div
             initial={{ y: 20, opacity: 0 }}
             whileInView={{ y: 0, opacity: 1 }}
