@@ -126,7 +126,7 @@ const ProgramLanding = () => {
           </Link>
         </motion.div>
       </section>
-      <div className="w-full flex justify-center items-center my-8 md:my-10 xl:my-12">
+      <div className="flex justify-center items-center mx-auto my-8 md:my-10 xl:my-12">
         <motion.div
           variants={fadeIn('up', 0.1)}
           initial="hidden"
