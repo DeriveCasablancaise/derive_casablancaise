@@ -105,9 +105,9 @@ function Button({
           </motion.div>
         </motion.div>
       </div>
-      <div className="fixed  top-11 right-32 z-30 text-[#094142]  ">
+      {/* <div className="fixed  top-11 right-32 z-30 text-[#094142]  ">
         <LocaleSwitcher />
-      </div>
+      </div> */}
     </React.Fragment>
   );
 }

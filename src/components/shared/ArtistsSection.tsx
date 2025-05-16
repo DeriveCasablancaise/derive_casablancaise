@@ -56,8 +56,7 @@ const ArtistsSection = () => {
               transition={{ duration: 0.5, delay: index * 0.1 }}
               className="group relative overflow-hidden shadow-xl p-2"
               style={{
-                backgroundImage:
-                  'linear-gradient(135deg, #094142 0%, #00b0db 100%)',
+                backgroundColor: '#094142',
               }}
             >
               <Link href={`/${locale}/community/${artist._id}`}>

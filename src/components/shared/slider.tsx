@@ -116,8 +116,7 @@ const SlidingImages = ({ artists }: SlidingImagesProps) => {
                 'w-1/4 size-[22vw] flex justify-center items-center'
               )}
               style={{
-                backgroundImage:
-                  'linear-gradient(135deg, #094142 0%, #00b0db 100%)',
+                backgroundColor: '#094142',
               }}
             >
               <Link
@@ -190,8 +189,7 @@ const SlidingImages = ({ artists }: SlidingImagesProps) => {
                 'w-1/4 size-[22vw] flex justify-center items-center'
               )}
               style={{
-                backgroundImage:
-                  'linear-gradient(135deg, #094142 0%, #00b0db 100%)',
+                backgroundColor: '#094142',
               }}
             >
               <Link

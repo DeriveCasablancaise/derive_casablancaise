@@ -92,14 +92,14 @@ const DesktopNav = () => {
             </NavigationMenuItem>
           );
         })}
-        <NavigationMenuItem
+        {/* <NavigationMenuItem
           className={cn(
             'w-full h-full flex justify-center items-center border-white hover:bg-[#00b0db] hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none disabled:pointer-events-none disabled:opacity-50 data-[active]:bg-[#00b0db] text-[#00b0db] data-[state=open]:bg-[#00b0db] bg-[#094142] ',
             isArabic ? 'border-r-2' : 'border-l-2'
           )}
         >
           <LocaleSwitcher />
-        </NavigationMenuItem>
+        </NavigationMenuItem> */}
       </NavigationMenuList>
     </NavigationMenu>
   );
