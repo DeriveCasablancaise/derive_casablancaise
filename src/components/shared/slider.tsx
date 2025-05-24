@@ -67,8 +67,8 @@ const SlidingImages = ({ artists }: SlidingImagesProps) => {
   };
 
   // Split artists into two sliders
-  const slider1Artists = artists.slice(0, 4);
-  const slider2Artists = artists.slice(4, 8);
+  const slider1Artists = artists.slice(0, 8);
+  const slider2Artists = artists.slice(8, 16);
 
   return (
     <div
@@ -112,9 +112,7 @@ const SlidingImages = ({ artists }: SlidingImagesProps) => {
           {slider1Artists.map((artist, index) => (
             <div
               key={index}
-              className={cn(
-                'w-1/4 size-[22vw] flex justify-center items-center'
-              )}
+              className={cn(' size-[18vw] flex justify-center items-center')}
               style={{
                 backgroundColor: '#094142',
               }}
@@ -128,7 +126,7 @@ const SlidingImages = ({ artists }: SlidingImagesProps) => {
                     fill={true}
                     alt={'image'}
                     src={artist.images[0]}
-                    className="object-cover transition duration-700 group-hover:scale-110"
+                    className="object-cover object-center transition duration-700 group-hover:scale-110"
                   />
 
                   <div
@@ -185,9 +183,7 @@ const SlidingImages = ({ artists }: SlidingImagesProps) => {
           {slider2Artists.map((artist, index) => (
             <div
               key={index}
-              className={cn(
-                'w-1/4 size-[22vw] flex justify-center items-center'
-              )}
+              className={cn('size-[18vw] flex justify-center items-center')}
               style={{
                 backgroundColor: '#094142',
               }}
