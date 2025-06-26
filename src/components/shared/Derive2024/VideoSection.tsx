@@ -54,20 +54,8 @@ const VideoSection = () => {
               isArabic ? 'arabic-title-bold' : 'latin-title-bold'
             )}
           >
-            {isArabic
-              ? 'مكتبة الفيديو للمنعطف البيضاوي'
-              : 'Vidéothèque Dérive Casablancaise'}
+            {isArabic ? 'مكتبة الفيديو' : 'Médiathèque '}
           </h2>
-          <p
-            className={cn(
-              'text-[#1b7172] text-xl max-w-2xl mx-auto',
-              isArabic ? 'arabic-subtitle' : 'latin-subtitle'
-            )}
-          >
-            {isArabic
-              ? 'شاهد الإعلان والفيلم الختامي لفعالية المنعطف البيضاوي'
-              : "Découvrez le teaser et l'aftermovie de Dérive Casablancaise"}
-          </p>
         </motion.div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto">

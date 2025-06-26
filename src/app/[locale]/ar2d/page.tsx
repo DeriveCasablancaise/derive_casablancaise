@@ -9,8 +9,8 @@ const EspaceDarja = () => {
     <div className="overflow-hidden">
       <AboutLanding />
       <VideoSection />
-      <DynamicSlider />
-      <Contact />
+      {/* <DynamicSlider /> */}
+      {/* <Contact /> */}
     </div>
   );
 };
