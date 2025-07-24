@@ -16,7 +16,7 @@ import Link from 'next/link';
 
 const DesktopNav = () => {
   const t = useTranslations('Layout');
-  const navKeys = ['darja', 'community', 'contact'];
+  const navKeys = ['home', 'darja', 'contact'];
   const deriveNavKeys = ['derive', 'previous'];
   const locale = useLocale();
   const isArabic = locale === 'ar';
@@ -35,21 +35,21 @@ const DesktopNav = () => {
       className="h-full w-screen justify-between"
       dir={isArabic ? 'rtl' : 'ltr'}
     >
-      <NavigationMenuList className="lg:h-[15vh] w-screen justify-between">
-        <NavigationMenuItem className="group w-full h-full flex justify-center items-center hover:bg-[#00b0db] hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none disabled:pointer-events-none disabled:opacity-50 data-[active]:bg-[#00b0db] text-[#00b0db]  nav-trigger">
-          <Link href={`/${locale}`}>
-            <NavigationMenuTrigger
-              className={cn(
-                ' text-xl bg-transparent font-extrabold ',
-
-                isArabic ? 'arabic-subtitle-regular' : 'latin-title-bold'
-              )}
-            >
-              {t('Navigation.derivecasa')}
-            </NavigationMenuTrigger>
-          </Link>
+      <NavigationMenuList className="lg:h-[10vh] w-screen justify-between">
+        {/* Navigation menu with dropdown as second item */}
+        <NavigationMenuItem className="group w-full h-full flex justify-center items-center hover:bg-[#00b0db] hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none disabled:pointer-events-none disabled:opacity-50 data-[active]:bg-[#00b0db] text-white nav-trigger">
+          <NavigationMenuTrigger
+            className={cn(
+              ' text-xl bg-transparent font-extrabold',
+              isArabic
+                ? 'arabic-subtitle-regular'
+                : 'latin-subtitle-light font-light'
+            )}
+          >
+            {t('Navigation.derivecasa')}
+          </NavigationMenuTrigger>
           <NavigationMenuContent
-            className={cn('bg-[#094142] w-full', isArabic && 'right-0')}
+            className={cn('bg-[#094142]', isArabic && 'right-0')}
             style={{ width: `${triggerWidth + 2}px` }}
           >
             <ul
@@ -61,8 +61,10 @@ const DesktopNav = () => {
                   key={`b_${i}`}
                   href={`/${locale}${t(`Navigation.${deriveNav}.href`)}`}
                   className={cn(
-                    'flex h-10 items-center justify-start text-xl transition-colors hover:bg-[#00b0db] hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none disabled:pointer-events-none disabled:opacity-50 data-[active]:bg-[#00b0db] text-[#00b0db] data-[state=open]:bg-[#00b0db] font-extrabold p-8 w-full',
-                    isArabic ? 'arabic-subtitle-regular' : 'latin-title-bold'
+                    'flex items-center justify-start text-xl transition-colors hover:bg-[#00b0db] hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none disabled:pointer-events-none disabled:opacity-50 data-[active]:bg-[#00b0db] text-white data-[state=open]:bg-[#00b0db] font-extrabold px-8 py-2 w-full',
+                    isArabic
+                      ? 'arabic-subtitle-regular'
+                      : 'latin-subtitle-light font-light'
                   )}
                 >
                   {t(`Navigation.${deriveNav}.title`)}
@@ -71,20 +73,45 @@ const DesktopNav = () => {
             </ul>
           </NavigationMenuContent>
         </NavigationMenuItem>
-        {navKeys.map((key, i) => {
+
+        {/* First navKey */}
+        <NavigationMenuItem
+          // key="nav_0"
+          className={cn(
+            'w-full h-full  flex justify-center items-center border-white hover:bg-[#00b0db] hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none disabled:pointer-events-none disabled:opacity-50 data-[active]:bg-[#00b0db] text-white data-[state=open]:bg-[#00b0db] bg-[#094142] ',
+            isArabic ? 'border-r-2' : 'border-l-2'
+          )}
+        >
+          <NavigationMenuLink
+            href={`/${locale}${t(`Navigation.${navKeys[0]}.href`)}`}
+            className={cn(
+              'group w-max items-center justify-center  px-4 py-2 transition-colors   text-xl font-extrabold  ',
+              isArabic
+                ? 'arabic-subtitle-regular'
+                : 'latin-subtitle-light font-light'
+            )}
+          >
+            {t(`Navigation.${navKeys[0]}.title`)}
+          </NavigationMenuLink>
+        </NavigationMenuItem>
+
+        {/* Remaining navKeys */}
+        {navKeys.slice(1).map((key, i) => {
           return (
             <NavigationMenuItem
-              key={`b_${i}`}
+              key={`nav_${i + 1}`}
               className={cn(
-                'w-full h-full  flex justify-center items-center border-white hover:bg-[#00b0db] hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none disabled:pointer-events-none disabled:opacity-50 data-[active]:bg-[#00b0db] text-[#00b0db] data-[state=open]:bg-[#00b0db] bg-[#094142] ',
+                'w-full h-full  flex justify-center items-center border-white hover:bg-[#00b0db] hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none disabled:pointer-events-none disabled:opacity-50 data-[active]:bg-[#00b0db] text-white data-[state=open]:bg-[#00b0db] bg-[#094142] ',
                 isArabic ? 'border-r-2' : 'border-l-2'
               )}
             >
               <NavigationMenuLink
                 href={`/${locale}${t(`Navigation.${key}.href`)}`}
                 className={cn(
-                  'group  h-10 w-max items-center justify-center  px-4 py-2 transition-colors   text-xl font-extrabold  ',
-                  isArabic ? 'arabic-subtitle-regular' : 'latin-title-bold'
+                  'group w-max items-center justify-center  px-4 py-2 transition-colors   text-xl font-extrabold  ',
+                  isArabic
+                    ? 'arabic-subtitle-regular'
+                    : 'latin-subtitle-light font-light'
                 )}
               >
                 {t(`Navigation.${key}.title`)}
@@ -93,13 +120,13 @@ const DesktopNav = () => {
           );
         })}
         {/* <NavigationMenuItem
-          className={cn(
-            'w-full h-full flex justify-center items-center border-white hover:bg-[#00b0db] hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none disabled:pointer-events-none disabled:opacity-50 data-[active]:bg-[#00b0db] text-[#00b0db] data-[state=open]:bg-[#00b0db] bg-[#094142] ',
-            isArabic ? 'border-r-2' : 'border-l-2'
-          )}
-        >
-          <LocaleSwitcher />
-        </NavigationMenuItem> */}
+className={cn(
+'w-full h-full flex justify-center items-center border-white hover:bg-[#00b0db] hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none disabled:pointer-events-none disabled:opacity-50 data-[active]:bg-[#00b0db] text-[#00b0db] data-[state=open]:bg-[#00b0db] bg-[#094142] ',
+isArabic ? 'border-r-2' : 'border-l-2'
+)}
+>
+<LocaleSwitcher />
+</NavigationMenuItem> */}
       </NavigationMenuList>
     </NavigationMenu>
   );

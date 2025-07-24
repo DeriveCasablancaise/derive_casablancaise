@@ -2,7 +2,7 @@
   "Layout": {
     "Navigation": {
       "home": {
-        "title": "Accueil",
+        "title": "Présentation",
         "href": "/"
       },
       "about": {
@@ -10,15 +10,15 @@
         "href": "/about"
       },
       "derive": {
-        "title": "Dérive 2024",
+        "title": "Edition 2024",
         "href": "/derive-2024"
       },
       "previous": {
-        "title": "Editions précédentes",
+        "title": "Edition 2022",
         "href": "/previous"
       },
       "darja": {
-        "title": "Qui sommes-nous ?",
+        "title": "Association AR2D",
         "href": "/ar2d"
       },
       "community": {
@@ -29,7 +29,7 @@
         "title": "Contact",
         "href": "/contact"
       },
-      "derivecasa": "Dérive Casablancaise"
+      "derivecasa": "Editions"
     },
     "Menu": {
       "menu": "menu",
