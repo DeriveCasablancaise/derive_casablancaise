@@ -64,7 +64,7 @@ const AboutLanding = () => {
       {/* First Section - Introduction and Mission */}
       <motion.div
         ref={imageContainerRef}
-        className="bg-derive bg-gradient-to-br from-teal-400 via-blue-500 to-purple-600 w-full min-h-screen relative py-24 lg:py-0 lg:mt-[15vh] flex flex-col lg:flex-row lg:items-center border-b-2 z-20"
+        className="bg-derive bg-gradient-to-br from-teal-400 via-blue-500 to-purple-600 w-full min-h-screen relative py-24 lg:py-0 lg:mt-[10vh] flex flex-col lg:flex-row lg:items-center border-b-2 z-20"
         style={{
           backgroundSize,
         }}

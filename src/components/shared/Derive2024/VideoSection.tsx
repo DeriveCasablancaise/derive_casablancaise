@@ -50,8 +50,8 @@ const VideoSection = () => {
         >
           <h2
             className={cn(
-              'text-[#094142] text-3xl md:text-4xl lg:text-5xl mb-4',
-              isArabic ? 'arabic-title-bold' : 'latin-title-bold'
+              'text-[#ee7103] text-3xl md:text-4xl mb-4',
+              isArabic ? 'arabic-title-bold' : 'latin-title-light'
             )}
           >
             {isArabic ? 'مكتبة الفيديو' : 'Médiathèque '}
