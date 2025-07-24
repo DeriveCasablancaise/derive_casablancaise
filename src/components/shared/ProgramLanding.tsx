@@ -75,7 +75,7 @@ const ProgramLanding = () => {
               variants={descOpacity}
               animate={isInView ? 'open' : 'closed'}
               className={cn(
-                'text-lg lg:text-xl 2xl:text-2xl w-full font-bold text-[#094142] m-0',
+                'text-lg lg:text-xl w-full font-medium text-[#094142] m-0',
                 jakarta.className
               )}
             >
@@ -85,13 +85,13 @@ const ProgramLanding = () => {
               variants={descOpacity}
               animate={isInView ? 'open' : 'closed'}
               className={cn(
-                'text-lg lg:text-xl 2xl:text-2xl w-full font-bold text-[#094142] m-0',
+                'text-lg lg:text-xl w-full font-medium text-[#094142] m-0',
                 jakarta.className
               )}
             >
               {t2('Hero.subtitle3')}
             </motion.p>
-            <Link
+            {/* <Link
               href={`/${locale}/derive-2024`}
               className="hidden lg:flex w-full mt-4"
             >
@@ -107,9 +107,9 @@ const ProgramLanding = () => {
                   {t('more')}
                 </p>
               </RoundedBtn>
-            </Link>
+            </Link> */}
           </div>
-          <Link
+          {/* <Link
             href={`/${locale}/derive-2024`}
             className="lg:hidden mt-8 self-center"
           >
@@ -123,7 +123,7 @@ const ProgramLanding = () => {
                 {t('more')}
               </p>
             </RoundedBtn>
-          </Link>
+          </Link> */}
         </motion.div>
       </section>
       <div className="flex justify-center items-center mx-auto my-8 md:my-10 xl:my-12">

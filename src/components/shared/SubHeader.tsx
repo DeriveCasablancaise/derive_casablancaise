@@ -9,6 +9,9 @@ export default function Component() {
       {/* First Line */}
       <div className="flex flex-col justify-center items-center text-center font-semibold text-xl lg:text-3xl">
         <span className="text-[#ee7103] latin-title-bold flex w-full flex-row mx-auto justify-center items-center gap-4">
+          Dérive Casablancaise
+        </span>
+        <span className="text-[#ee7103] latin-title-bold flex w-full flex-row mx-auto justify-center items-center gap-4">
           Rencontres des arts de la scène
         </span>
         <span>
@@ -36,10 +39,8 @@ export default function Component() {
         }}
       >
         <span className="text-[#094142] latin-title-bold">
-          Rendez-vous du 04 au 08 décembre 2024 à Casablanca
-        </span>
-        <span className="text-[#094142] mt-2 lg:mt-0 lg:ml-4 arabic-title-bold">
-          موعدنا من 4 إلى 8 دجنبر 2024 في الدار البيضاء
+          Biennale pluridisciplinaire :
+          Danse/Musique/Théâtre/Cinéma/Lectures/Ateliers/Conférences/ Rencontres
         </span>
       </motion.div>
 
