@@ -66,7 +66,7 @@ const Contact = () => {
           <div className="flex flex-col justify-center items-start">
             <h2
               className={cn(
-                'text-[#00b0db] text-xl mb-4',
+                ' text-xl mb-4',
                 isArabic ? ' arabic-subtitle-bold' : 'latin-subtitle-regular'
               )}
             >
@@ -98,7 +98,7 @@ const Contact = () => {
           <div>
             <h2
               className={cn(
-                'text-[#00b0db] text-xl mb-4',
+                'text-xl mb-4',
                 isArabic ? ' arabic-subtitle-bold' : 'latin-subtitle-regular'
               )}
             >
@@ -123,7 +123,7 @@ const Contact = () => {
           <div className="flex flex-col justify-center md:items-end">
             <h2
               className={cn(
-                'text-[#00b0db] text-xl mb-4',
+                ' text-xl mb-4',
                 isArabic ? ' arabic-subtitle-bold' : 'latin-subtitle-regular'
               )}
             >
@@ -141,7 +141,7 @@ const Contact = () => {
               <Link
                 href={`/${locale}/contact`}
                 className={cn(
-                  'text-[#00b0db] text-xl mb-4',
+                  ' text-xl mb-4',
                   isArabic ? 'arabic-subtitle-bold' : 'latin-subtitle-regular'
                 )}
               >
@@ -153,7 +153,7 @@ const Contact = () => {
 
         {/* Copyright */}
         <div className="mt-12 text-center pb-6">
-          <p className="text-[#00b0db] latin-subtitle-regular text-lg xl:text-2xl">
+          <p className=" latin-subtitle-regular text-lg xl:text-2xl">
             Dérive Casablancaise 2024 ©
           </p>
         </div>
