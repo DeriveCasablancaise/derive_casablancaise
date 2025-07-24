@@ -54,7 +54,7 @@ const VideoSection = () => {
               isArabic ? 'arabic-title-bold' : 'latin-title-light'
             )}
           >
-            {isArabic ? 'مكتبة الفيديو' : 'Médiathèque '}
+            {isArabic ? 'مكتبة الفيديو' : 'Vidéos '}
           </h2>
         </motion.div>
 

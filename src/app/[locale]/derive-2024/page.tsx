@@ -9,9 +9,9 @@ const DerivePage = () => {
   return (
     <div className="overflow-hidden">
       <DeriveLanding />
-      <ProgramSection />
       <VideoSection />
-      <DynamicSlider />
+      <ProgramSection />
+      {/* <DynamicSlider /> */}
       <Contact />
     </div>
   );
