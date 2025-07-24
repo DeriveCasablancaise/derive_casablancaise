@@ -9,8 +9,8 @@ const Home = () => {
   return (
     <div className="overflow-hidden">
       <ProgramLanding />
-      <Projects />
-      <AfterMovieSection />
+      {/* <Projects /> */}
+      {/* <AfterMovieSection /> */}
       <DynamicSlider />
       <Contact />
     </div>

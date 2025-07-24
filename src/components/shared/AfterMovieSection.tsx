@@ -55,16 +55,6 @@ const AfterMovieSection = () => {
               ? ' الفيلم الختامي لفعالية المنعطف البيضاوي '
               : 'Dérive Casablancaise Aftermovie'}
           </h2>
-          <p
-            className={cn(
-              'text-[#1b7172] text-xl max-w-2xl mx-auto',
-              isArabic ? 'arabic-subtitle' : 'latin-subtitle'
-            )}
-          >
-            {isArabic
-              ? 'استرجع اللحظات الاستثنائية من نسختنا الأخيرة'
-              : 'Revivre les moments extraordinaires de notre dernière édition'}
-          </p>
         </motion.div>
 
         <motion.div

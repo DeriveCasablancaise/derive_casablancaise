@@ -67,7 +67,7 @@ const ProgramLanding = () => {
         </div>
         <motion.div
           ref={imageContainerRef}
-          className="bg-description w-full min-h-screen relative py-8 mb-8 lg:mt-[400px] lg:mb-32 md:mb-16 2xl:my-[23rem]  flex flex-col lg:flex-row lg:items-center border-b-2"
+          className="bg-description w-full min-h-screen relative py-8 mb-8 lg:mt-[400px] md:mb-16 2xl:my-[23rem]  flex flex-col lg:flex-row lg:items-center border-b-2"
           style={{ backgroundSize }}
         >
           <div className="lg:absolute lg:left-0 lg:-bottom-32 lg:h-auto lg:bg-[#E9EAEB] lg:w-[40%] bg-white/70 h-fit  my-auto lg:flex flex-col justify-start py-4 lg:py-6 items-start gap-4 2xl:gap-8 text-[#00b0db] md:text-black/90 px-4 lg:px-6">
@@ -125,8 +125,26 @@ const ProgramLanding = () => {
             </RoundedBtn>
           </Link> */}
         </motion.div>
+        <motion.div
+          variants={fadeIn('up', 0.2)}
+          initial="hidden"
+          whileInView="show"
+          viewport={{ once: true, amount: 0.3 }}
+          className="text-center mb-12"
+        >
+          <h2
+            className={cn(
+              'text-[#094142] text-3xl md:text-4xl lg:text-5xl mb-4',
+              isArabic ? 'arabic-title-bold' : 'latin-title-bold'
+            )}
+          >
+            {isArabic
+              ? ' الفيلم الختامي لفعالية المنعطف البيضاوي '
+              : 'Actualités'}
+          </h2>
+        </motion.div>
       </section>
-      <div className="flex justify-center items-center mx-auto my-8 md:my-10 xl:my-12">
+      <div className="flex justify-center items-center mx-auto my-8 md:my-10 xl:my-12 max-w-2xl">
         <motion.div
           variants={fadeIn('up', 0.1)}
           initial="hidden"
@@ -164,7 +182,7 @@ const ProgramLanding = () => {
           >
             {isArabic
               ? 'إعلان دعائي لـلمنعطف البيضاوي 2024'
-              : 'Teaser Dérive Casablancaise 2024'}
+              : 'Aftermovie Dérive Casablancaise 2024'}
           </motion.div>
         </motion.div>
       </div>
