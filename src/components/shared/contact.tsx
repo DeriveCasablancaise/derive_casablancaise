@@ -61,23 +61,23 @@ const Contact = () => {
       ref={container}
     >
       <div className="container mx-auto px-4 pt-36">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-5xl mx-auto">
           {/* Quicklinks */}
           <div className="flex flex-col justify-center items-start">
             <h2
               className={cn(
-                'text-[#00b0db] text-2xl mb-4',
-                isArabic ? ' arabic-subtitle-bold' : 'latin-subtitle-bold'
+                'text-[#00b0db] text-xl mb-4',
+                isArabic ? ' arabic-subtitle-bold' : 'latin-subtitle-regular'
               )}
             >
               {t('quicklinks')}
             </h2>
-            <ul className="space-y-2">
+            <ul className="space-y-1">
               {quickLinks.map((link, index) => (
                 <li key={index}>
                   <Link
                     href={link.path}
-                    className="text-white text-lg hover:text-[#ee7103]"
+                    className="text-white text-base hover:text-[#ee7103]"
                   >
                     {link.link}
                   </Link>
@@ -86,7 +86,7 @@ const Contact = () => {
               <li>
                 <NextLink
                   href="/darja-admin"
-                  className="text-white text-lg hover:text-[#ee7103]"
+                  className="text-white text-base hover:text-[#ee7103]"
                 >
                   {t('admin')}
                 </NextLink>
@@ -98,8 +98,8 @@ const Contact = () => {
           <div>
             <h2
               className={cn(
-                'text-[#00b0db] text-2xl mb-4',
-                isArabic ? ' arabic-subtitle-bold' : 'latin-subtitle-bold'
+                'text-[#00b0db] text-xl mb-4',
+                isArabic ? ' arabic-subtitle-bold' : 'latin-subtitle-regular'
               )}
             >
               {t('newsletterSignup')}
@@ -110,7 +110,10 @@ const Contact = () => {
                 placeholder={t('emailPlaceholder')}
                 className="bg-transparent border-white text-white placeholder-white"
               />
-              <Button className="bg-[#00b0db] text-[#2C4A4B] hover:bg-[#ee7103]">
+              <Button
+                className="bg-[#00b0db] text-[#2C4A4B] hover:bg-[#ee7103]"
+                size="sm"
+              >
                 {t('subscribe')}
               </Button>
             </form>
@@ -120,8 +123,8 @@ const Contact = () => {
           <div className="flex flex-col justify-center md:items-end">
             <h2
               className={cn(
-                'text-[#00b0db] text-2xl mb-4',
-                isArabic ? ' arabic-subtitle-bold' : 'latin-subtitle-bold'
+                'text-[#00b0db] text-xl mb-4',
+                isArabic ? ' arabic-subtitle-bold' : 'latin-subtitle-regular'
               )}
             >
               {t('followUs')}
@@ -138,8 +141,8 @@ const Contact = () => {
               <Link
                 href={`/${locale}/contact`}
                 className={cn(
-                  'text-[#00b0db] text-2xl mb-4',
-                  isArabic ? 'arabic-subtitle-bold' : 'latin-subtitle-bold'
+                  'text-[#00b0db] text-xl mb-4',
+                  isArabic ? 'arabic-subtitle-bold' : 'latin-subtitle-regular'
                 )}
               >
                 {t('contact')}
@@ -150,7 +153,7 @@ const Contact = () => {
 
         {/* Copyright */}
         <div className="mt-12 text-center pb-6">
-          <p className="text-[#00b0db] latin-subtitle-bold text-lg xl:text-2xl">
+          <p className="text-[#00b0db] latin-subtitle-regular text-lg xl:text-2xl">
             Dérive Casablancaise 2024 ©
           </p>
         </div>

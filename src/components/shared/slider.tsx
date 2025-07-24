@@ -112,7 +112,7 @@ const SlidingImages = ({ artists }: SlidingImagesProps) => {
           {slider1Artists.map((artist, index) => (
             <div
               key={index}
-              className={cn(' size-[18vw] flex justify-center items-center')}
+              className={cn(' size-[12vw] flex justify-center items-center')}
               style={{
                 backgroundColor: '#094142',
               }}
@@ -135,7 +135,7 @@ const SlidingImages = ({ artists }: SlidingImagesProps) => {
                       'absolute bottom-2 text-lg text-white z-20',
                       isArabic
                         ? 'right-2 arabic-subtitle-bold'
-                        : 'left-2 latin-subtitle-bold'
+                        : 'left-2 latin-subtitle-regular'
                     )}
                   >
                     {isArabic ? artist.arabicName : artist.frenchName}
@@ -183,7 +183,7 @@ const SlidingImages = ({ artists }: SlidingImagesProps) => {
           {slider2Artists.map((artist, index) => (
             <div
               key={index}
-              className={cn('size-[18vw] flex justify-center items-center')}
+              className={cn('size-[12vw] flex justify-center items-center')}
               style={{
                 backgroundColor: '#094142',
               }}
@@ -205,7 +205,7 @@ const SlidingImages = ({ artists }: SlidingImagesProps) => {
                       'absolute bottom-2 text-lg text-white z-20',
                       isArabic
                         ? 'right-2 arabic-subtitle-bold'
-                        : 'left-2 latin-subtitle-bold'
+                        : 'left-2 latin-subtitle-regular'
                     )}
                   >
                     {isArabic ? artist.arabicName : artist.frenchName}
