@@ -47,279 +47,210 @@ const page = async ({ params: { postId } }: PostProps) => {
 
   return (
     <div className="overflow-hidden">
-      <div className=" mx-auto py-8 pt-[20vh] pb-16">
-        {/* Title */}
-        <h1
-          className={cn(
-            'text-2xl md:text-3xl lg:text-4xl mb-8 text-[#ee7103] px-4 font-normal',
-            isArabic ? 'arabic-title-bold text-right' : 'latin-title-light'
-          )}
-        >
-          {isArabic ? post.arabicTitle : post.frenchTitle}
-        </h1>
+      <ClientWrapper>
+        <div className="mx-auto py-8 pt-[20vh] pb-16">
+          {/* Title */}
+          <h1
+            className={cn(
+              'text-2xl md:text-3xl lg:text-4xl mb-8 text-[#ee7103] px-4 font-normal',
+              isArabic ? 'arabic-title-bold text-right' : 'latin-title-light'
+            )}
+          >
+            {isArabic ? post.arabicTitle : post.frenchTitle}
+          </h1>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 px-4">
-          {/* Left Column - Image Gallery */}
-          <ImageGallery
-            images={post.images}
-            alt={isArabic ? post.arabicTitle : post.frenchTitle}
-          />
+          {/* Two Column Layout */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 px-4">
+            {/* Left Column - Image Gallery and Details */}
+            <div className="space-y-6">
+              {/* Image Gallery */}
+              <div className="w-full">
+                <ImageGallery
+                  images={post.images}
+                  alt={isArabic ? post.arabicTitle : post.frenchTitle}
+                />
+              </div>
 
-          {/* Right Column - Event Details */}
-          <div className="space-y-6">
-            {/* Date Collapsible */}
-            <Collapsible>
-              <CollapsibleTrigger asChild>
-                <Button
-                  variant="outline"
-                  className="w-full justify-start gap-2 rounded-none bg-[#094142] hover:bg-[#00b0db] transition-all duration-700"
-                >
-                  <Calendar className="size-6 text-[#ee7103] font-bold" />
-                  <p
-                    className={cn(
-                      'font-semibold text-[#ee7103]',
-                      isArabic
-                        ? 'arabic-subtitle-regular'
-                        : 'latin-subtitle-regular'
-                    )}
-                  >
-                    {isArabic ? 'التاريخ والوقت' : 'Date et heure'}
-                  </p>
-                </Button>
-              </CollapsibleTrigger>
-              <CollapsibleContent className="p-4">
-                <div className={cn('space-y-2', isArabic && 'text-right')}>
-                  {isSameDateTime ? (
-                    <p
-                      className={cn(
-                        'font-semibold text-[#ee7103] flex gap-2',
-                        isArabic
-                          ? 'arabic-subtitle-regular'
-                          : 'latin-subtitle-regular'
-                      )}
+              {/* Event Details */}
+              <div className="space-y-4">
+                {/* Date Collapsible */}
+                <Collapsible>
+                  <CollapsibleTrigger asChild>
+                    <Button
+                      variant="outline"
+                      className="w-full justify-start gap-2 rounded-none bg-[#094142] hover:bg-[#00b0db] transition-all duration-700"
                     >
-                      <span>
-                        {format(new Date(post.startDateTime), 'PPP', {
-                          locale: isArabic ? arMA : fr,
-                        })}
-                      </span>
-                      <span>{formatTime(startDate)}</span>
-                    </p>
-                  ) : (
-                    <p
-                      className={cn(
-                        'font-semibold text-[#ee7103]',
-                        isArabic
-                          ? 'arabic-subtitle-regular'
-                          : 'latin-subtitle-regular'
-                      )}
-                    >
-                      {format(new Date(post.startDateTime), 'PPP', {
-                        locale: isArabic ? arMA : fr,
-                      })}
-                      {' - '}
-                      {format(new Date(post.endDateTime), 'PPP', {
-                        locale: isArabic ? arMA : fr,
-                      })}
-                    </p>
-                  )}
-                </div>
-              </CollapsibleContent>
-            </Collapsible>
-
-            {/* Location Collapsible */}
-            <Collapsible>
-              <CollapsibleTrigger asChild>
-                <Button
-                  variant="outline"
-                  className="w-full justify-start gap-2 rounded-none bg-[#094142] hover:bg-[#00b0db] transition-all duration-700"
-                >
-                  <LocateIcon className="size-6 text-[#ee7103] font-bold" />
-                  <p
-                    className={cn(
-                      'font-semibold text-[#ee7103]',
-                      isArabic
-                        ? 'arabic-subtitle-regular'
-                        : 'latin-subtitle-regular'
-                    )}
-                  >
-                    {isArabic ? ' موقع الحدث' : "Lieu de l'événement"}
-                  </p>
-                </Button>
-              </CollapsibleTrigger>
-              <CollapsibleContent className="p-4">
-                <div className={cn('space-y-2', isArabic && 'text-right')}>
-                  <p
-                    className={cn(
-                      'font-semibold text-[#ee7103] flex gap-2',
-                      isArabic
-                        ? 'arabic-subtitle-regular'
-                        : 'latin-subtitle-regular'
-                    )}
-                  >
-                    {post.location}
-                  </p>
-                </div>
-              </CollapsibleContent>
-            </Collapsible>
-
-            {/* URL Collapsible */}
-            <Collapsible>
-              <CollapsibleTrigger asChild>
-                <Button
-                  variant="outline"
-                  className="w-full justify-start gap-2 rounded-none bg-[#094142] hover:bg-[#00b0db] transition-all duration-700"
-                >
-                  <Globe className="size-6 text-[#ee7103] font-bold" />
-                  <p
-                    className={cn(
-                      'font-semibold text-[#ee7103]',
-                      isArabic
-                        ? 'arabic-subtitle-regular'
-                        : 'latin-subtitle-regular'
-                    )}
-                  >
-                    {isArabic ? 'روابط مفيدة ' : 'Liens Utils'}
-                  </p>
-                </Button>
-              </CollapsibleTrigger>
-              <CollapsibleContent className="p-4">
-                {post.url ? (
-                  <Link
-                    href={post.url}
-                    target="_blank"
-                    className="text-[#ee7103] underline italic hover:text-[#00b0db] transition-all duration-300 "
-                    dir="ltr"
-                  >
-                    {post.url}
-                  </Link>
-                ) : (
-                  <p
-                    className={cn(
-                      'font-semibold text-[#ee7103]',
-                      isArabic
-                        ? 'arabic-subtitle-regular'
-                        : 'latin-subtitle-regular'
-                    )}
-                  >
-                    {isArabic ? 'غير متوفر بعد' : 'Pas encore disponible'}
-                  </p>
-                )}
-              </CollapsibleContent>
-            </Collapsible>
-          </div>
-        </div>
-
-        {/* Video Section */}
-        {post.videoSource && (
-          <div className="my-8 px-4 w-full flex justify-center md:justify-end items-center">
-            <VideoThumbnail
-              thumbnailSrc={post.images[0]}
-              videoUrl={post.videoSource}
-            />
-          </div>
-        )}
-
-        {relatedPosts.length == 0 && (
-          <ClientWrapper>
-            {/* Content */}
-            <SafeHtml
-              html={isArabic ? post.arabicText : post.frenchText}
-              className={cn(
-                'max-w-none my-8 flex flex-col justify-center items-center gap-8 px-4',
-                isArabic
-                  ? 'text-right arabic-subtitle-regular text-lg xl:text-2xl'
-                  : 'latin-subtitle-regular text-lg xl:text-2xl'
-              )}
-            />
-          </ClientWrapper>
-        )}
-
-        {/* Related Posts */}
-        {relatedPosts.length > 0 && (
-          <>
-            {/* Content */}
-            <SafeHtml
-              html={isArabic ? post.arabicText : post.frenchText}
-              className={cn(
-                'max-w-none my-8 flex flex-col justify-center items-center gap-8 px-4',
-                isArabic
-                  ? 'text-right arabic-subtitle-regular text-lg xl:text-2xl'
-                  : 'latin-subtitle-regular text-lg xl:text-2xl'
-              )}
-            />
-            <ClientWrapper>
-              <div className="my-16 px-4">
-                <h2
-                  className={cn(
-                    'text-2xl md:text-3xl mb-6 text-[#ee7103]',
-                    isArabic
-                      ? 'arabic-title-bold text-right'
-                      : 'latin-title-bold'
-                  )}
-                >
-                  {isArabic ? 'منشورات ذات صلة' : 'Posts similaires'}
-                </h2>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {relatedPosts.map((relatedPost) => (
-                    <Link
-                      key={relatedPost._id}
-                      href={`/${locale}/derive-2024/${relatedPost._id}`}
-                      className="block aspect-[16/9] md:aspect-[3/4] xl:aspect-[1/1] relative group overflow-hidden p-16 group"
-                    >
-                      <div
-                        className="absolute inset-0 transition-all duration-300"
-                        style={{
-                          backgroundImage:
-                            'linear-gradient(135deg, #094142 0%, #00b0db 100%)',
-                        }}
-                      />
-                      {relatedPost.images && (
-                        <div className="absolute inset-6 flex justify-center items-center overflow-hidden">
-                          <Image
-                            src={relatedPost.images[0]}
-                            alt={
-                              isArabic
-                                ? relatedPost.arabicTitle
-                                : relatedPost.frenchTitle
-                            }
-                            layout="fill"
-                            objectFit="cover"
-                            className="transform transition-transform duration-700 ease-out group-hover:scale-110"
-                          />
-                        </div>
-                      )}
-                      <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/60 to-transparent ">
-                        <h3
+                      <Calendar className="size-6 text-[#ee7103] font-bold" />
+                      <p
+                        className={cn(
+                          'font-semibold text-[#ee7103]',
+                          isArabic
+                            ? 'arabic-subtitle-regular'
+                            : 'latin-subtitle-regular'
+                        )}
+                      >
+                        {isArabic ? 'التاريخ والوقت' : 'Date et heure'}
+                      </p>
+                    </Button>
+                  </CollapsibleTrigger>
+                  <CollapsibleContent className="p-4">
+                    <div className={cn('space-y-2', isArabic && 'text-right')}>
+                      {isSameDateTime ? (
+                        <p
                           className={cn(
-                            'text-white text-lg mb-1 font-semibold ',
+                            'font-semibold text-[#ee7103] flex gap-2',
                             isArabic
                               ? 'arabic-subtitle-regular'
                               : 'latin-subtitle-regular'
                           )}
                         >
-                          {isArabic
-                            ? relatedPost.arabicTitle
-                            : relatedPost.frenchTitle}
-                        </h3>
-                        <p className="text-white/60 text-sm">
-                          {format(
-                            new Date(relatedPost.startDateTime),
-                            'dd MMMM yyyy',
-                            {
+                          <span>
+                            {format(new Date(post.startDateTime), 'PPP', {
                               locale: isArabic ? arMA : fr,
-                            }
-                          )}
+                            })}
+                          </span>
+                          <span>{formatTime(startDate)}</span>
                         </p>
-                      </div>
-                    </Link>
-                  ))}
-                </div>
+                      ) : (
+                        <p
+                          className={cn(
+                            'font-semibold text-[#ee7103]',
+                            isArabic
+                              ? 'arabic-subtitle-regular'
+                              : 'latin-subtitle-regular'
+                          )}
+                        >
+                          {format(new Date(post.startDateTime), 'PPP', {
+                            locale: isArabic ? arMA : fr,
+                          })}
+                          {' - '}
+                          {format(new Date(post.endDateTime), 'PPP', {
+                            locale: isArabic ? arMA : fr,
+                          })}
+                        </p>
+                      )}
+                    </div>
+                  </CollapsibleContent>
+                </Collapsible>
+
+                {/* Location Collapsible */}
+                <Collapsible>
+                  <CollapsibleTrigger asChild>
+                    <Button
+                      variant="outline"
+                      className="w-full justify-start gap-2 rounded-none bg-[#094142] hover:bg-[#00b0db] transition-all duration-700"
+                    >
+                      <LocateIcon className="size-6 text-[#ee7103] font-bold" />
+                      <p
+                        className={cn(
+                          'font-semibold text-[#ee7103]',
+                          isArabic
+                            ? 'arabic-subtitle-regular'
+                            : 'latin-subtitle-regular'
+                        )}
+                      >
+                        {isArabic ? ' موقع الحدث' : "Lieu de l'événement"}
+                      </p>
+                    </Button>
+                  </CollapsibleTrigger>
+                  <CollapsibleContent className="p-4">
+                    <div className={cn('space-y-2', isArabic && 'text-right')}>
+                      <p
+                        className={cn(
+                          'font-semibold text-[#ee7103] flex gap-2',
+                          isArabic
+                            ? 'arabic-subtitle-regular'
+                            : 'latin-subtitle-regular'
+                        )}
+                      >
+                        {post.location}
+                      </p>
+                    </div>
+                  </CollapsibleContent>
+                </Collapsible>
+
+                {/* URL Collapsible */}
+                <Collapsible>
+                  <CollapsibleTrigger asChild>
+                    <Button
+                      variant="outline"
+                      className="w-full justify-start gap-2 rounded-none bg-[#094142] hover:bg-[#00b0db] transition-all duration-700"
+                    >
+                      <Globe className="size-6 text-[#ee7103] font-bold" />
+                      <p
+                        className={cn(
+                          'font-semibold text-[#ee7103]',
+                          isArabic
+                            ? 'arabic-subtitle-regular'
+                            : 'latin-subtitle-regular'
+                        )}
+                      >
+                        {isArabic ? 'روابط مفيدة ' : 'Liens Utils'}
+                      </p>
+                    </Button>
+                  </CollapsibleTrigger>
+                  <CollapsibleContent className="p-4">
+                    {post.url ? (
+                      <Link
+                        href={post.url}
+                        target="_blank"
+                        className="text-[#ee7103] underline italic hover:text-[#00b0db] transition-all duration-300 "
+                        dir="ltr"
+                      >
+                        {post.url}
+                      </Link>
+                    ) : (
+                      <p
+                        className={cn(
+                          'font-semibold text-[#ee7103]',
+                          isArabic
+                            ? 'arabic-subtitle-regular'
+                            : 'latin-subtitle-regular'
+                        )}
+                      >
+                        {isArabic ? 'غير متوفر بعد' : 'Pas encore disponible'}
+                      </p>
+                    )}
+                  </CollapsibleContent>
+                </Collapsible>
               </div>
-            </ClientWrapper>
-          </>
-        )}
-      </div>
+
+              {/* Video Section - Mobile and Tablet */}
+              {post.videoSource && (
+                <div className="lg:hidden flex justify-center items-center">
+                  <VideoThumbnail
+                    thumbnailSrc={post.images[0]}
+                    videoUrl={post.videoSource}
+                  />
+                </div>
+              )}
+            </div>
+
+            {/* Right Column - Content */}
+            <div className="lg:min-h-screen flex flex-col">
+              <SafeHtml
+                html={isArabic ? post.arabicText : post.frenchText}
+                className={cn(
+                  'max-w-none flex-1 flex flex-col justify-start gap-6',
+                  isArabic
+                    ? 'text-right arabic-subtitle-regular text-lg xl:text-2xl'
+                    : 'latin-subtitle-regular text-lg xl:text-2xl'
+                )}
+              />
+
+              {/* Video Section - Desktop */}
+              {post.videoSource && (
+                <div className="hidden lg:flex justify-center md:justify-end items-center mt-8">
+                  <VideoThumbnail
+                    thumbnailSrc={post.images[0]}
+                    videoUrl={post.videoSource}
+                  />
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      </ClientWrapper>
 
       <Contact />
     </div>

@@ -56,7 +56,7 @@ const Contact = () => {
 
   return (
     <motion.footer
-      className="bg-[#094142] text-white xl:pb-16 2xl:py-40 h-full"
+      className="bg-[#094142] text-white xl:pb-16 h-full"
       style={{ y }}
       ref={container}
     >

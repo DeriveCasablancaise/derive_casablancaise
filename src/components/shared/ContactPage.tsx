@@ -5,7 +5,6 @@ import { useLocale, useTranslations } from 'next-intl';
 import React, { useRef, useState } from 'react';
 import toast from 'react-hot-toast';
 import RoundedBtn from './rounded';
-import { useFormStatus } from 'react-dom';
 import Link from 'next/link';
 import { sendEmail } from '../../lib/actions/sendEmail';
 import { cn, descOpacity } from '../../lib/utils';
@@ -58,19 +57,6 @@ const ContactSection = () => {
     <div className="bg-[#E9EAEB] min-h-screen lg:mt-[15vh] m-0 contact-header">
       <div className="container medium">
         <div className="row will-change-transform">
-          <div className="flex-col" ref={container}>
-            <motion.h2
-              variants={descOpacity}
-              animate={isInView ? 'open' : 'closed'}
-              className={`text-4xl lg:text-6xl m-0 font-semibold text-start py-6 text-[#ee7103] ${
-                isArabic ? 'arabic-title-bold' : 'latin-title-bold'
-              }`}
-            >
-              {t('heading')}
-            </motion.h2>
-          </div>
-        </div>
-        <div className="row will-change-transform">
           <div className="flex-col order-2 md:order-1 mb-32">
             <form onSubmit={handleSubmit} className="form">
               <div
@@ -89,7 +75,6 @@ const ContactSection = () => {
                   id="form-name"
                   name="senderName"
                   required
-                  placeholder={t('ContactForm.namePlaceholder')}
                   onChange={(e) => handleInputChange(e, setIsNameFilled)}
                 />
               </div>
@@ -109,7 +94,6 @@ const ContactSection = () => {
                   id="form-email"
                   name="senderEmail"
                   required
-                  placeholder="exemple@email.com"
                   onChange={(e) => handleInputChange(e, setIsEmailFilled)}
                 />
               </div>
@@ -130,7 +114,6 @@ const ContactSection = () => {
                   id="form-message"
                   className="field font-normal"
                   required
-                  placeholder={t('ContactForm.messagePlaceholder')}
                   onChange={(e) => handleInputChange(e, setIsMessageFilled)}
                 />
               </div>
