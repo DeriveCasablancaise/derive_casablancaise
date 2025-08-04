@@ -44,10 +44,7 @@ const Contact = () => {
       link: t('previousEditions'),
       path: `/${locale}/previous`,
     },
-    {
-      link: t('community'),
-      path: `/${locale}/community`,
-    },
+
     {
       link: t('associationAR2D'),
       path: `/${locale}/ar2d`,

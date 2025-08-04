@@ -1,18 +1,15 @@
 'use client';
-
 import {
-  NavigationMenu,
+  NavigationMenu, // Import from custom path
   NavigationMenuContent,
   NavigationMenuItem,
   NavigationMenuLink,
   NavigationMenuList,
   NavigationMenuTrigger,
-} from '@/components/ui/navigation-menu';
+} from '@/components/ui/navigation-menu'; // Changed import path to your custom component
 import { cn } from '@/lib/utils';
 import { useLocale, useTranslations } from 'next-intl';
 import { useEffect, useState } from 'react';
-import LocaleSwitcher from './locale-switcher-select';
-import Link from 'next/link';
 
 const DesktopNav = () => {
   const t = useTranslations('Layout');
@@ -32,11 +29,31 @@ const DesktopNav = () => {
 
   return (
     <NavigationMenu
-      className="h-full w-screen justify-between"
+      className="h-full w-full" // Apply w-full here to make NavigationMenu span the full width of DesktopHeader
       dir={isArabic ? 'rtl' : 'ltr'}
     >
       <NavigationMenuList className="lg:h-[10vh] w-screen justify-between">
-        {/* Navigation menu with dropdown as second item */}
+        {' '}
+        {/* w-full and justify-between to distribute items */}
+        {/* First navKey */}
+        <NavigationMenuItem
+          className={cn(
+            'w-full h-full flex justify-center items-center border-white hover:bg-[#00b0db] hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none disabled:pointer-events-none disabled:opacity-50 data-[active]:bg-[#00b0db] text-white data-[state=open]:bg-[#00b0db] bg-[#094142] ',
+            isArabic ? 'border-l-2' : 'border-r-2'
+          )}
+        >
+          <NavigationMenuLink
+            href={`/${locale}${t(`Navigation.${navKeys[0]}.href`)}`}
+            className={cn(
+              'group w-max items-center justify-center px-4 py-2 transition-colors text-xl font-extrabold ',
+              isArabic
+                ? 'arabic-subtitle-regular'
+                : 'latin-subtitle-light font-light'
+            )}
+          >
+            {t(`Navigation.${navKeys[0]}.title`)}
+          </NavigationMenuLink>
+        </NavigationMenuItem>
         <NavigationMenuItem className="group w-full h-full flex justify-center items-center hover:bg-[#00b0db] hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none disabled:pointer-events-none disabled:opacity-50 data-[active]:bg-[#00b0db] text-white nav-trigger">
           <NavigationMenuTrigger
             className={cn(
@@ -73,42 +90,20 @@ const DesktopNav = () => {
             </ul>
           </NavigationMenuContent>
         </NavigationMenuItem>
-
-        {/* First navKey */}
-        <NavigationMenuItem
-          // key="nav_0"
-          className={cn(
-            'w-full h-full  flex justify-center items-center border-white hover:bg-[#00b0db] hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none disabled:pointer-events-none disabled:opacity-50 data-[active]:bg-[#00b0db] text-white data-[state=open]:bg-[#00b0db] bg-[#094142] ',
-            isArabic ? 'border-r-2' : 'border-l-2'
-          )}
-        >
-          <NavigationMenuLink
-            href={`/${locale}${t(`Navigation.${navKeys[0]}.href`)}`}
-            className={cn(
-              'group w-max items-center justify-center  px-4 py-2 transition-colors   text-xl font-extrabold  ',
-              isArabic
-                ? 'arabic-subtitle-regular'
-                : 'latin-subtitle-light font-light'
-            )}
-          >
-            {t(`Navigation.${navKeys[0]}.title`)}
-          </NavigationMenuLink>
-        </NavigationMenuItem>
-
         {/* Remaining navKeys */}
         {navKeys.slice(1).map((key, i) => {
           return (
             <NavigationMenuItem
               key={`nav_${i + 1}`}
               className={cn(
-                'w-full h-full  flex justify-center items-center border-white hover:bg-[#00b0db] hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none disabled:pointer-events-none disabled:opacity-50 data-[active]:bg-[#00b0db] text-white data-[state=open]:bg-[#00b0db] bg-[#094142] ',
+                'w-full h-full flex justify-center items-center border-white hover:bg-[#00b0db] hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none disabled:pointer-events-none disabled:opacity-50 data-[active]:bg-[#00b0db] text-white data-[state=open]:bg-[#00b0db] bg-[#094142] ',
                 isArabic ? 'border-r-2' : 'border-l-2'
               )}
             >
               <NavigationMenuLink
                 href={`/${locale}${t(`Navigation.${key}.href`)}`}
                 className={cn(
-                  'group w-max items-center justify-center  px-4 py-2 transition-colors   text-xl font-extrabold  ',
+                  'group w-max items-center justify-center px-4 py-2 transition-colors text-xl font-extrabold ',
                   isArabic
                     ? 'arabic-subtitle-regular'
                     : 'latin-subtitle-light font-light'
@@ -119,14 +114,6 @@ const DesktopNav = () => {
             </NavigationMenuItem>
           );
         })}
-        {/* <NavigationMenuItem
-className={cn(
-'w-full h-full flex justify-center items-center border-white hover:bg-[#00b0db] hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none disabled:pointer-events-none disabled:opacity-50 data-[active]:bg-[#00b0db] text-[#00b0db] data-[state=open]:bg-[#00b0db] bg-[#094142] ',
-isArabic ? 'border-r-2' : 'border-l-2'
-)}
->
-<LocaleSwitcher />
-</NavigationMenuItem> */}
       </NavigationMenuList>
     </NavigationMenu>
   );

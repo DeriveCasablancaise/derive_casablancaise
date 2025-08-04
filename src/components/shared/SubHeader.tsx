@@ -31,14 +31,14 @@ export default function Component() {
 
       {/* Moving Text Animation */}
       <motion.div
-        className="mt-6 flex justify-center items-center text-center font-semibold text-lg lg:text-2xl"
+        className="mt-6 flex justify-center items-center text-center font-normal text-base md:text-lg lg:text-2xl"
         whileHover={{ animationPlayState: 'paused' }}
         style={{
           display: 'flex',
           animation: 'scroll 15s linear infinite',
         }}
       >
-        <span className="text-[#094142] latin-title-bold">
+        <span className="text-[#094142] latin-title-light">
           Biennale pluridisciplinaire :
           Danse/Musique/Théâtre/Cinéma/Lectures/Ateliers/Conférences/ Rencontres
         </span>

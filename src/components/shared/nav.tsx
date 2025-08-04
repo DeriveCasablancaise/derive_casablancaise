@@ -13,14 +13,7 @@ interface NavProps {
 
 const Nav = ({ setIsActive }: NavProps) => {
   const t = useTranslations('Layout');
-  const navKeys = [
-    'home',
-    'derive',
-    'previous',
-    'darja',
-    'community',
-    'contact',
-  ];
+  const navKeys = ['home', 'derive', 'previous', 'darja', 'contact'];
   const locale = useLocale();
   const isArabic = locale === 'ar';
 
@@ -51,7 +44,7 @@ const Nav = ({ setIsActive }: NavProps) => {
                   whileHover="whileHover"
                   whileTap="whileHover"
                   exit="exit"
-                  className="text-3xl text-[#00b0db] flex items-center justify-center"
+                  className="text-3xl text-white flex items-center justify-center"
                 >
                   <motion.span
                     variants={{

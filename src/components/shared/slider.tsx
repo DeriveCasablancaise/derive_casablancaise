@@ -81,7 +81,7 @@ const SlidingImages = ({ artists }: SlidingImagesProps) => {
         <Link
           href={`/${locale}/community`}
           className={cn(
-            'text-2xl md:text-4xl text-[#ee7103] hover:scale-110 transition-all duration-300',
+            'text-2xl xl:text-4xl text-[#ee7103]',
             isArabic ? 'arabic-title-bold' : 'latin-title-bold'
           )}
         >
@@ -159,7 +159,7 @@ const SlidingImages = ({ artists }: SlidingImagesProps) => {
           />
         </Button>
       </div>
-      {/* Slider 2 */}
+      {/* Slider 2
       <div className="relative hidden md:flex items-center mt-8 w-[120vw]">
         <Button
           onClick={() => handleScrollLeft('slider2')}
@@ -228,7 +228,7 @@ const SlidingImages = ({ artists }: SlidingImagesProps) => {
             className={cn('size-16', isArabic ? 'rotate-180' : '')}
           />
         </Button>
-      </div>
+      </div> */}
       <motion.div
         style={{ height }}
         className={cn('relative mt-24 bg-[#141516]')}

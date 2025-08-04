@@ -70,12 +70,12 @@ const ProgramLanding = () => {
           className="bg-description w-full min-h-screen relative py-8 mb-8 lg:mt-[400px] md:mb-16 2xl:my-[23rem]  flex flex-col lg:flex-row lg:items-center border-b-2"
           style={{ backgroundSize }}
         >
-          <div className="lg:absolute lg:left-0 lg:-bottom-32 lg:h-auto lg:bg-[#E9EAEB] lg:w-[40%] bg-white/70 h-fit  my-auto lg:flex flex-col justify-start py-4 lg:py-6 items-start gap-4 2xl:gap-8 text-[#00b0db] md:text-black/90 px-4 lg:px-6">
+          <div className="lg:absolute lg:left-0 lg:-bottom-24 lg:h-auto lg:bg-[#E9EAEB] lg:w-[60%] bg-white/70 h-fit  my-auto lg:flex flex-col justify-start py-4 lg:py-6 items-start gap-4 2xl:gap-8 text-[#00b0db] md:text-black/90 px-4 lg:px-6">
             <motion.p
               variants={descOpacity}
               animate={isInView ? 'open' : 'closed'}
               className={cn(
-                'text-lg lg:text-xl w-full font-medium text-[#094142] m-0',
+                'w-full font-bold text-[#094142] m-0',
                 jakarta.className
               )}
             >
@@ -85,66 +85,34 @@ const ProgramLanding = () => {
               variants={descOpacity}
               animate={isInView ? 'open' : 'closed'}
               className={cn(
-                'text-lg lg:text-xl w-full font-medium text-[#094142] m-0',
+                'w-full font-bold text-[#094142] m-0',
                 jakarta.className
               )}
             >
               {t2('Hero.subtitle3')}
             </motion.p>
-            {/* <Link
-              href={`/${locale}/derive-2024`}
-              className="hidden lg:flex w-full mt-4"
-            >
-              <RoundedBtn className="relative text-base group inline-flex items-center justify-center overflow-hidden rounded-full font-bold ring-offset-background transition-colors before:absolute before:left-[-10%] before:h-0 before:w-[120%] before:translate-y-3/4 before:scale-0 before:rounded-full before:pb-[120%] before:content-[''] after:absolute after:inset-0 after:h-full after:w-full after:-translate-y-full after:rounded-full after:transition-transform after:duration-300 after:ease-in-expo after:content-[''] hover:before:translate-y-0 hover:before:scale-100 hover:before:transition-transform hover:before:duration-300 hover:before:ease-in-expo hover:after:translate-y-0 hover:after:transition-transform hover:after:delay-300 hover:after:duration-75 hover:after:ease-linear focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:border-2 hover:border-solid hover:border-[#094142] before:bg-[#094142] after:bg-[#094142] px-8 py-3 before:-top-1/2 hover:text-background">
-                <p
-                  className={cn(
-                    'relative z-[1] transition-colors duration-400 text-[#E9EAEB] md:text-[#094142] group-hover:text-[#00b0db] m-0 text-xl md:text-2xl',
-                    isArabic
-                      ? 'arabic-title-bold'
-                      : 'latin-title-bold capitalize'
-                  )}
-                >
-                  {t('more')}
-                </p>
-              </RoundedBtn>
-            </Link> */}
           </div>
-          {/* <Link
-            href={`/${locale}/derive-2024`}
-            className="lg:hidden mt-8 self-center"
-          >
-            <RoundedBtn className="relative text-base group inline-flex items-center justify-center overflow-hidden rounded-full font-bold ring-offset-background transition-colors before:absolute before:left-[-10%] before:h-0 before:w-[120%] before:translate-y-3/4 before:scale-0 before:rounded-full before:pb-[120%] before:content-[''] after:absolute after:inset-0 after:h-full after:w-full after:-translate-y-full after:rounded-full after:transition-transform after:duration-300 after:ease-in-expo after:content-[''] hover:before:translate-y-0 hover:before:scale-100 hover:before:transition-transform hover:before:duration-300 hover:before:ease-in-expo hover:after:translate-y-0 hover:after:transition-transform hover:after:delay-300 hover:after:duration-75 hover:after:ease-linear focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:border-2 hover:border-solid hover:border-[#094142] before:bg-[#094142] after:bg-[#094142] px-8 py-3 before:-top-1/2 hover:text-background">
-              <p
-                className={cn(
-                  'relative z-[1] transition-colors duration-400 text-[#094142] group-hover:text-[#00b0db] m-0 text-xl md:text-2xl',
-                  isArabic ? 'arabic-title-bold' : 'latin-title-bold capitalize'
-                )}
-              >
-                {t('more')}
-              </p>
-            </RoundedBtn>
-          </Link> */}
-        </motion.div>
-        <motion.div
-          variants={fadeIn('up', 0.2)}
-          initial="hidden"
-          whileInView="show"
-          viewport={{ once: true, amount: 0.3 }}
-          className="text-center mb-12"
-        >
-          <h2
-            className={cn(
-              'text-[#094142] text-3xl md:text-4xl lg:text-5xl mb-4',
-              isArabic ? 'arabic-title-bold' : 'latin-title-bold'
-            )}
-          >
-            {isArabic
-              ? ' الفيلم الختامي لفعالية المنعطف البيضاوي '
-              : 'Actualités'}
-          </h2>
         </motion.div>
       </section>
-      <div className="flex justify-center items-center mx-auto my-8 md:my-10 xl:my-12 max-w-2xl">
+      <motion.div
+        variants={fadeIn('up', 0.2)}
+        initial="hidden"
+        whileInView="show"
+        viewport={{ once: true, amount: 0.3 }}
+        className="text-center mt-24 lg:mt-48"
+      >
+        <h2
+          className={cn(
+            'text-[#ee7103] text-3xl md:text-4xl lg:text-5xl mb-4',
+            isArabic ? 'arabic-title-bold' : 'latin-title-bold'
+          )}
+        >
+          {isArabic
+            ? ' الفيلم الختامي لفعالية المنعطف البيضاوي '
+            : 'Actualités'}
+        </h2>
+      </motion.div>
+      <div className="flex flex-col justify-center items-center mx-auto mt-8 md:mt-10 xl:mt-12 mb-24 lg:mb-48 max-w-2xl">
         <motion.div
           variants={fadeIn('up', 0.1)}
           initial="hidden"
@@ -168,22 +136,22 @@ const ProgramLanding = () => {
               transition={{ type: 'spring', stiffness: 400, damping: 10 }}
               className="bg-white/20 backdrop-blur-md rounded-full p-6"
             >
-              <PlayCircleIcon className="h-16 w-16 md:h-20 md:w-20 text-[#094142]" />
+              <PlayCircleIcon className="h-16 w-16 md:h-20 md:w-20 text-[#ee7103]" />
             </motion.div>
           </div>
-          <motion.div
-            initial={{ y: 20, opacity: 0 }}
-            whileInView={{ y: 0, opacity: 1 }}
-            transition={{ delay: 0.2 }}
-            className={cn(
-              'absolute bottom-6 text-white text-xl md:text-2xl font-bold',
-              isArabic ? 'arabic-subtitle-bold' : 'latin-subtitle-bold'
-            )}
-          >
-            {isArabic
-              ? 'إعلان دعائي لـلمنعطف البيضاوي 2024'
-              : 'Aftermovie Dérive Casablancaise 2024'}
-          </motion.div>
+        </motion.div>
+        <motion.div
+          initial={{ y: 20, opacity: 0 }}
+          whileInView={{ y: 0, opacity: 1 }}
+          transition={{ delay: 0.2 }}
+          className={cn(
+            'mt-4 text-center text-xl md:text-2xl font-bold text-[#094142] underline underline-offset-2', // Adjusted styling for text below image
+            isArabic ? 'arabic-subtitle-bold' : 'latin-subtitle-bold'
+          )}
+        >
+          {isArabic
+            ? 'إعلان دعائي لـلمنعطف البيضاوي 2024'
+            : 'Aftermovie Dérive Casablancaise 2024'}
         </motion.div>
       </div>
       <TeaserModal isOpen={isOpen} onClose={closeModal} />
