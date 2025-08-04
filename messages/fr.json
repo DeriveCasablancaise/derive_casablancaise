@@ -143,10 +143,10 @@
   "ContactPage": {
     "heading": "Contactez-nous",
     "ContactForm": {
-      "name": "Quel est votre nom ?",
+      "name": "Nom & Prénom ?",
       "namePlaceholder": "John Doe",
-      "email": "Votre adresse email ?",
-      "message": "Votre message",
+      "email": "Adresse Email ?",
+      "message": "Message",
       "messagePlaceholder": "Bonjour, je suis ..."
     },
     "submitBtn": "Envoyer",
@@ -177,7 +177,7 @@
     }
   },
   "ArtistsPage": {
-    "heading": "Artistes & Intervenants"
+    "heading": "Artistes & Intervenants qui nous ont accompagnés"
   },
   "Previous": {
     "heading": "Editions Précédentes"

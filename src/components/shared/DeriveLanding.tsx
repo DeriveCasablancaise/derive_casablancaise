@@ -14,9 +14,7 @@ const jakarta = Plus_Jakarta_Sans({
 const DeriveLanding = () => {
   const sectionRef = useRef(null);
   const imageContainerRef = useRef(null);
-  const imageContainerRef2 = useRef(null);
   const isInView = useInView(imageContainerRef);
-  const isInView2 = useInView(imageContainerRef2);
   const [isMobile, setIsMobile] = useState(false);
   const locale = useLocale();
   const isArabic = locale === 'ar';

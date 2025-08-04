@@ -1,5 +1,6 @@
 import { RelatedArtists } from '@/components/shared/artists/RelatedArtists';
 import Contact from '@/components/shared/contact';
+import { ParentLink } from '@/components/shared/ParentLink';
 import ImageGallery from '@/components/shared/PostGallery';
 import ClientWrapper from '@/components/shared/PostWrapper';
 import {
@@ -29,47 +30,42 @@ const page = async ({ params: { artistId } }: ArtistProps) => {
 
   return (
     <div className="overflow-hidden">
-      <div className=" mx-auto  py-8 pt-[20vh] pb-16">
-        {/* Title */}
-        <h1
-          className={cn(
-            'text-2xl md:text-3xl lg:text-4xl mb-8 text-[#ee7103] px-4',
-            isArabic ? 'arabic-title-bold text-right' : 'latin-title-light'
-          )}
-        >
-          {isArabic ? artist.arabicName : artist.frenchName}
-        </h1>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 px-4">
-          {/* Left Column - Image Gallery */}
-          <ImageGallery
-            images={artist.images}
-            alt={isArabic ? artist.arabicName : artist.frenchName}
+      <ClientWrapper>
+        <div className=" mx-auto  py-8 pt-[20vh] pb-16">
+          <ParentLink
+            label={isArabic ? 'العودة' : 'Retour'}
+            className="px-4 mb-4"
           />
-        </div>
 
-        <p
-          className={cn(
-            'max-w-none my-8 flex flex-col justify-center items-center gap-8 px-4',
-            isArabic
-              ? 'text-right arabic-subtitle-regular text-lg xl:text-2xl'
-              : 'latin-subtitle-regular text-lg xl:text-2xl'
-          )}
-        >
-          {isArabic ? artist.arabicText : artist.frenchText}
-        </p>
+          {/* Title */}
+          <h1
+            className={cn(
+              'text-2xl md:text-3xl lg:text-4xl mb-8 text-[#ee7103] px-4',
+              isArabic ? 'arabic-title-bold text-right' : 'latin-title-light'
+            )}
+          >
+            {isArabic ? artist.arabicName : artist.frenchName}
+          </h1>
 
-        <ClientWrapper>
-          {/* Related Artists Section */}
-          {relatedArtists && relatedArtists.length > 0 && (
-            <RelatedArtists
-              artists={relatedArtists}
-              isArabic={isArabic}
-              locale={locale}
+          <div className="grid grid-cols-1 md:grid-cols-2 px-4">
+            {/* Left Column - Image Gallery */}
+            <ImageGallery
+              images={artist.images}
+              alt={isArabic ? artist.arabicName : artist.frenchName}
             />
-          )}
-        </ClientWrapper>
-      </div>
+            <p
+              className={cn(
+                'max-w-none flex flex-col justify-center items-center gap-8 px-4',
+                isArabic
+                  ? 'text-right arabic-subtitle-regular text-lg xl:text-2xl'
+                  : 'latin-subtitle-regular text-lg xl:text-2xl'
+              )}
+            >
+              {isArabic ? artist.arabicText : artist.frenchText}
+            </p>
+          </div>
+        </div>
+      </ClientWrapper>
       <Contact />
     </div>
   );

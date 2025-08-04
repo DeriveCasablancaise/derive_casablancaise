@@ -78,15 +78,14 @@ const SlidingImages = ({ artists }: SlidingImagesProps) => {
       )}
     >
       <div className="w-full hidden md:flex py-4 xl:py-8 text-start bg-[#E9EAEB]">
-        <Link
-          href={`/${locale}/community`}
+        <h2
           className={cn(
             'text-xl lg:text-2xl xl:text-3xl w-full text-[#ee7103] text-center',
             isArabic ? 'arabic-title-bold' : 'latin-title-bold'
           )}
         >
           {t('heading')}
-        </Link>
+        </h2>
       </div>
       {/* Slider 1 */}
       <div className="relative items-center w-[120vw] hidden md:flex">

@@ -78,17 +78,23 @@ const AboutLanding = () => {
           variants={descOpacity}
           animate={isInView ? 'open' : 'closed'}
         >
-          <motion.h1
-            variants={descOpacity}
-            animate={isInView ? 'open' : 'closed'}
-            className="w-full font-bold text-2xl lg:text-3xl text-[#094142] m-0 font-['Plus_Jakarta_Sans']"
-          >
-            Les Rencontres de la Danse
-          </motion.h1>
           <motion.p
             variants={descOpacity}
             animate={isInView ? 'open' : 'closed'}
-            className="w-full font-semibold text-lg text-[#094142] m-0 font-['Plus_Jakarta_Sans'] leading-relaxed"
+            className={cn(
+              'w-full font-bold text-[#094142] m-0',
+              jakarta.className
+            )}
+          >
+            Les Rencontres de la Danse
+          </motion.p>
+          <motion.p
+            variants={descOpacity}
+            animate={isInView ? 'open' : 'closed'}
+            className={cn(
+              'w-full font-bold text-[#094142] m-0',
+              jakarta.className
+            )}
           >
             Les Rencontres de la Danse (AR2D), fondée en 2002 et portée depuis
             par la danseuse et chorégraphe Meryem Jazouli, est une association
@@ -97,7 +103,10 @@ const AboutLanding = () => {
           <motion.p
             variants={descOpacity}
             animate={isInView ? 'open' : 'closed'}
-            className="w-full font-semibold text-lg text-[#094142] m-0 font-['Plus_Jakarta_Sans'] leading-relaxed"
+            className={cn(
+              'w-full font-bold text-[#094142] m-0',
+              jakarta.className
+            )}
           >
             Elle joue un rôle essentiel dans l'évolution du paysage
             chorégraphique marocain à travers une programmation variée et des
@@ -126,32 +135,28 @@ const AboutLanding = () => {
           variants={descOpacity}
           animate={isInView2 ? 'open' : 'closed'}
         >
-          <motion.h2
-            variants={descOpacity}
-            animate={isInView2 ? 'open' : 'closed'}
-            className="w-full font-bold text-2xl lg:text-3xl text-[#094142] m-0 font-['Plus_Jakarta_Sans']"
-          >
-            L'Espace DARJA
-          </motion.h2>
           <motion.p
             variants={descOpacity}
             animate={isInView2 ? 'open' : 'closed'}
-            className="w-full font-semibold text-lg text-[#094142] m-0 font-['Plus_Jakarta_Sans'] leading-relaxed"
+            className={cn(
+              'w-full font-bold text-[#094142] m-0',
+              jakarta.className
+            )}
           >
-            En 2009, l'association inaugure à Casablanca l'Espace DARJA, un lieu
-            ressource entièrement consacré à la danse contemporaine, devenant
-            ainsi le centre névralgique de ses activités.
+            Dérive Casablancaise
           </motion.p>
           <motion.p
             variants={descOpacity}
             animate={isInView2 ? 'open' : 'closed'}
-            className="w-full font-semibold text-lg text-[#094142] m-0 font-['Plus_Jakarta_Sans'] leading-relaxed"
+            className={cn(
+              'w-full font-bold text-[#094142] m-0',
+              jakarta.className
+            )}
           >
-            Pendant dix ans, cet espace innovant servira à la fois de tremplin
-            pédagogique pour les jeunes danseurs et de laboratoire
-            d'expérimentation chorégraphique, proposant une programmation
-            audacieuse qui élargit les horizons de l'art chorégraphique
-            marocain.
+            Aujourd'hui, AR2D se concentre sur un programme pluridisciplinaire
+            structuré sous forme de biennale, Dérive casablancaise, qui a pour
+            ambition d'enrichir le dialogue artistique et d'établir des liens et
+            collaborations entre artistes, publics et professionnels.
           </motion.p>
         </motion.div>
 
@@ -164,22 +169,41 @@ const AboutLanding = () => {
           variants={descOpacity}
           animate={isInView2 ? 'open' : 'closed'}
         >
-          <motion.h2
-            variants={descOpacity}
-            animate={isInView2 ? 'open' : 'closed'}
-            className="w-full font-bold text-2xl lg:text-3xl text-[#094142] m-0 font-['Plus_Jakarta_Sans']"
-          >
-            Dérive Casablancaise
-          </motion.h2>
           <motion.p
             variants={descOpacity}
             animate={isInView2 ? 'open' : 'closed'}
-            className="w-full font-semibold text-lg text-[#094142] m-0 font-['Plus_Jakarta_Sans'] leading-relaxed"
+            className={cn(
+              'w-full font-bold text-[#094142] m-0',
+              jakarta.className
+            )}
           >
-            Aujourd'hui, AR2D se concentre sur un programme pluridisciplinaire
-            structuré sous forme de biennale, Dérive casablancaise, qui a pour
-            ambition d'enrichir le dialogue artistique et d'établir des liens et
-            collaborations entre artistes, publics et professionnels.
+            L'Espace DARJA
+          </motion.p>
+          <motion.p
+            variants={descOpacity}
+            animate={isInView2 ? 'open' : 'closed'}
+            className={cn(
+              'w-full font-bold text-[#094142] m-0',
+              jakarta.className
+            )}
+          >
+            En 2009, l'association inaugure à Casablanca l'Espace DARJA, un lieu
+            ressource entièrement consacré à la danse contemporaine, devenant
+            ainsi le centre névralgique de ses activités.
+          </motion.p>
+          <motion.p
+            variants={descOpacity}
+            animate={isInView2 ? 'open' : 'closed'}
+            className={cn(
+              'w-full font-bold text-[#094142] m-0',
+              jakarta.className
+            )}
+          >
+            Pendant dix ans, cet espace innovant servira à la fois de tremplin
+            pédagogique pour les jeunes danseurs et de laboratoire
+            d'expérimentation chorégraphique, proposant une programmation
+            audacieuse qui élargit les horizons de l'art chorégraphique
+            marocain.
           </motion.p>
         </motion.div>
       </motion.div>

@@ -12,6 +12,7 @@ import type { IPost } from '@/lib/database/models/post.model';
 import { useSearchParams, useRouter } from 'next/navigation';
 import RoundedBtn from './rounded';
 import ClientWrapper from './PostWrapper';
+import { CategoryImageButton } from './Derive2024/CategoryImageBtn';
 
 const Categories = {
   danse: { fr: 'Danse', ar: 'رقص' },
@@ -23,6 +24,15 @@ const Categories = {
 } as const;
 
 type CategoryKey = keyof typeof Categories;
+
+const categoryImageMap: Record<CategoryKey, string> = {
+  danse: '/placeholder.svg?height=300&width=400',
+  concert: '/placeholder.svg?height=300&width=400',
+  theatre: '/placeholder.svg?height=300&width=400',
+  lectures: '/placeholder.svg?height=300&width=400',
+  cinema: '/placeholder.svg?height=300&width=400',
+  ateliers: '/placeholder.svg?height=300&width=400',
+};
 
 const ProgramSection = () => {
   const sectionRef = useRef(null);
@@ -41,8 +51,6 @@ const ProgramSection = () => {
     target: sectionRef,
     offset: ['start end', 'end start'],
   });
-
-  const height = useTransform(scrollYProgress, [0, 0.9], [150, -20]);
 
   useEffect(() => {
     // Get category from URL parameters
@@ -150,35 +158,35 @@ const ProgramSection = () => {
                 )}
               </div>
             </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 50 }}
+              animate={isInView ? { opacity: 1, y: 0 } : {}}
+              transition={{ duration: 0.5, delay: 0.5 }}
+              className="mb-12"
+            >
+              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4 md:gap-6">
+                {(Object.keys(Categories) as CategoryKey[]).map(
+                  (category, index) => (
+                    <CategoryImageButton
+                      key={category}
+                      categoryKey={category}
+                      categoryName={Categories[category]}
+                      imageUrl={categoryImageMap[category]}
+                      isSelected={selectedCategories.has(category)}
+                      isArabic={isArabic}
+                      onClick={handleCategoryToggle}
+                      index={index}
+                      isInView={isInView}
+                    />
+                  )
+                )}
+              </div>
+            </motion.div>
           </motion.div>
 
           {/* Posts Grid - Full Width */}
           <div className="w-full">
-            {selectedCategories.size > 0 && (
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5 }}
-                className="mb-8"
-              >
-                <h3
-                  className={cn(
-                    'text-xl xl:text-2xl text-[#094142] mb-6',
-                    isArabic ? 'arabic-title-bold' : 'latin-title-bold'
-                  )}
-                >
-                  {isArabic ? 'المشاريع المختارة:' : 'Projets sélectionnés:'}
-                  <span className="text-[#00b0db] ml-2">
-                    {Array.from(selectedCategories)
-                      .map((cat) =>
-                        isArabic ? Categories[cat].ar : Categories[cat].fr
-                      )
-                      .join(', ')}
-                  </span>
-                </h3>
-              </motion.div>
-            )}
-
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
               {posts.length > 0 ? (
                 posts.map((post, index) => (
@@ -243,18 +251,14 @@ const ProgramSection = () => {
           </div>
 
           {/* Download Button */}
-          <div className="flex justify-center mt-16">
+          <div
+            className={cn(
+              'flex justify-center mt-16 text-[#094142] text-base lg:text-2xl',
+              isArabic ? 'arabic-title-light' : 'latin-title-light'
+            )}
+          >
             <Link href="/programme.pdf" download target="_blank">
-              <RoundedBtn className="relative text-base group inline-flex items-center justify-center overflow-hidden rounded-full font-bold ring-offset-background transition-colors before:absolute before:left-[-10%] before:h-0 before:w-[120%] before:translate-y-3/4 before:scale-0 before:rounded-full before:pb-[120%] before:content-[''] after:absolute after:inset-0 after:h-full after:w-full after:-translate-y-full after:rounded-full after:transition-transform after:duration-300 after:ease-in-expo after:content-[''] hover:before:translate-y-0 hover:before:scale-100 hover:before:transition-transform hover:before:duration-300 hover:before:ease-in-expo hover:after:translate-y-0 hover:after:transition-transform hover:after:delay-300 hover:after:duration-75 hover:after:ease-linear focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:border-2 hover:border-solid hover:border-[#FF5C00] before:bg-[#FF5C00] after:bg-[#FF5C00] px-16 py-4 before:-top-1/2 hover:text-background">
-                <p
-                  className={cn(
-                    'relative z-[1] transition-colors duration-400 text-[#FF5C00] group-hover:text-[#094142] m-0 text-2xl md:text-4xl',
-                    isArabic ? 'arabic-title-bold' : 'latin-title-bold'
-                  )}
-                >
-                  {t2('Download')}
-                </p>
-              </RoundedBtn>
+              {t2('Download')}
             </Link>
           </div>
         </motion.div>

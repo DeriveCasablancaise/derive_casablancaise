@@ -13,9 +13,9 @@ const ImageGallery: React.FC<ImageGalleryProps> = ({ images, alt }) => {
   const [isImageModalOpen, setIsImageModalOpen] = useState(false);
 
   return (
-    <div>
+    <>
       <div
-        className="relative aspect-video cursor-pointer overflow-hidden"
+        className="relative aspect-square max-h-[600px] cursor-pointer overflow-hidden"
         onClick={() => setIsImageModalOpen(true)}
       >
         <Image
@@ -32,7 +32,7 @@ const ImageGallery: React.FC<ImageGalleryProps> = ({ images, alt }) => {
         images={images}
         alt={alt}
       />
-    </div>
+    </>
   );
 };
 
