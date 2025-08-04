@@ -112,47 +112,94 @@ const ProgramLanding = () => {
             : 'Actualités'}
         </h2>
       </motion.div>
-      <div className="flex flex-col justify-center items-center mx-auto mt-8 md:mt-10 xl:mt-12 mb-24 lg:mb-48 max-w-2xl">
-        <motion.div
-          variants={fadeIn('up', 0.1)}
-          initial="hidden"
-          whileInView="show"
-          viewport={{ once: true, amount: 0.3 }}
-          className="relative flex justify-center items-center shadow-md cursor-pointer group"
-          onClick={() => openModal()}
-        >
-          <Image
-            src="/images/thumbTeaser.jpg"
-            width={600}
-            height={600}
-            alt="tease_thumbnail"
-            className="w-full md:w-[80vw] object-contain rounded-lg"
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-[#094142]/50 via-transparent to-transparent rounded-lg"></div>
-          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 flex items-center justify-center">
-            <motion.div
-              initial={{ scale: 0.8, opacity: 0.8 }}
-              whileHover={{ scale: 1.1, opacity: 1 }}
-              transition={{ type: 'spring', stiffness: 400, damping: 10 }}
-              className="bg-white/20 backdrop-blur-md rounded-full p-6"
-            >
-              <PlayCircleIcon className="h-16 w-16 md:h-20 md:w-20 text-[#ee7103]" />
-            </motion.div>
-          </div>
-        </motion.div>
-        <motion.div
-          initial={{ y: 20, opacity: 0 }}
-          whileInView={{ y: 0, opacity: 1 }}
-          transition={{ delay: 0.2 }}
-          className={cn(
-            'mt-4 text-center text-xl md:text-2xl font-bold text-[#094142] underline underline-offset-2', // Adjusted styling for text below image
-            isArabic ? 'arabic-subtitle-bold' : 'latin-subtitle-bold'
-          )}
-        >
-          {isArabic
-            ? 'إعلان دعائي لـلمنعطف البيضاوي 2024'
-            : 'Aftermovie Dérive Casablancaise 2024'}
-        </motion.div>
+      <div className="flex flex-col lg:flex-row justify-center items-start mx-auto my-8 md:my-10 xl:my-12 max-w-4xl gap-8 px-4">
+        {/* First Video Showcase */}
+        <div className="flex flex-col items-center w-full lg:w-1/2">
+          <motion.div
+            variants={fadeIn('up', 0.1)}
+            initial="hidden"
+            whileInView="show"
+            viewport={{ once: true, amount: 0.3 }}
+            className="relative flex justify-center items-center shadow-md cursor-pointer group w-full"
+            onClick={() => openModal()} // Replace with actual video ID
+          >
+            <Image
+              src="/images/thumbTeaser.jpg"
+              width={600}
+              height={600}
+              alt="tease_thumbnail"
+              className="w-full object-contain rounded-lg"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-[#094142]/50 via-transparent to-transparent rounded-lg"></div>
+            <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 flex items-center justify-center">
+              <motion.div
+                initial={{ scale: 0.8, opacity: 0.8 }}
+                whileHover={{ scale: 1.1, opacity: 1 }}
+                transition={{ type: 'spring', stiffness: 400, damping: 10 }}
+                className="bg-white/20 backdrop-blur-md rounded-full p-6"
+              >
+                <PlayCircleIcon className="h-16 w-16 md:h-20 md:w-20 text-[#ee7103]" />
+              </motion.div>
+            </div>
+          </motion.div>
+          <motion.div
+            initial={{ y: 20, opacity: 0 }}
+            whileInView={{ y: 0, opacity: 1 }}
+            transition={{ delay: 0.2 }}
+            className={cn(
+              'mt-4 text-center text-base md:text-lg font-bold text-[#094142]',
+              isArabic ? 'arabic-subtitle-bold' : 'latin-subtitle-bold'
+            )}
+          >
+            {isArabic
+              ? 'إعلان دعائي لـلمنعطف البيضاوي 2024'
+              : 'Aftermovie Dérive Casablancaise 2024'}
+          </motion.div>
+        </div>
+
+        {/* Second Video Showcase (Placeholder) */}
+        <div className="flex flex-col items-center w-full lg:w-1/2 mt-8 lg:mt-0">
+          <motion.div
+            variants={fadeIn('up', 0.1)}
+            initial="hidden"
+            whileInView="show"
+            viewport={{ once: true, amount: 0.3 }}
+            className="relative flex justify-center items-center shadow-md cursor-pointer group w-full"
+            onClick={() => openModal()} // Replace with actual video ID
+          >
+            <Image
+              src="/images/thumbTeaser.jpg"
+              width={600}
+              height={600}
+              alt="tease_thumbnail"
+              className="w-full object-contain rounded-lg"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-[#094142]/50 via-transparent to-transparent rounded-lg"></div>
+            <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 flex items-center justify-center">
+              <motion.div
+                initial={{ scale: 0.8, opacity: 0.8 }}
+                whileHover={{ scale: 1.1, opacity: 1 }}
+                transition={{ type: 'spring', stiffness: 400, damping: 10 }}
+                className="bg-white/20 backdrop-blur-md rounded-full p-6"
+              >
+                <PlayCircleIcon className="h-16 w-16 md:h-20 md:w-20 text-[#ee7103]" />
+              </motion.div>
+            </div>
+          </motion.div>
+          <motion.div
+            initial={{ y: 20, opacity: 0 }}
+            whileInView={{ y: 0, opacity: 1 }}
+            transition={{ delay: 0.2 }}
+            className={cn(
+              'mt-4 text-center text-base md:text-lg font-bold text-[#094142]',
+              isArabic ? 'arabic-subtitle-bold' : 'latin-subtitle-bold'
+            )}
+          >
+            {isArabic
+              ? 'إعلان دعائي لـلمنعطف البيضاوي 2024'
+              : 'Aftermovie Dérive Casablancaise 2024'}
+          </motion.div>
+        </div>
       </div>
       <TeaserModal isOpen={isOpen} onClose={closeModal} />
     </>
