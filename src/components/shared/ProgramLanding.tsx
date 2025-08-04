@@ -103,7 +103,7 @@ const ProgramLanding = () => {
       >
         <h2
           className={cn(
-            'text-[#ee7103] text-3xl md:text-4xl lg:text-5xl mb-4',
+            'text-[#ee7103] text-xl lg:text-2xl xl:text-3xl mb-4',
             isArabic ? 'arabic-title-bold' : 'latin-title-bold'
           )}
         >

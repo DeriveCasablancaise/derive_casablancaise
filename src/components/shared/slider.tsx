@@ -74,14 +74,14 @@ const SlidingImages = ({ artists }: SlidingImagesProps) => {
     <div
       ref={container}
       className={cn(
-        'flex flex-col gap-[3vw] relative bg-[#E9EAEB] md:mt-16 z-[1]'
+        'flex flex-col gap-[3vw] relative bg-[#E9EAEB] mt-24 lg:mt-48 z-[1] '
       )}
     >
-      <div className="w-full hidden md:flex py-4 xl:py-8 text-start bg-[#E9EAEB] px-8 xl:px-[100px] ">
+      <div className="w-full hidden md:flex py-4 xl:py-8 text-start bg-[#E9EAEB]">
         <Link
           href={`/${locale}/community`}
           className={cn(
-            'text-2xl xl:text-4xl text-[#ee7103]',
+            'text-xl lg:text-2xl xl:text-3xl w-full text-[#ee7103] text-center',
             isArabic ? 'arabic-title-bold' : 'latin-title-bold'
           )}
         >
@@ -119,7 +119,7 @@ const SlidingImages = ({ artists }: SlidingImagesProps) => {
             >
               <Link
                 href={`/${locale}/community/${artist._id}`}
-                className="w-full h-full flex justify-center items-center group p-2 relative"
+                className="w-full h-full flex justify-center items-center group p-1 relative"
               >
                 <div className={cn('relative size-full overflow-hidden')}>
                   <Image
