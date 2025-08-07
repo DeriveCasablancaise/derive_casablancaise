@@ -16,22 +16,26 @@ import { CategoryImageButton } from './Derive2024/CategoryImageBtn';
 
 const Categories = {
   danse: { fr: 'Danse', ar: 'رقص' },
-  concert: { fr: 'Concert', ar: 'حفلة موسيقية' },
+  musique: { fr: 'Musique', ar: 'حفلة موسيقية' },
   theatre: { fr: 'Théâtre', ar: 'مسرح' },
   lectures: { fr: 'Lectures', ar: 'قراءات' },
   cinema: { fr: 'Cinéma', ar: 'سينما' },
+  conference: { fr: 'Conférence', ar: 'مؤتمر' },
   ateliers: { fr: 'Ateliers', ar: 'ورش عمل' },
+  autres: { fr: 'En Marge...', ar: 'أخرى' },
 } as const;
 
 type CategoryKey = keyof typeof Categories;
 
 const categoryImageMap: Record<CategoryKey, string> = {
   danse: '/placeholder.svg?height=300&width=400',
-  concert: '/placeholder.svg?height=300&width=400',
+  musique: '/placeholder.svg?height=300&width=400',
   theatre: '/placeholder.svg?height=300&width=400',
   lectures: '/placeholder.svg?height=300&width=400',
   cinema: '/placeholder.svg?height=300&width=400',
+  conference: '/placeholder.svg?height=300&width=400',
   ateliers: '/placeholder.svg?height=300&width=400',
+  autres: '/placeholder.svg?height=300&width=400',
 };
 
 const ProgramSection = () => {
@@ -165,7 +169,7 @@ const ProgramSection = () => {
               transition={{ duration: 0.5, delay: 0.5 }}
               className="mb-12"
             >
-              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4 md:gap-6">
+              <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
                 {(Object.keys(Categories) as CategoryKey[]).map(
                   (category, index) => (
                     <CategoryImageButton

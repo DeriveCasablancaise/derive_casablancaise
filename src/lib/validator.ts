@@ -16,7 +16,16 @@ export const postFormSchema = z.object({
   images: z.array(z.string()).default([]),
   videoSource: z.string().optional(),
   postCategory: z.enum(
-    ['danse', 'concert', 'theatre', 'lectures', 'cinema', 'ateliers'],
+    [
+      'danse',
+      'musique',
+      'theatre',
+      'lectures',
+      'cinema',
+      'conference',
+      'ateliers',
+      'autres',
+    ],
     {
       message: 'Veuillez Choisir Une Catégorie',
     }

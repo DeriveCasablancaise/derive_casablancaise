@@ -39,7 +39,7 @@ const DeriveLanding = () => {
   const backgroundSize = useTransform(
     scrollYProgress,
     [0.4, 1],
-    isMobile ? ['cover', 'cover'] : ['100%', '130%']
+    isMobile ? ['cover', 'cover'] : ['100%', '200%']
   );
 
   return (
@@ -47,13 +47,13 @@ const DeriveLanding = () => {
       <motion.div
         ref={imageContainerRef}
         className={cn(
-          'bg-derive w-full h-[200vh] relative py-24 lg:py-0  lg:mt-[10vh]  flex flex-col lg:flex-row lg:items-center border-b-2 z-20',
+          'bg-derive w-full min-h-[200vh] relative py-24   lg:mt-[10vh]  flex flex-col lg:flex-row lg:items-center border-b-2 z-20',
           isArabic ? 'text-lg z-30' : 'text-sm'
         )}
         style={{ backgroundSize }}
       >
         <motion.div
-          className="lg:absolute lg:left-0 lg:top-0 lg:h-auto lg:bg-[#E9EAEB] lg:w-[40%] bg-white/70 h-fit lg:flex flex-col justify-start py-4 lg:py-6 items-start gap-4 2xl:gap-8 text-[#00b0db] md:text-black/90 px-4 lg:px-6"
+          className="lg:absolute lg:left-0 lg:top-0 lg:h-auto lg:bg-[#E9EAEB] lg:w-[60%] bg-white/70 h-fit lg:flex flex-col justify-start py-4 lg:py-6 items-start gap-4 2xl:gap-8 text-[#00b0db] md:text-black/90 px-4 lg:px-6"
           variants={descOpacity}
           animate={isInView ? 'open' : 'closed'}
         >
@@ -110,7 +110,7 @@ const DeriveLanding = () => {
         </motion.div>
         <motion.div
           className={cn(
-            'lg:absolute lg:right-0 lg:bottom-72 lg:h-auto lg:bg-[#E9EAEB] lg:w-[40%] bg-white/70 h-fit  lg:my-16 lg:flex flex-col justify-start py-4 lg:py-6 items-start gap-4 2xl:gap-8 text-[#00b0db] md:text-black/90 px-4 lg:px-6 order-2',
+            'lg:absolute lg:right-0 lg:bottom-[400px] lg:h-auto lg:bg-[#E9EAEB] lg:w-[60%] bg-white/70 h-fit  lg:my-16 lg:flex flex-col justify-start py-4 lg:py-6 items-start gap-4 2xl:gap-8 text-[#00b0db] md:text-black/90 px-4 lg:px-6 order-2',
             isArabic && 'lg:-bottom-96'
           )}
           variants={descOpacity}
@@ -168,7 +168,7 @@ const DeriveLanding = () => {
           </motion.p>
         </motion.div>
         <motion.div
-          className="lg:absolute lg:left-0 lg:bottom-12 lg:h-auto lg:bg-[#E9EAEB] lg:w-[40%] bg-white/70 h-fit lg:flex flex-col justify-start py-4 lg:py-6 items-start gap-4 2xl:gap-8 text-[#00b0db] md:text-black/90 px-4 lg:px-6"
+          className="lg:absolute lg:left-0 lg:bottom-12 lg:h-auto lg:bg-[#E9EAEB] lg:w-[60%] bg-white/70 h-fit lg:flex flex-col justify-start py-4 lg:py-6 items-start gap-4 2xl:gap-8 text-[#00b0db] md:text-black/90 px-4 lg:px-6"
           variants={descOpacity}
           animate={isInView ? 'open' : 'closed'}
         >

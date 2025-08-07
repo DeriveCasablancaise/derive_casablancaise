@@ -13,11 +13,13 @@ export interface IPost extends Document {
   endDateTime: Date;
   postCategory:
     | 'danse'
-    | 'concert'
+    | 'musique'
     | 'theatre'
     | 'lectures'
     | 'cinema'
-    | 'ateliers';
+    | 'conference'
+    | 'ateliers'
+    | 'autres';
   location: string;
   url?: string;
   isInHomepage: boolean;
@@ -54,7 +56,16 @@ const PostSchema = new Schema({
   endDateTime: { type: Date, default: Date.now },
   postCategory: {
     type: String,
-    enum: ['danse', 'concert', 'theatre', 'lectures', 'cinema', 'ateliers'],
+    enum: [
+      'danse',
+      'musique',
+      'theatre',
+      'lectures',
+      'cinema',
+      'conference',
+      'ateliers',
+      'autres',
+    ],
     required: true,
     default: null,
   },

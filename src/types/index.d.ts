@@ -55,11 +55,13 @@ export type CreatePostParams = {
   endDateTime: Date;
   postCategory:
     | 'danse'
-    | 'concert'
+    | 'musique'
     | 'theatre'
     | 'lectures'
     | 'cinema'
-    | 'ateliers';
+    | 'conference'
+    | 'ateliers'
+    | 'autres';
   location: string;
   isInHomepage: boolean;
   url?: string;
@@ -78,11 +80,13 @@ export type UpdatePostParams = {
     endDateTime: Date;
     postCategory:
       | 'danse'
-      | 'concert'
+      | 'musique'
       | 'theatre'
       | 'lectures'
       | 'cinema'
-      | 'ateliers';
+      | 'conference'
+      | 'ateliers'
+      | 'autres';
     location: string;
     isInHomepage: boolean;
     url?: string;

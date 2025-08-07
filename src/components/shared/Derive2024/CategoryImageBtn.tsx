@@ -7,11 +7,13 @@ import { motion } from 'framer-motion';
 // Define the CategoryKey type based on your existing Categories object
 type CategoryKey =
   | 'danse'
-  | 'concert'
+  | 'musique'
   | 'theatre'
   | 'lectures'
   | 'cinema'
-  | 'ateliers';
+  | 'conference'
+  | 'ateliers'
+  | 'autres';
 
 interface CategoryImageButtonProps {
   categoryKey: CategoryKey;

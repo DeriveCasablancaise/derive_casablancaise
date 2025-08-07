@@ -76,17 +76,15 @@ const page = async ({ params: { postId } }: PostProps) => {
                     isArabic && 'flex-row-reverse justify-end'
                   )}
                 >
-                  <LocateIcon className="size-6 text-[#094142] font-bold" />
                   <p
                     className={cn(
-                      'font-semibold text-[#094142]',
+                      'font-semibold text-black',
                       isArabic
                         ? 'arabic-subtitle-regular'
                         : 'latin-subtitle-regular'
                     )}
                   >
-                    {isArabic ? 'موقع الحدث' : "Lieu de l'événement"}:{' '}
-                    <span className="text-[#ee7103]">{post.location}</span>
+                    {post.location}
                   </p>
                 </div>
 
@@ -97,7 +95,6 @@ const page = async ({ params: { postId } }: PostProps) => {
                     isArabic && 'flex-row-reverse justify-end'
                   )}
                 >
-                  <Calendar className="size-6 text-[#094142] font-bold" />
                   <p
                     className={cn(
                       'font-semibold text-[#094142]',
@@ -106,8 +103,7 @@ const page = async ({ params: { postId } }: PostProps) => {
                         : 'latin-subtitle-regular'
                     )}
                   >
-                    {isArabic ? 'التاريخ والوقت' : 'Date et heure'}:{' '}
-                    <span className="text-[#ee7103]">
+                    <span className="text-black">
                       {isSameDateTime ? (
                         <>
                           {format(new Date(post.startDateTime), 'PPP', {
@@ -130,7 +126,7 @@ const page = async ({ params: { postId } }: PostProps) => {
                   </p>
                 </div>
               </div>
-              {/* Video Section - Mobile and Tablet */}
+              {/* Video Section - Mobile and Tablet
               {post.videoSource && (
                 <div className="lg:hidden flex justify-center items-center">
                   <VideoThumbnail
@@ -138,7 +134,7 @@ const page = async ({ params: { postId } }: PostProps) => {
                     videoUrl={post.videoSource}
                   />
                 </div>
-              )}
+              )} */}
             </div>
             {/* Right Column - Content */}
             <div className="lg:min-h-screen flex flex-col">
@@ -151,7 +147,7 @@ const page = async ({ params: { postId } }: PostProps) => {
                     : 'latin-subtitle-regular text-lg xl:text-2xl'
                 )}
               />
-              {/* Video Section - Desktop */}
+              {/* Video Section - Desktop
               {post.videoSource && (
                 <div className="hidden lg:flex justify-center md:justify-end items-center mt-8">
                   <VideoThumbnail
@@ -159,7 +155,7 @@ const page = async ({ params: { postId } }: PostProps) => {
                     videoUrl={post.videoSource}
                   />
                 </div>
-              )}
+              )} */}
             </div>
           </div>
         </div>

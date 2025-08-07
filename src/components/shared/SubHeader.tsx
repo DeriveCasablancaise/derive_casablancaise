@@ -31,7 +31,7 @@ export default function Component() {
 
       {/* Moving Text Animation */}
       <motion.div
-        className="mt-6 flex justify-center items-center text-center font-normal text-base md:text-lg lg:text-2xl"
+        className="mt-6 flex justify-center items-center text-center font-normal text-base md:text-lg whitespace-nowrap "
         whileHover={{ animationPlayState: 'paused' }}
         style={{
           display: 'flex',
