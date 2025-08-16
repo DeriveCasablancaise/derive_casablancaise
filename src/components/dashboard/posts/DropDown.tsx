@@ -15,11 +15,13 @@ type DropdownProps = {
 };
 const categories = [
   { id: 'danse', name: 'Danse' },
-  { id: 'concert', name: 'Concert' },
+  { id: 'musique', name: 'Musique' },
   { id: 'theatre', name: 'Théâtre' },
   { id: 'lectures', name: 'Lectures' },
   { id: 'cinema', name: 'Cinéma' },
+  { id: 'conference', name: 'Conférence' },
   { id: 'ateliers', name: 'Ateliers' },
+  { id: 'autres', name: 'En Marge' },
 ];
 
 const Dropdown = ({ value, onChangeHandler }: DropdownProps) => {

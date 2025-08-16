@@ -125,16 +125,45 @@ const page = async ({ params: { postId } }: PostProps) => {
                     </span>
                   </p>
                 </div>
+
+                {/* Artists */}
+                {post.artists && post.artists.length > 0 && (
+                  <div className="space-y-2">
+                    <h3
+                      className={cn(
+                        'font-semibold text-[#ee7103] text-sm uppercase tracking-wide',
+                        isArabic
+                          ? 'arabic-subtitle-regular text-right'
+                          : 'latin-subtitle-regular'
+                      )}
+                    >
+                      {isArabic
+                        ? 'الفنانون والمشاركون'
+                        : 'Artistes & Intervenants'}
+                    </h3>
+                    <div
+                      className={cn(
+                        'flex flex-wrap gap-2',
+                        isArabic && 'justify-end'
+                      )}
+                    >
+                      {post.artists.map((artist: any, index: number) => (
+                        <span
+                          key={artist._id || index}
+                          className={cn(
+                            'inline-block bg-gray-100 text-gray-800 px-3 py-1 rounded-full text-sm',
+                            isArabic
+                              ? 'arabic-subtitle-regular'
+                              : 'latin-subtitle-regular'
+                          )}
+                        >
+                          {isArabic ? artist.arabicName : artist.frenchName}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                )}
               </div>
-              {/* Video Section - Mobile and Tablet
-              {post.videoSource && (
-                <div className="lg:hidden flex justify-center items-center">
-                  <VideoThumbnail
-                    thumbnailSrc={post.images[0]}
-                    videoUrl={post.videoSource}
-                  />
-                </div>
-              )} */}
             </div>
             {/* Right Column - Content */}
             <div className="lg:min-h-screen flex flex-col">
@@ -147,15 +176,6 @@ const page = async ({ params: { postId } }: PostProps) => {
                     : 'latin-subtitle-regular text-lg xl:text-2xl'
                 )}
               />
-              {/* Video Section - Desktop
-              {post.videoSource && (
-                <div className="hidden lg:flex justify-center md:justify-end items-center mt-8">
-                  <VideoThumbnail
-                    thumbnailSrc={post.images[0]}
-                    videoUrl={post.videoSource}
-                  />
-                </div>
-              )} */}
             </div>
           </div>
         </div>

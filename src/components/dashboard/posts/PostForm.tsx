@@ -12,7 +12,7 @@ import {
 import { Input } from '@/components/ui/input';
 import * as z from 'zod';
 import { IPost } from '@/lib/database/models/post.model';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { postDefaultValues } from '@/constants';
 import { useRouter } from 'next/navigation';
 import { useUploadThing } from '@/lib/uploadthing';
@@ -28,6 +28,9 @@ import 'react-datepicker/dist/react-datepicker.css';
 import { fr } from 'date-fns/locale';
 import Image from 'next/image';
 import Dropdown from './DropDown';
+import { IArtist } from '@/lib/database/models/artist.model';
+import ArtistMultiSelect from './ArtistMultiSelect';
+import { getAllArtists } from '@/lib/actions/artists.actions';
 
 type PostFormProps = {
   type: 'Create' | 'Update';
@@ -38,6 +41,7 @@ type PostFormProps = {
 const PostForm = ({ type, post, postId }: PostFormProps) => {
   const [files, setFiles] = useState<File[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [artists, setArtists] = useState<IArtist[]>([]);
 
   const initialValues =
     post && type === 'Update'
@@ -50,6 +54,19 @@ const PostForm = ({ type, post, postId }: PostFormProps) => {
   const router = useRouter();
 
   const { startUpload } = useUploadThing('imageUploader');
+
+  useEffect(() => {
+    const fetchArtists = async () => {
+      try {
+        const artistsData = await getAllArtists();
+        setArtists(artistsData || []);
+      } catch (error) {
+        console.error('Error fetching artists:', error);
+      }
+    };
+
+    fetchArtists();
+  }, []);
 
   const form = useForm<z.infer<typeof postFormSchema>>({
     resolver: zodResolver(postFormSchema),
@@ -253,6 +270,23 @@ const PostForm = ({ type, post, postId }: PostFormProps) => {
             )}
           />
         </div>
+
+        <FormField
+          control={form.control}
+          name="artists"
+          render={({ field }) => (
+            <FormItem className="w-full">
+              <FormControl>
+                <ArtistMultiSelect
+                  value={field.value}
+                  onChangeHandler={field.onChange}
+                  artists={artists}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
 
         <div className="flex flex-col gap-5 md:flex-row">
           <FormField

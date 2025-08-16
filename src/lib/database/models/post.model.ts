@@ -22,6 +22,7 @@ export interface IPost extends Document {
     | 'autres';
   location: string;
   url?: string;
+  artists: string[];
   isInHomepage: boolean;
   createdAt: Date;
   __v?: number;
@@ -72,6 +73,10 @@ const PostSchema = new Schema({
   location: { type: String },
   url: { type: String, required: false },
   isInHomepage: { type: Boolean, default: false },
+  artists: {
+    type: [String],
+    default: [],
+  },
   createdAt: {
     type: Date,
     default: Date.now,

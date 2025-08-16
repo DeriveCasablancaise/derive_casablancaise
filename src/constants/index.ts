@@ -41,6 +41,7 @@ export const postDefaultValues = {
   postCategory: '',
   location: '',
   isInHomepage: false,
+  artists: [],
   url: '',
 };
 

@@ -35,6 +35,7 @@ export const postFormSchema = z.object({
   location: z.string().min(3, "Veuillez rentrer le lieu de l'événement. "),
   isInHomepage: z.boolean(),
   url: z.string().optional(),
+  artists: z.array(z.string()).default([]),
 });
 
 export const artistFormSchema = z.object({
