@@ -32,9 +32,7 @@ const descOpacity = {
 const AboutLanding = () => {
   const sectionRef = useRef(null);
   const imageContainerRef = useRef(null);
-  const imageContainerRef2 = useRef(null);
   const isInView = useInView(imageContainerRef);
-  const isInView2 = useInView(imageContainerRef2);
   const [isMobile, setIsMobile] = useState(false);
 
   // Detect if the user is on a smaller screen (e.g., mobile)
@@ -56,20 +54,21 @@ const AboutLanding = () => {
   const backgroundSize = useTransform(
     scrollYProgress,
     [0.4, 1],
-    isMobile ? ['cover', 'cover'] : ['100%', '130%']
+    isMobile ? ['cover', 'cover'] : ['100%', '200%']
   );
 
   return (
     <section ref={sectionRef} className="">
-      {/* First Section - Introduction and Mission */}
       <motion.div
         ref={imageContainerRef}
-        className="bg-derive bg-gradient-to-br from-teal-400 via-blue-500 to-purple-600 w-full min-h-screen relative py-24 lg:py-0 lg:mt-[10vh] flex flex-col lg:flex-row lg:items-center border-b-2 z-20"
+        className="bg-derive2 bg-gradient-to-bl from-orange-400 via-red-500 to-pink-600 w-full min-h-[200vh] relative py-24 lg:py-0 lg:mt-[10vh] flex flex-col lg:flex-row lg:items-center border-b-2 z-20"
         style={{
           backgroundSize,
+          backgroundPosition: 'center',
+          backgroundAttachment: 'fixed',
         }}
       >
-        {/* Left text box */}
+        {/* First text box - Les Rencontres de la Danse */}
         <motion.div
           className={cn(
             'lg:absolute lg:left-0 lg:top-0 lg:h-auto lg:bg-[#E9EAEB]/95 lg:w-[45%] bg-white/80 backdrop-blur-sm h-fit lg:flex flex-col justify-start py-6 lg:py-8 items-start gap-6 2xl:gap-8 text-[#00b0db] md:text-black/90 px-6 lg:px-8 shadow-xl',
@@ -114,64 +113,19 @@ const AboutLanding = () => {
             rencontres et la sensibilisation, accessibles à un large public.
           </motion.p>
         </motion.div>
-      </motion.div>
 
-      {/* Second Section - Espace DARJA and Current Activities */}
-      <motion.div
-        ref={imageContainerRef2}
-        className="bg-derive2 bg-gradient-to-bl from-orange-400 via-red-500 to-pink-600 w-full min-h-screen relative py-8 flex flex-col lg:flex-row lg:items-center border-b-2 z-20"
-        style={{
-          backgroundSize,
-          backgroundPosition: 'center',
-          backgroundAttachment: 'fixed',
-        }}
-      >
-        {/* Right text box */}
+        {/* Second text box - L'Espace DARJA */}
         <motion.div
           className={cn(
-            'lg:absolute lg:left-0 lg:-bottom-16 lg:h-auto lg:bg-[#E9EAEB]/95 lg:w-[45%] bg-white/80 backdrop-blur-sm h-fit lg:my-16 lg:flex flex-col justify-start py-6 lg:py-8 items-start gap-6 2xl:gap-8 text-[#00b0db] md:text-black/90 px-6 lg:px-8 order-2 shadow-xl',
+            'lg:absolute lg:right-0 lg:top-64 lg:h-auto lg:bg-[#E9EAEB]/95 lg:w-[45%] bg-white/80 backdrop-blur-sm h-fit lg:flex flex-col justify-start py-6 lg:py-8 items-start gap-6 2xl:gap-8 text-[#00b0db] md:text-black/90 px-6 lg:px-8 shadow-xl',
             jakarta.className
           )}
           variants={descOpacity}
-          animate={isInView2 ? 'open' : 'closed'}
+          animate={isInView ? 'open' : 'closed'}
         >
           <motion.p
             variants={descOpacity}
-            animate={isInView2 ? 'open' : 'closed'}
-            className={cn(
-              'w-full font-bold text-[#094142] m-0',
-              jakarta.className
-            )}
-          >
-            Dérive Casablancaise
-          </motion.p>
-          <motion.p
-            variants={descOpacity}
-            animate={isInView2 ? 'open' : 'closed'}
-            className={cn(
-              'w-full font-bold text-[#094142] m-0',
-              jakarta.className
-            )}
-          >
-            Aujourd'hui, AR2D se concentre sur un programme pluridisciplinaire
-            structuré sous forme de biennale, Dérive casablancaise, qui a pour
-            ambition d'enrichir le dialogue artistique et d'établir des liens et
-            collaborations entre artistes, publics et professionnels.
-          </motion.p>
-        </motion.div>
-
-        {/* Left text box for current activities */}
-        <motion.div
-          className={cn(
-            'lg:absolute lg:right-0 lg:-top-32 lg:h-auto lg:bg-[#E9EAEB]/95 lg:w-[45%] bg-white/80 backdrop-blur-sm h-fit lg:flex flex-col justify-start py-6 lg:py-8 items-start gap-6 2xl:gap-8 text-[#00b0db] md:text-black/90 px-6 lg:px-8 shadow-xl',
-            jakarta.className
-          )}
-          variants={descOpacity}
-          animate={isInView2 ? 'open' : 'closed'}
-        >
-          <motion.p
-            variants={descOpacity}
-            animate={isInView2 ? 'open' : 'closed'}
+            animate={isInView ? 'open' : 'closed'}
             className={cn(
               'w-full font-bold text-[#094142] m-0',
               jakarta.className
@@ -181,7 +135,7 @@ const AboutLanding = () => {
           </motion.p>
           <motion.p
             variants={descOpacity}
-            animate={isInView2 ? 'open' : 'closed'}
+            animate={isInView ? 'open' : 'closed'}
             className={cn(
               'w-full font-bold text-[#094142] m-0',
               jakarta.className
@@ -193,7 +147,7 @@ const AboutLanding = () => {
           </motion.p>
           <motion.p
             variants={descOpacity}
-            animate={isInView2 ? 'open' : 'closed'}
+            animate={isInView ? 'open' : 'closed'}
             className={cn(
               'w-full font-bold text-[#094142] m-0',
               jakarta.className
@@ -204,6 +158,40 @@ const AboutLanding = () => {
             d'expérimentation chorégraphique, proposant une programmation
             audacieuse qui élargit les horizons de l'art chorégraphique
             marocain.
+          </motion.p>
+        </motion.div>
+
+        {/* Third text box - Dérive Casablancaise */}
+        <motion.div
+          className={cn(
+            'lg:absolute lg:left-0 lg:bottom-16 lg:h-auto lg:bg-[#E9EAEB]/95 lg:w-[45%] bg-white/80 backdrop-blur-sm h-fit lg:my-16 lg:flex flex-col justify-start py-6 lg:py-8 items-start gap-6 2xl:gap-8 text-[#00b0db] md:text-black/90 px-6 lg:px-8 order-2 shadow-xl',
+            jakarta.className
+          )}
+          variants={descOpacity}
+          animate={isInView ? 'open' : 'closed'}
+        >
+          <motion.p
+            variants={descOpacity}
+            animate={isInView ? 'open' : 'closed'}
+            className={cn(
+              'w-full font-bold text-[#094142] m-0',
+              jakarta.className
+            )}
+          >
+            Dérive Casablancaise
+          </motion.p>
+          <motion.p
+            variants={descOpacity}
+            animate={isInView ? 'open' : 'closed'}
+            className={cn(
+              'w-full font-bold text-[#094142] m-0',
+              jakarta.className
+            )}
+          >
+            Aujourd'hui, AR2D se concentre sur un programme pluridisciplinaire
+            structuré sous forme de biennale, Dérive casablancaise, qui a pour
+            ambition d'enrichir le dialogue artistique et d'établir des liens et
+            collaborations entre artistes, publics et professionnels.
           </motion.p>
         </motion.div>
       </motion.div>
