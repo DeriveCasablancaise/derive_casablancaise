@@ -10,7 +10,6 @@ import { Calendar } from 'lucide-react';
 import { motion, useInView, useScroll, useTransform } from 'framer-motion';
 import type { IPost } from '@/lib/database/models/post.model';
 import { useSearchParams, useRouter } from 'next/navigation';
-import RoundedBtn from './rounded';
 import ClientWrapper from './PostWrapper';
 import { CategoryImageButton } from './Derive2024/CategoryImageBtn';
 
@@ -222,7 +221,7 @@ const ProgramSection = () => {
                       <div className="absolute bottom-0 left-0 right-0 p-2">
                         <h3
                           className={cn(
-                            'text-white text-lg mb-1 font-semibold lowercase',
+                            'text-white text-lg mb-1 font-semibold capitalize',
                             isArabic
                               ? 'arabic-subtitle-regular'
                               : 'latin-subtitle-regular'

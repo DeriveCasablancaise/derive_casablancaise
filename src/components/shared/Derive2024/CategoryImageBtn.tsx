@@ -61,8 +61,7 @@ export function CategoryImageButton({
       />
       <div
         className={cn(
-          'absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300',
-          isSelected ? 'opacity-100' : ''
+          'absolute inset-0 bg-black/50 flex items-center justify-center transition-opacity duration-300'
         )}
       >
         <span
