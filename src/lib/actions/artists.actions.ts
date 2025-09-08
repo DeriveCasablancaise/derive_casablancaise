@@ -7,7 +7,7 @@ import { revalidatePath } from 'next/cache';
 import { Types } from 'mongoose';
 import Artist from '../database/models/artist.model';
 
-const validCategories = ['2022', '2024'] as const;
+const validCategories = ['2022', '2024', '2026'] as const;
 
 type ValidCategory = (typeof validCategories)[number];
 

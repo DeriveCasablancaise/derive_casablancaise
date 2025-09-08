@@ -121,7 +121,7 @@ const SlidingImages = ({ artists }: SlidingImagesProps) => {
     <div
       ref={container}
       className={cn(
-        'flex flex-col gap-[3vw] relative bg-[#E9EAEB] mt-24 lg:mt-48 z-[1] '
+        'flex flex-col gap-[3vw] relative bg-[#E9EAEB] lg:mt-12 2xl:mt-48 z-[1] '
       )}
     >
       <div className="w-full hidden lg:flex py-4 xl:py-8 text-start bg-[#E9EAEB]">
