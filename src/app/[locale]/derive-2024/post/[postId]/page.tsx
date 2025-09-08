@@ -7,10 +7,10 @@ import { fr, arMA } from 'date-fns/locale';
 import { cn } from '@/lib/utils';
 import VideoThumbnail from '@/components/shared/VideoThumbnail';
 import SafeHtml from '@/components/shared/SafeHtml';
-import ImageGallery from '@/components/shared/PostGallery';
 import Contact from '@/components/shared/contact';
 import ClientWrapper from '@/components/shared/PostWrapper';
 import { ParentLink } from '@/components/shared/ParentLink'; // Import the new ParentLink component
+import ImageGallery from '@/components/shared/Derive2024/PostGallery';
 
 type PostProps = {
   params: {
@@ -45,12 +45,13 @@ const page = async ({ params: { postId } }: PostProps) => {
           <ParentLink
             label={isArabic ? 'العودة' : 'Retour'}
             className="px-4 mb-4"
+            href={`/${locale}/derive-2024/${post.postCategory}`}
           />
 
           {/* Title */}
           <h1
             className={cn(
-              'text-2xl md:text-3xl lg:text-4xl mb-8 text-[#ee7103] px-4 font-normal',
+              'text-xl lg:text-3xl mb-8 text-[#ee7103] px-4 font-normal',
               isArabic ? 'arabic-title-bold text-right' : 'latin-title-light'
             )}
           >
@@ -67,80 +68,78 @@ const page = async ({ params: { postId } }: PostProps) => {
                   alt={isArabic ? post.arabicTitle : post.frenchTitle}
                 />
               </div>
-              {/* Event Details - Directly Displayed */}
-              <div className="space-y-4">
-                {/* Location */}
+              {/* Event Details - Responsive Layout */}
+              <div className="space-y-4 lg:space-y-6">
+                {/* Location and Date/Time - Same line on large screens */}
                 <div
                   className={cn(
-                    'flex items-center gap-2',
-                    isArabic && 'flex-row-reverse justify-end'
+                    'flex flex-col gap-4 lg:flex-row lg:gap-8 lg:items-center',
+                    isArabic && 'lg:flex-row-reverse lg:justify-end'
                   )}
                 >
-                  <p
+                  {/* Location */}
+                  <div
                     className={cn(
-                      'font-semibold text-black',
-                      isArabic
-                        ? 'arabic-subtitle-regular'
-                        : 'latin-subtitle-regular'
+                      'flex items-center gap-2',
+                      isArabic &&
+                        'flex-row-reverse justify-end lg:justify-start'
                     )}
                   >
-                    {post.location}
-                  </p>
-                </div>
-
-                {/* Date and Time */}
-                <div
-                  className={cn(
-                    'flex items-center gap-2',
-                    isArabic && 'flex-row-reverse justify-end'
-                  )}
-                >
-                  <p
-                    className={cn(
-                      'font-semibold text-[#094142]',
-                      isArabic
-                        ? 'arabic-subtitle-regular'
-                        : 'latin-subtitle-regular'
-                    )}
-                  >
-                    <span className="text-black">
-                      {isSameDateTime ? (
-                        <>
-                          {format(new Date(post.startDateTime), 'PPP', {
-                            locale: isArabic ? arMA : fr,
-                          })}{' '}
-                          {formatTime(startDate)}
-                        </>
-                      ) : (
-                        <>
-                          {format(new Date(post.startDateTime), 'PPP', {
-                            locale: isArabic ? arMA : fr,
-                          })}
-                          {' - '}
-                          {format(new Date(post.endDateTime), 'PPP', {
-                            locale: isArabic ? arMA : fr,
-                          })}
-                        </>
+                    <p
+                      className={cn(
+                        'font-semibold text-black',
+                        isArabic
+                          ? 'arabic-subtitle-regular'
+                          : 'latin-subtitle-regular'
                       )}
-                    </span>
-                  </p>
+                    >
+                      {post.location}
+                    </p>
+                  </div>
+
+                  {/* Date and Time */}
+                  <div
+                    className={cn(
+                      'flex items-center gap-2',
+                      isArabic &&
+                        'flex-row-reverse justify-end lg:justify-start'
+                    )}
+                  >
+                    <p
+                      className={cn(
+                        'font-semibold text-[#094142]',
+                        isArabic
+                          ? 'arabic-subtitle-regular'
+                          : 'latin-subtitle-regular'
+                      )}
+                    >
+                      <span className="text-black">
+                        {isSameDateTime ? (
+                          <>
+                            {format(new Date(post.startDateTime), 'PPP', {
+                              locale: isArabic ? arMA : fr,
+                            })}{' '}
+                            {formatTime(startDate)}
+                          </>
+                        ) : (
+                          <>
+                            {format(new Date(post.startDateTime), 'PPP', {
+                              locale: isArabic ? arMA : fr,
+                            })}
+                            {' - '}
+                            {format(new Date(post.endDateTime), 'PPP', {
+                              locale: isArabic ? arMA : fr,
+                            })}
+                          </>
+                        )}
+                      </span>
+                    </p>
+                  </div>
                 </div>
 
                 {/* Artists */}
                 {post.artists && post.artists.length > 0 && (
                   <div className="space-y-2">
-                    <h3
-                      className={cn(
-                        'font-semibold text-[#ee7103] text-sm uppercase tracking-wide',
-                        isArabic
-                          ? 'arabic-subtitle-regular text-right'
-                          : 'latin-subtitle-regular'
-                      )}
-                    >
-                      {isArabic
-                        ? 'الفنانون والمشاركون'
-                        : 'Artistes & Intervenants'}
-                    </h3>
                     <div
                       className={cn(
                         'flex flex-wrap gap-2',
@@ -172,8 +171,8 @@ const page = async ({ params: { postId } }: PostProps) => {
                 className={cn(
                   'max-w-none flex-1 flex flex-col justify-start gap-6',
                   isArabic
-                    ? 'text-right arabic-subtitle-regular text-lg xl:text-2xl'
-                    : 'latin-subtitle-regular text-lg xl:text-2xl'
+                    ? 'text-right arabic-subtitle-regular'
+                    : 'latin-subtitle-regular'
                 )}
               />
             </div>

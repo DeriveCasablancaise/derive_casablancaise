@@ -1,7 +1,7 @@
 import { RelatedArtists } from '@/components/shared/artists/RelatedArtists';
 import Contact from '@/components/shared/contact';
+import ImageGallery from '@/components/shared/Derive2024/PostGallery';
 import { ParentLink } from '@/components/shared/ParentLink';
-import ImageGallery from '@/components/shared/PostGallery';
 import ClientWrapper from '@/components/shared/PostWrapper';
 import {
   getArtistById,

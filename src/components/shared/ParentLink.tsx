@@ -7,28 +7,19 @@ import { ArrowLeft } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 interface ParentLinkProps {
-  /**
-   * The text label for the link. Defaults to "Back".
-   */
   label?: string;
-  /**
-   * Optional className for the container div.
-   */
   className?: string;
-  /**
-   * Optional className for the Button component.
-   */
   buttonClassName?: string;
+  hash?: string;
+  href?: string;
 }
 
-/**
- * A reusable component to create a link to the parent page based on the current URL.
- * It automatically determines the parent path and provides a customizable label and styling.
- */
 export function ParentLink({
   label = 'Back',
   className,
   buttonClassName,
+  hash,
+  href,
 }: ParentLinkProps) {
   const pathname = usePathname();
 
@@ -37,7 +28,9 @@ export function ParentLink({
 
   // Remove the last segment to get the parent path
   const parentPathSegments = pathSegments.slice(0, -1);
-  const parentPath = '/' + parentPathSegments.join('/');
+  const parentPath = href
+    ? href
+    : '/' + parentPathSegments.join('/') + (hash || '');
 
   return (
     <div className={cn('flex items-center', className)}>

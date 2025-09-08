@@ -67,6 +67,7 @@ const CategoryPostsClient: React.FC<CategoryPostsClientProps> = ({
         <ParentLink
           label={isArabic ? 'العودة' : 'Retour'}
           className="px-4 mb-4"
+          href={`/${locale}/derive-2024#program_section`}
         />
 
         {/* Category Title */}
