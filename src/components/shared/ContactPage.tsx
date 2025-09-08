@@ -56,7 +56,7 @@ const ContactSection = () => {
 
   return (
     <ClientWrapper>
-      <div className="bg-[#E9EAEB] min-h-screen lg:mt-[15vh] m-0 contact-header">
+      <div className="bg-[#E9EAEB] min-h-screen lg:mt-[15vh] mb-24 contact-header">
         <div className="container medium">
           <div className="row will-change-transform">
             <div className="flex-col order-2 md:order-1 mb-32">
@@ -160,16 +160,6 @@ const ContactSection = () => {
                     className="underline hover:translate-x-2 transition-all duration-300"
                   >
                     derivecasablancaise@gmail.com
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href="tel:+212663052322"
-                    target="_blank"
-                    dir="ltr"
-                    className="underline hover:translate-x-2 transition-all duration-300"
-                  >
-                    +212 6 63 05 23 22
                   </Link>
                 </li>
               </ul>

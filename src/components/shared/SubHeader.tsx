@@ -40,7 +40,7 @@ export default function Component() {
       >
         <span className="text-[#094142] latin-title-light">
           Biennale pluridisciplinaire :
-          Danse/Musique/Théâtre/Cinéma/Lectures/Ateliers/Conférences/Rencontres
+          Danse/Théâtre/Musique/Cinéma/Lectures/Ateliers/Conférences/Rencontres
         </span>
       </motion.div>
 
