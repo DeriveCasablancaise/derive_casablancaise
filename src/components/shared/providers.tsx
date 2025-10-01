@@ -10,7 +10,7 @@ export const Providers = ({ children }: { children: ReactNode }) => {
     <>
       <SmoothScroll>
         <ContextProvider>
-          <Cursor />
+          {/* <Cursor /> */}
           {children}
         </ContextProvider>
       </SmoothScroll>
