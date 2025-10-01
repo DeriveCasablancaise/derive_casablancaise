@@ -145,13 +145,13 @@ const ArtistsSection = () => {
                 initial={{ opacity: 0, y: 20 }}
                 animate={isInView ? { opacity: 1, y: 0 } : {}}
                 transition={{ duration: 0.5, delay: 0.5 + index * 0.1 }}
-                className="group relative overflow-hidden shadow-xl p-1"
+                className="group relative overflow-hidden shadow-xl p-1 max-h-36 aspect-square"
                 style={{
                   backgroundColor: '#094142',
                 }}
               >
                 <Link href={`/${locale}/community/${artist._id}`}>
-                  <div className="aspect-square relative overflow-hidden">
+                  <div className=" relative overflow-hidden max-h-36 aspect-square">
                     {artist.images && artist.images.length > 0 && (
                       <Image
                         src={artist.images[0]}
@@ -165,7 +165,7 @@ const ArtistsSection = () => {
                     <div className="absolute bottom-0 left-0 right-0 p-2 text-white">
                       <h3
                         className={cn(
-                          'text-base md:text-lg mb-1',
+                          'text-base mb-1',
                           isArabic
                             ? 'arabic-subtitle-light'
                             : 'latin-subtitle-light'
