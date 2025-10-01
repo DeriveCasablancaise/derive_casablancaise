@@ -30,6 +30,7 @@ export const postFormSchema = z.object({
       message: 'Veuillez Choisir Une Catégorie',
     }
   ),
+  subCategory: z.enum(['rencontres', 'expositions']).optional(),
   startDateTime: z.date(),
   endDateTime: z.date(),
   location: z.string().min(3, "Veuillez rentrer le lieu de l'événement. "),

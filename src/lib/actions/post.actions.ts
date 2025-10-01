@@ -1,6 +1,6 @@
 'use server';
 
-import { CreatePostParams, UpdatePostParams } from '@/types';
+import { CreatePostParams, SubCategoryKey, UpdatePostParams } from '@/types';
 import { connectToDatabase } from '../database';
 import Post, { IPost } from '../database/models/post.model';
 import { handleError } from '../utils';
@@ -105,11 +105,22 @@ export async function getPostById(postId: string) {
 }
 
 // Get All Posts
-export async function getAllPosts(category?: ValidCategory) {
+export async function getAllPosts(
+  category?: ValidCategory,
+  subCategory?: SubCategoryKey
+) {
   try {
     await connectToDatabase();
 
-    const condition = category ? { postCategory: category } : {};
+    let condition: any = {};
+
+    if (category) {
+      condition.postCategory = category;
+    }
+
+    if (subCategory) {
+      condition.subCategory = subCategory;
+    }
 
     const postsQuery = Post.find(condition).sort({ createdAt: 'desc' });
 
@@ -203,5 +214,29 @@ export async function getHomepagePosts() {
   } catch (error) {
     console.error('Error fetching homepage posts:', error);
     handleError(error);
+  }
+}
+
+export async function getPostsByCategory(
+  category: string,
+  subCategory?: string
+) {
+  try {
+    await connectToDatabase();
+
+    let condition: any = { postCategory: category };
+
+    if (subCategory) {
+      condition.subCategory = subCategory;
+    }
+
+    const postsQuery = Post.find(condition).sort({ startDateTime: 1 });
+    const posts = await postsQuery;
+
+    return JSON.parse(JSON.stringify(posts));
+  } catch (error) {
+    console.error('Error fetching posts by category:', error);
+    handleError(error);
+    return [];
   }
 }

@@ -1,5 +1,7 @@
 'use client';
 
+import type React from 'react';
+
 import { useEffect, useRef, useState } from 'react';
 import { cn } from '@/lib/utils';
 import { useTranslations } from 'next-intl';
@@ -11,6 +13,7 @@ import type { IPost } from '@/lib/database/models/post.model';
 import { useRouter } from 'next/navigation';
 import ClientWrapper from '../PostWrapper';
 import { ParentLink } from '@/components/shared/ParentLink';
+import SubCategorySelector from './SubcategorySelector';
 
 const Categories = {
   danse: { fr: 'Danse', ar: 'رقص' },
@@ -24,6 +27,13 @@ const Categories = {
 } as const;
 
 type CategoryKey = keyof typeof Categories;
+
+const SubCategories = {
+  rencontres: { fr: 'Rencontres', ar: 'لقاءات' },
+  expositions: { fr: 'Expositions', ar: 'معارض' },
+} as const;
+
+type SubCategoryKey = keyof typeof SubCategories;
 
 interface CategoryPostsClientProps {
   categoryId: CategoryKey;
@@ -43,22 +53,32 @@ const CategoryPostsClient: React.FC<CategoryPostsClientProps> = ({
   const [posts, setPosts] = useState<IPost[]>(initialPosts);
   const [selectedCategory, setSelectedCategory] =
     useState<CategoryKey>(categoryId);
+  const [selectedSubCategory, setSelectedSubCategory] =
+    useState<SubCategoryKey | null>(null);
   const router = useRouter();
   const t = useTranslations('Derive2024');
 
   useEffect(() => {
     setPosts(initialPosts);
     setSelectedCategory(categoryId);
+    setSelectedSubCategory(null);
   }, [categoryId, initialPosts]);
+
+  const displayedPosts =
+    selectedCategory === 'autres' && selectedSubCategory
+      ? posts.filter((post) => post.subCategory === selectedSubCategory)
+      : posts;
 
   const handleCategoryChange = (category: CategoryKey) => {
     if (category === selectedCategory) {
-      // If same category is clicked, go back to main program section
       router.push(`/${locale}/derive-2024#program_section`);
     } else {
-      // Navigate to the selected category page
       router.push(`/${locale}/derive-2024/${category}`);
     }
+  };
+
+  const handleSubCategorySelect = (subCategory: SubCategoryKey) => {
+    setSelectedSubCategory(subCategory);
   };
 
   return (
@@ -70,7 +90,6 @@ const CategoryPostsClient: React.FC<CategoryPostsClientProps> = ({
           href={`/${locale}/derive-2024#program_section`}
         />
 
-        {/* Category Title */}
         <motion.div
           initial={{ opacity: 0, y: -30 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
@@ -88,7 +107,6 @@ const CategoryPostsClient: React.FC<CategoryPostsClientProps> = ({
               : Categories[selectedCategory].fr}
           </h1>
 
-          {/* Horizontal Categories Filter */}
           <motion.div
             initial={{ opacity: 0, x: -50 }}
             animate={isInView ? { opacity: 1, x: 0 } : {}}
@@ -124,13 +142,20 @@ const CategoryPostsClient: React.FC<CategoryPostsClientProps> = ({
               )}
             </div>
           </motion.div>
+
+          {selectedCategory === 'autres' && (
+            <SubCategorySelector
+              selectedSubCategory={selectedSubCategory}
+              onSubCategorySelect={handleSubCategorySelect}
+              isArabic={isArabic}
+            />
+          )}
         </motion.div>
 
-        {/* Posts Grid */}
         <div className="w-full px-4">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {posts.length > 0 ? (
-              posts.map((post, index) => (
+            {displayedPosts.length > 0 ? (
+              displayedPosts.map((post, index) => (
                 <motion.div
                   key={post._id}
                   initial={{ opacity: 0, y: 30 }}

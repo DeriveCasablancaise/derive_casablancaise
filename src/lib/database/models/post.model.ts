@@ -20,6 +20,7 @@ export interface IPost extends Document {
     | 'conference'
     | 'ateliers'
     | 'autres';
+  subCategory?: 'rencontres' | 'expositions';
   location: string;
   url?: string;
   artists: string[];
@@ -69,6 +70,11 @@ const PostSchema = new Schema({
     ],
     required: true,
     default: null,
+  },
+  subCategory: {
+    type: String,
+    enum: ['rencontres', 'expositions'],
+    required: false,
   },
   location: { type: String },
   url: { type: String, required: false },

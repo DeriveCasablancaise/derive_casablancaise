@@ -128,3 +128,10 @@ export type UpdateArtistParams = {
 export type DeleteArtistParams = {
   artistId: string;
 };
+
+export const SubCategories = {
+  rencontres: { fr: 'Rencontres', ar: 'لقاءات' },
+  expositions: { fr: 'Expositions', ar: 'معارض' },
+} as const;
+
+export type SubCategoryKey = keyof typeof SubCategories;

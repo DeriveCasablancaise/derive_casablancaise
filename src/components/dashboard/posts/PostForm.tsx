@@ -31,6 +31,7 @@ import Dropdown from './DropDown';
 import { IArtist } from '@/lib/database/models/artist.model';
 import ArtistMultiSelect from './ArtistMultiSelect';
 import { getAllArtists } from '@/lib/actions/artists.actions';
+import SubCategoryDropdown from './SubcategoryDropdown';
 
 type PostFormProps = {
   type: 'Create' | 'Update';
@@ -270,6 +271,25 @@ const PostForm = ({ type, post, postId }: PostFormProps) => {
             )}
           />
         </div>
+
+        {/* Conditional subCategory field when postCategory is "autres" */}
+        {form.watch('postCategory') === 'autres' && (
+          <FormField
+            control={form.control}
+            name="subCategory"
+            render={({ field }) => (
+              <FormItem className="w-full">
+                <FormControl>
+                  <SubCategoryDropdown
+                    value={field.value}
+                    onChangeHandler={(value) => field.onChange(value)}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        )}
 
         <FormField
           control={form.control}
