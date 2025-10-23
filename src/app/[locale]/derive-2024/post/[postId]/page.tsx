@@ -11,6 +11,7 @@ import Contact from '@/components/shared/contact';
 import ClientWrapper from '@/components/shared/PostWrapper';
 import { ParentLink } from '@/components/shared/ParentLink'; // Import the new ParentLink component
 import ImageGallery from '@/components/shared/Derive2024/PostGallery';
+import Artist from '@/lib/database/models/artist.model';
 
 type PostProps = {
   params: {
@@ -26,6 +27,11 @@ const page = async ({ params: { postId } }: PostProps) => {
   });
   const locale = await getLocale();
   const isArabic = locale === 'ar';
+
+  let artists: any[] = [];
+  if (post.artists && post.artists.length > 0) {
+    artists = await Artist.find({ _id: { $in: post.artists } });
+  }
 
   const startDate = new Date(post.startDateTime);
   const endDate = new Date(post.endDateTime);
@@ -71,12 +77,7 @@ const page = async ({ params: { postId } }: PostProps) => {
               {/* Event Details - Responsive Layout */}
               <div className="space-y-4 lg:space-y-6">
                 {/* Location and Date/Time - Same line on large screens */}
-                <div
-                  className={cn(
-                    'flex flex-col gap-4 lg:flex-row lg:gap-8 lg:items-center',
-                    isArabic && 'lg:flex-row-reverse lg:justify-end'
-                  )}
-                >
+                <div className={cn('flex flex-col gap-4 ', isArabic && '')}>
                   {/* Location */}
                   <div
                     className={cn(
@@ -138,7 +139,7 @@ const page = async ({ params: { postId } }: PostProps) => {
                 </div>
 
                 {/* Artists */}
-                {post.artists && post.artists.length > 0 && (
+                {artists && artists.length > 0 && (
                   <div className="space-y-2">
                     <div
                       className={cn(
@@ -146,11 +147,11 @@ const page = async ({ params: { postId } }: PostProps) => {
                         isArabic && 'justify-end'
                       )}
                     >
-                      {post.artists.map((artist: any, index: number) => (
+                      {artists.map((artist: any, index: number) => (
                         <span
                           key={artist._id || index}
                           className={cn(
-                            'inline-block bg-gray-100 text-gray-800 px-3 py-1 rounded-full text-sm',
+                            'inline-block bg-gray-100 text-gray-800 px-3 py-1 rounded-md text-sm',
                             isArabic
                               ? 'arabic-subtitle-regular'
                               : 'latin-subtitle-regular'
