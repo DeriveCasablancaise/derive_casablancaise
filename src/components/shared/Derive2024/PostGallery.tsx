@@ -31,7 +31,7 @@ const ImageGallery: React.FC<ImageGalleryProps> = ({ images, alt }) => {
   if (images.length === 1) {
     return (
       <div className="w-full">
-        <div className="relative aspect-square max-h-[400px] overflow-hidden">
+        <div className="relative aspect-square max-h-[600px] overflow-hidden">
           <Image
             src={images[0]}
             alt={alt}
