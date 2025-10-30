@@ -9,7 +9,7 @@ const SubCategories = {
   expositions: { fr: 'Expositions', ar: 'معارض' },
 } as const;
 
-type SubCategoryKey = keyof typeof SubCategories;
+type SubCategoryKey = keyof typeof SubCategories | null;
 
 interface SubCategorySelectorProps {
   selectedSubCategory: SubCategoryKey | null;
@@ -22,6 +22,14 @@ const SubCategorySelector: React.FC<SubCategorySelectorProps> = ({
   onSubCategorySelect,
   isArabic,
 }) => {
+  const handleClick = (subCat: SubCategoryKey) => {
+    if (selectedSubCategory === subCat) {
+      onSubCategorySelect(null);
+    } else {
+      onSubCategorySelect(subCat);
+    }
+  };
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -35,33 +43,26 @@ const SubCategorySelector: React.FC<SubCategorySelectorProps> = ({
           isArabic && 'sm:flex-row-reverse'
         )}
       >
-        <h3
-          className={cn(
-            'text-lg font-semibold text-[#094142] mb-2 sm:mb-0',
-            isArabic
-              ? 'arabic-subtitle-regular text-right'
-              : 'latin-subtitle-regular'
-          )}
-        >
-          {isArabic ? 'اختر نوع المحتوى:' : 'Choisissez le type de contenu:'}
-        </h3>
-
         <div className="flex gap-3">
-          {(Object.keys(SubCategories) as SubCategoryKey[]).map((subCat) => (
-            <button
-              key={subCat}
-              onClick={() => onSubCategorySelect(subCat)}
-              className={cn(
-                'px-6 py-3 rounded-full transition-all duration-300 font-medium',
-                isArabic ? 'arabic-subtitle-regular' : 'latin-subtitle-regular',
-                selectedSubCategory === subCat
-                  ? 'bg-[#ee7103] text-white shadow-lg transform scale-105'
-                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200 hover:shadow-md'
-              )}
-            >
-              {isArabic ? SubCategories[subCat].ar : SubCategories[subCat].fr}
-            </button>
-          ))}
+          {(Object.keys(SubCategories) as (keyof typeof SubCategories)[]).map(
+            (subCat) => (
+              <button
+                key={subCat}
+                onClick={() => handleClick(subCat)}
+                className={cn(
+                  'px-6 py-3 rounded-full transition-all duration-300 font-medium',
+                  isArabic
+                    ? 'arabic-subtitle-regular'
+                    : 'latin-subtitle-regular',
+                  selectedSubCategory === subCat
+                    ? 'bg-[#ee7103] text-white shadow-lg transform scale-105'
+                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200 hover:shadow-md'
+                )}
+              >
+                {isArabic ? SubCategories[subCat].ar : SubCategories[subCat].fr}
+              </button>
+            )
+          )}
         </div>
       </div>
     </motion.div>

@@ -37,7 +37,7 @@ export function ParentLink({
       <Button variant="ghost" asChild className={buttonClassName}>
         <Link
           href={parentPath}
-          className="text-lg xl:text-2xl latin-title-light text-[#094142]"
+          className="text-lg xl:text-2xl latin-title-light text-[#094142] px-0"
         >
           <ArrowLeft className="mr-2 size-8" />
           {label}

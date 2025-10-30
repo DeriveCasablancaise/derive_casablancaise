@@ -77,7 +77,7 @@ const CategoryPostsClient: React.FC<CategoryPostsClientProps> = ({
     }
   };
 
-  const handleSubCategorySelect = (subCategory: SubCategoryKey) => {
+  const handleSubCategorySelect = (subCategory: SubCategoryKey | null) => {
     setSelectedSubCategory(subCategory);
   };
 

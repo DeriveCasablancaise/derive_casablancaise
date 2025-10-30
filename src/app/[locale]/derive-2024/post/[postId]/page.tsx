@@ -57,12 +57,38 @@ const page = async ({ params: { postId } }: PostProps) => {
           {/* Title */}
           <h1
             className={cn(
-              'text-xl lg:text-3xl mb-8 text-[#ee7103] px-4 font-normal',
+              'text-xl lg:text-3xl text-[#ee7103] px-4 font-normal',
               isArabic ? 'arabic-title-bold text-right' : 'latin-title-light'
             )}
           >
             {isArabic ? post.arabicTitle : post.frenchTitle}
           </h1>
+
+          {/* Artists */}
+          {artists && artists.length > 0 && (
+            <div className="px-4 py-2">
+              <div
+                className={cn(
+                  'flex flex-wrap gap-2',
+                  isArabic && 'justify-end'
+                )}
+              >
+                {artists.map((artist: any, index: number) => (
+                  <span
+                    key={artist._id || index}
+                    className={cn(
+                      'inline-block text-black font-medium text-lg',
+                      isArabic
+                        ? 'arabic-subtitle-regular'
+                        : 'latin-subtitle-regular'
+                    )}
+                  >
+                    {isArabic ? artist.arabicName : artist.frenchName}
+                  </span>
+                ))}
+              </div>
+            </div>
+          )}
           {/* Two Column Layout */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 px-4">
             {/* Left Column - Image Gallery and Details */}
@@ -137,32 +163,6 @@ const page = async ({ params: { postId } }: PostProps) => {
                     </p>
                   </div>
                 </div>
-
-                {/* Artists */}
-                {artists && artists.length > 0 && (
-                  <div className="space-y-2">
-                    <div
-                      className={cn(
-                        'flex flex-wrap gap-2',
-                        isArabic && 'justify-end'
-                      )}
-                    >
-                      {artists.map((artist: any, index: number) => (
-                        <span
-                          key={artist._id || index}
-                          className={cn(
-                            'inline-block bg-gray-100 text-gray-800 px-3 py-1 rounded-md text-sm',
-                            isArabic
-                              ? 'arabic-subtitle-regular'
-                              : 'latin-subtitle-regular'
-                          )}
-                        >
-                          {isArabic ? artist.arabicName : artist.frenchName}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                )}
               </div>
             </div>
             {/* Right Column - Content */}

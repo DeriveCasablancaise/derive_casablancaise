@@ -106,7 +106,7 @@ const ImageGallery: React.FC<ImageGalleryProps> = ({ images, alt }) => {
       {/* Thumbnail Navigation */}
       {images.length > 1 && (
         <div className="w-full max-w-[600px]">
-          <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide cursor-grab active:cursor-grabbing scroll-smooth">
+          <div className="flex gap-2 overflow-x-auto py-2 scrollbar-hide cursor-grab active:cursor-grabbing scroll-smooth justify-center">
             {images.map((image, index) => (
               <button
                 key={index}
@@ -114,7 +114,7 @@ const ImageGallery: React.FC<ImageGalleryProps> = ({ images, alt }) => {
                 className={cn(
                   'relative flex-shrink-0 w-16 h-16 sm:w-20 sm:h-20 overflow-hidden transition-all duration-200',
                   currentIndex === index
-                    ? 'ring-2 ring-[#ee7103] ring-offset-2'
+                    ? 'ring-2 ring-[#ee7103] ring-offset-1'
                     : 'opacity-70 hover:opacity-100'
                 )}
               >

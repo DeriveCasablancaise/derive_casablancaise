@@ -87,7 +87,7 @@ const AfterMovieModal: React.FC<AfterMovieModalProps> = ({
 
             {/* Iframe with YouTube video */}
             <iframe
-              src="https://www.youtube.com/embed/YOUR_AFTERMOVIE_VIDEO_ID?autoplay=1"
+              src="https://www.youtube.com/embed/chv70l147CE?autoplay=1"
               width="100%"
               height="100%"
               frameBorder={0}
