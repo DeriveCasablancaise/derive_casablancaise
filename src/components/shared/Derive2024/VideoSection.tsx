@@ -171,10 +171,15 @@ const VideoSection = () => {
       </div>
 
       {/* Modals */}
-      <TeaserModal isOpen={teaserModalOpen} onClose={closeTeaserModal} />
+      <TeaserModal
+        isOpen={teaserModalOpen}
+        onClose={closeTeaserModal}
+        videoLink="https://www.youtube.com/embed/chv70l147CE"
+      />
       <AfterMovieModal
         isOpen={afterMovieModalOpen}
         onClose={closeAfterMovieModal}
+        videoLink="https://www.youtube.com/embed/chv70l147CE"
       />
     </section>
   );
