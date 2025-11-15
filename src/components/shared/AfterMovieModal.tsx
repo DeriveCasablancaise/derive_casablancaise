@@ -1,20 +1,21 @@
 'use client';
 
 import React, { useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { AnimatePresence, motion } from 'framer-motion';
 import { X } from 'lucide-react';
-import { fadeIn } from '../../variants';
+import { fadeIn } from '@/variants';
 
 interface AfterMovieModalProps {
   isOpen: boolean;
   onClose: () => void;
+  videoLink: string;
 }
 
 const AfterMovieModal: React.FC<AfterMovieModalProps> = ({
   isOpen,
   onClose,
+  videoLink,
 }) => {
-  // Lock body scroll when modal is open
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = 'hidden';
@@ -27,7 +28,6 @@ const AfterMovieModal: React.FC<AfterMovieModalProps> = ({
     };
   }, [isOpen]);
 
-  // Close on escape key
   useEffect(() => {
     const handleEsc = (e: KeyboardEvent) => {
       if (e.key === 'Escape') onClose();
@@ -48,7 +48,6 @@ const AfterMovieModal: React.FC<AfterMovieModalProps> = ({
           className="fixed inset-0 w-screen h-dvh bg-black/90 backdrop-blur-sm flex flex-col justify-center items-center z-[999] p-4 sm:p-6 md:p-8"
           onClick={onClose}
         >
-          {/* Close button with animated ring effect */}
           <motion.button
             onClick={(e) => {
               e.stopPropagation();
@@ -70,7 +69,6 @@ const AfterMovieModal: React.FC<AfterMovieModalProps> = ({
             </div>
           </motion.button>
 
-          {/* Video container with animation */}
           <motion.div
             variants={fadeIn('up', 0.2)}
             initial="hidden"
@@ -79,15 +77,13 @@ const AfterMovieModal: React.FC<AfterMovieModalProps> = ({
             className="w-full max-w-6xl h-[300px] sm:h-[400px] md:h-[500px] lg:h-[600px] relative"
             onClick={(e) => e.stopPropagation()}
           >
-            {/* Custom decorative corners */}
             <div className="absolute top-0 left-0 w-6 h-6 border-t-2 border-l-2 border-[#00b0db]"></div>
             <div className="absolute top-0 right-0 w-6 h-6 border-t-2 border-r-2 border-[#00b0db]"></div>
             <div className="absolute bottom-0 left-0 w-6 h-6 border-b-2 border-l-2 border-[#00b0db]"></div>
             <div className="absolute bottom-0 right-0 w-6 h-6 border-b-2 border-r-2 border-[#00b0db]"></div>
 
-            {/* Iframe with YouTube video */}
             <iframe
-              src="https://www.youtube.com/embed/chv70l147CE?autoplay=1"
+              src={videoLink}
               width="100%"
               height="100%"
               frameBorder={0}

@@ -265,3 +265,24 @@ export function constructMetadata({
     metadataBase: new URL('https://derivecasablancaise.vercel.app/'),
   };
 }
+
+export function convertYouTubeToEmbed(url: string): string {
+  if (!url) return '';
+
+  let videoId = '';
+
+  if (url.includes('youtube.com/watch?v=')) {
+    const urlParams = new URL(url);
+    videoId = urlParams.searchParams.get('v') || '';
+  } else if (url.includes('youtu.be/')) {
+    videoId = url.split('youtu.be/')[1]?.split('?')[0] || '';
+  } else if (url.includes('youtube.com/embed/')) {
+    return url;
+  } else {
+    videoId = url;
+  }
+
+  if (!videoId) return '';
+
+  return `https://www.youtube.com/embed/${videoId}?autoplay=1`;
+}

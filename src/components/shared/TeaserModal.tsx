@@ -8,9 +8,14 @@ import { fadeIn } from '@/variants';
 interface VideoModalProps {
   isOpen: boolean;
   onClose: () => void;
+  videoLink: string;
 }
 
-const TeaserModal: React.FC<VideoModalProps> = ({ isOpen, onClose }) => {
+const TeaserModal: React.FC<VideoModalProps> = ({
+  isOpen,
+  onClose,
+  videoLink,
+}) => {
   // Lock body scroll when modal is open
   useEffect(() => {
     if (isOpen) {
@@ -83,7 +88,7 @@ const TeaserModal: React.FC<VideoModalProps> = ({ isOpen, onClose }) => {
             <div className="absolute bottom-0 right-0 w-6 h-6 border-b-2 border-r-2 border-[#00b0db]"></div>
 
             <iframe
-              src={`https://www.youtube.com/embed/chv70l147CE?autoplay=1`}
+              src={videoLink}
               width="100%"
               height="100%"
               frameBorder={0}

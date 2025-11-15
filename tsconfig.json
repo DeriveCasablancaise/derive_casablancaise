@@ -17,9 +17,10 @@
         "name": "next"
       }
     ],
-    "baseUrl": ".",  // This is correct
+    "ignoreDeprecations": "6.0",
+    "baseUrl": ".", // This is correct
     "paths": {
-      "@/*": ["src/*"]  // This alias points @ to the src directory
+      "@/*": ["src/*"] // This alias points @ to the src directory
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],

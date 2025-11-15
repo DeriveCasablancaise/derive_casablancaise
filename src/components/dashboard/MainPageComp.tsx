@@ -6,6 +6,8 @@ import { BookUser, HandCoins, Headphones, NewspaperIcon } from 'lucide-react';
 import { motion } from 'framer-motion';
 import PostsTable from './posts/PostsTable';
 import ArtistsTable from './artists/ArtistsTable';
+import { Button } from '../ui/button';
+import Link from 'next/link';
 
 interface StatsProps {
   artistCounts: number | string;
@@ -59,6 +61,14 @@ const MainPageStatsCards = ({ artistCounts, postCounts }: StatsProps) => {
         <PostsTable currentUserIsAdmin={false} />
         <ArtistsTable currentUserIsAdmin={false} />
       </motion.div>
+
+      <Button
+        asChild
+        className="w-full p-4 bg-gray-800 bg-opacity-50 backdrop-blur-md shadow-lg rounded-xl  border border-gray-700 my-4"
+        variant="outline"
+      >
+        <Link href="/darja-admin/homepage">Modifier la page d'accueil</Link>
+      </Button>
     </main>
   );
 };

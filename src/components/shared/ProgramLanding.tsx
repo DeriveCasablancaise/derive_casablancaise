@@ -1,6 +1,6 @@
 'use client';
 
-import { cn, descOpacity } from '@/lib/utils';
+import { cn, convertYouTubeToEmbed, descOpacity } from '@/lib/utils';
 import { useInView, motion, useTransform, useScroll } from 'framer-motion';
 import React, { useEffect, useRef, useState } from 'react';
 import SubHeader from './SubHeader';
@@ -12,22 +12,33 @@ import Image from 'next/image';
 import { PlayCircleIcon } from 'lucide-react';
 import { fadeIn } from '@/variants';
 import TeaserModal from './TeaserModal';
+import { IHomepage } from '@/lib/database/models/homepage.model';
+import AfterMovieModal from './AfterMovieModal';
 
 const jakarta = Plus_Jakarta_Sans({
   weight: ['600', '700', '800'],
   subsets: ['latin'],
 });
 
-const ProgramLanding = () => {
+interface ProgramLandingProps {
+  homepage: IHomepage;
+}
+
+const ProgramLanding = ({ homepage }: ProgramLandingProps) => {
   const sectionRef = useRef(null);
   const imageContainerRef = useRef(null);
   const isInView = useInView(imageContainerRef);
   const [isMobile, setIsMobile] = useState(false);
-  const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [isTeaseModalOpen, setIsTeaseModalOpen] = useState<boolean>(false);
+  const [isAfterMovieModalOpen, setIsAfterMovieModalOpen] =
+    useState<boolean>(false);
   const locale = useLocale();
   const isArabic = locale === 'ar';
   const t = useTranslations('Derive2024');
   const t2 = useTranslations('HomePage');
+
+  const video1EmbedLink = convertYouTubeToEmbed(homepage.video1IframeLink);
+  const video2EmbedLink = convertYouTubeToEmbed(homepage.video2IframeLink);
 
   // Detect if the user is on a smaller screen (e.g., mobile)
   useEffect(() => {
@@ -51,14 +62,6 @@ const ProgramLanding = () => {
     isMobile ? ['cover', 'cover'] : ['80%', '130%']
   );
 
-  function openModal() {
-    setIsOpen(true);
-  }
-
-  function closeModal() {
-    setIsOpen(false);
-  }
-
   return (
     <>
       <section ref={sectionRef} data-scroll-section="" className="">
@@ -67,30 +70,28 @@ const ProgramLanding = () => {
         </div>
         <motion.div
           ref={imageContainerRef}
-          className="bg-description w-full min-h-screen relative py-8 mb-8 lg:mt-[400px] md:mb-16 2xl:mb-[23rem] 2xl: mt-[26rem]  flex flex-col lg:flex-row lg:items-center border-b-2"
-          style={{ backgroundSize }}
+          className="w-full min-h-screen relative py-8 mb-8 lg:mt-[400px] md:mb-16 2xl:mb-[23rem] 2xl: mt-[26rem]  flex flex-col lg:flex-row lg:items-center border-b-2"
+          style={{
+            backgroundSize,
+            backgroundImage: `url(${homepage.backgroundImage})`, // Use dynamic image
+            backgroundPosition: 'center',
+            backgroundRepeat: 'no-repeat',
+          }}
         >
           <div className="lg:absolute lg:left-0 lg:-bottom-24 lg:h-auto lg:bg-[#E9EAEB] lg:w-[60%] bg-white/70 h-fit  my-auto lg:flex flex-col justify-start py-4 lg:py-6 items-start gap-4 2xl:gap-8 text-[#00b0db] md:text-black/90 px-4 lg:px-6">
-            <motion.p
+            <motion.div
               variants={descOpacity}
               animate={isInView ? 'open' : 'closed'}
               className={cn(
-                'w-full font-bold text-[#094142] m-0',
+                'w-full font-bold text-[#094142] m-0 tiptap-content',
                 jakarta.className
               )}
-            >
-              {t2('Hero.subtitle2')}
-            </motion.p>
-            <motion.p
-              variants={descOpacity}
-              animate={isInView ? 'open' : 'closed'}
-              className={cn(
-                'w-full font-bold text-[#094142] m-0',
-                jakarta.className
-              )}
-            >
-              {t2('Hero.subtitle3')}
-            </motion.p>
+              dangerouslySetInnerHTML={{
+                __html: isArabic
+                  ? homepage.textAr || homepage.textFr
+                  : homepage.textFr,
+              }}
+            />
           </div>
         </motion.div>
       </section>
@@ -121,10 +122,10 @@ const ProgramLanding = () => {
             whileInView="show"
             viewport={{ once: true, amount: 0.3 }}
             className="relative flex justify-center items-center shadow-md cursor-pointer group w-full"
-            onClick={() => openModal()} // Replace with actual video ID
+            onClick={() => setIsTeaseModalOpen(true)}
           >
             <Image
-              src="/images/thumbTeaser.jpg"
+              src={homepage.video1Thumbnail}
               width={600}
               height={600}
               alt="tease_thumbnail"
@@ -152,8 +153,8 @@ const ProgramLanding = () => {
             )}
           >
             {isArabic
-              ? 'إعلان دعائي لـلمنعطف البيضاوي 2024'
-              : 'Aftermovie Dérive Casablancaise 2024'}
+              ? homepage.video1TitleAr || homepage.video1TitleFr
+              : homepage.video1TitleFr}
           </motion.div>
         </div>
 
@@ -165,10 +166,10 @@ const ProgramLanding = () => {
             whileInView="show"
             viewport={{ once: true, amount: 0.3 }}
             className="relative flex justify-center items-center shadow-md cursor-pointer group w-full"
-            onClick={() => openModal()} // Replace with actual video ID
+            onClick={() => setIsAfterMovieModalOpen(true)}
           >
             <Image
-              src="/images/thumbTeaser.jpg"
+              src={homepage.video2Thumbnail}
               width={600}
               height={600}
               alt="tease_thumbnail"
@@ -196,12 +197,21 @@ const ProgramLanding = () => {
             )}
           >
             {isArabic
-              ? 'إعلان دعائي لـلمنعطف البيضاوي 2024'
-              : 'Aftermovie Dérive Casablancaise 2024'}
+              ? homepage.video2TitleAr || homepage.video2TitleFr
+              : homepage.video2TitleFr}
           </motion.div>
         </div>
       </div>
-      <TeaserModal isOpen={isOpen} onClose={closeModal} />
+      <TeaserModal
+        isOpen={isTeaseModalOpen}
+        onClose={() => setIsTeaseModalOpen(false)}
+        videoLink={video1EmbedLink}
+      />
+      <AfterMovieModal
+        isOpen={isAfterMovieModalOpen}
+        onClose={() => setIsAfterMovieModalOpen(false)}
+        videoLink={video2EmbedLink}
+      />
     </>
   );
 };

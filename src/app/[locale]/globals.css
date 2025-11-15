@@ -1381,3 +1381,48 @@
 .scrollbar-hide::-webkit-scrollbar {
   display: none; /* Safari and Chrome */
 }
+
+.tiptap-content p {
+  margin-bottom: 1rem;
+  line-height: 1.6;
+}
+
+.tiptap-content ul {
+  margin: 1rem 0;
+  padding-left: 2rem;
+  list-style-type: disc;
+}
+
+.tiptap-content ol {
+  margin: 1rem 0;
+  padding-left: 2rem;
+  list-style-type: decimal;
+}
+
+.tiptap-content li {
+  margin-bottom: 0.5rem;
+}
+
+.tiptap-content blockquote {
+  margin: 1rem 0;
+  padding-left: 1rem;
+  border-left: 4px solid currentColor;
+  opacity: 0.8;
+}
+
+.tiptap-content strong {
+  font-weight: 600;
+}
+
+.tiptap-content em {
+  font-style: italic;
+}
+
+.tiptap-content s {
+  text-decoration: line-through;
+}
+
+.tiptap-content a {
+  color: inherit;
+  text-decoration: underline;
+}
