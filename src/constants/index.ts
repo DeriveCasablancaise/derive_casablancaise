@@ -1,3 +1,5 @@
+import { IPartner } from '@/lib/database/models/partner.model';
+
 export const navLinks = [
   {
     title: 'Acceuil',
@@ -94,4 +96,17 @@ export const slider2 = [
     color: 'linear-gradient(135deg, #094142 0%, #00b0db 100%)',
     src: 'slider3.jpg',
   },
+];
+
+export const partnerDefaultValues: Partial<IPartner> = {
+  frenchName: '',
+  arabicName: '',
+  hrefLink: '',
+  yearOfPartnership: '2024' as '2022' | '2024',
+  logoImage: '',
+};
+
+export const partnerYearOptions = [
+  { value: '2022', label: '2022' },
+  { value: '2024', label: '2024' },
 ];

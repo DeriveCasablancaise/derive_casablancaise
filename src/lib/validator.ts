@@ -77,3 +77,19 @@ export const homepageFormSchema = z.object({
 
   backgroundImage: z.string().min(1, 'Background image is required'),
 });
+
+export const partnerFormSchema = z.object({
+  frenchName: z
+    .string()
+    .min(1, 'French name is required')
+    .min(2, 'French name must be at least 2 characters'),
+  arabicName: z
+    .string()
+    .optional()
+    .refine((val) => !val || val.length >= 2, {
+      message: 'Arabic name must be at least 2 characters if provided',
+    }),
+  hrefLink: z.string().url('Must be a valid URL').optional().or(z.literal('')),
+  yearOfPartnership: z.enum(['2022', '2024']),
+  logoImage: z.string().min(1, 'Logo image is required'),
+});

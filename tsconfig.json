@@ -17,7 +17,7 @@
         "name": "next"
       }
     ],
-    // "ignoreDeprecations": "6.0",
+    "ignoreDeprecations": "6.0",
     "baseUrl": ".", // This is correct
     "paths": {
       "@/*": ["src/*"] // This alias points @ to the src directory

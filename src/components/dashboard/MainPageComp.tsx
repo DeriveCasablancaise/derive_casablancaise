@@ -2,7 +2,13 @@
 
 import React from 'react';
 import StatCard from '../shared/StatsCard';
-import { BookUser, HandCoins, Headphones, NewspaperIcon } from 'lucide-react';
+import {
+  BookUser,
+  HandCoins,
+  Handshake,
+  Headphones,
+  NewspaperIcon,
+} from 'lucide-react';
 import { motion } from 'framer-motion';
 import PostsTable from './posts/PostsTable';
 import ArtistsTable from './artists/ArtistsTable';
@@ -19,7 +25,7 @@ const MainPageStatsCards = ({ artistCounts, postCounts }: StatsProps) => {
     <main className="max-w-7xl mx-auto py-6 px-4 lg:px-8">
       {/* STATS */}
       <motion.div
-        className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4 mb-8"
+        className="grid grid-cols-1 gap-5 lg:grid-cols-3 mb-8"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 1 }}
@@ -37,15 +43,9 @@ const MainPageStatsCards = ({ artistCounts, postCounts }: StatsProps) => {
           color="#6EE7B7"
         />
         <StatCard
-          name="Partenaires Financiers"
-          icon={HandCoins}
+          name="Partenaires "
+          icon={Handshake}
           value="12"
-          color="#EC4899"
-        />
-        <StatCard
-          name="Partenaires culturels"
-          icon={BookUser}
-          value="17"
           color="#EC4899"
         />
       </motion.div>

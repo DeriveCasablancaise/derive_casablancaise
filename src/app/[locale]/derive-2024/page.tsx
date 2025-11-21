@@ -3,6 +3,7 @@ import Contact from '../../../components/shared/contact';
 import ProgramSection from '@/components/shared/ProgramsSection';
 import DeriveLanding from '@/components/shared/DeriveLanding';
 import VideoSection from '@/components/shared/Derive2024/VideoSection';
+import PartnersSlider from '@/components/shared/PartnersSlider';
 
 const DerivePage = () => {
   return (
@@ -10,6 +11,7 @@ const DerivePage = () => {
       <DeriveLanding />
       <VideoSection />
       <ProgramSection />
+      <PartnersSlider />
       <Contact />
     </div>
   );

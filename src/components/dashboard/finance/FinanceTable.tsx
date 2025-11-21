@@ -46,9 +46,7 @@ const FinanceTable = () => {
       transition={{ delay: 0.2 }}
     >
       <div className="flex justify-between items-center mb-6">
-        <h2 className="text-xl font-semibold text-gray-100">
-          Partenaires financiers
-        </h2>
+        <h2 className="text-xl font-semibold text-gray-100">Partenaires</h2>
       </div>
 
       <div className="overflow-x-auto">

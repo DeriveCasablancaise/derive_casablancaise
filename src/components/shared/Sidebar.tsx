@@ -3,6 +3,7 @@
 import {
   BookUser,
   HandCoins,
+  Handshake,
   HeadphonesIcon,
   HouseIcon,
   Menu,
@@ -40,16 +41,10 @@ const SIDEBAR_ITEMS = [
     href: '/darja-admin/artists',
   },
   {
-    name: 'Partenaires Financiers',
-    icon: HandCoins,
+    name: 'Partenaires',
+    icon: Handshake,
     color: '#EC4899',
-    href: '/darja-admin/finance',
-  },
-  {
-    name: 'Partenaires Culturels',
-    icon: BookUser,
-    color: '#EC4899',
-    href: '/darja-admin/culture',
+    href: '/darja-admin/partners',
   },
 ];
 
