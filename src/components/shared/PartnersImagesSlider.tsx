@@ -1,4 +1,5 @@
 'use client';
+
 import { useScroll, useTransform, motion } from 'framer-motion';
 import { useLocale, useTranslations } from 'next-intl';
 import Image from 'next/image';
@@ -44,7 +45,6 @@ const PartnersImagesSlider = ({ partners }: PartnerSliderProps) => {
 
   const locale = useLocale();
   const isArabic = locale === 'ar';
-  const t = useTranslations('HomePage.Partners');
 
   const calculateMaxScroll = useCallback(
     (
@@ -129,58 +129,22 @@ const PartnersImagesSlider = ({ partners }: PartnerSliderProps) => {
     <div
       ref={container}
       className={cn(
-        'flex flex-col gap-[3vw] relative bg-[#E9EAEB] lg:mt-12 2xl:mt-48 z-[1]'
+        'flex flex-col gap-[3vw] relative bg-[#E9EAEB] lg:mt-12 2xl:mt-24 z-[1]'
       )}
     >
       <div className="w-full hidden lg:flex flex-col gap-6 py-4 xl:py-8 text-center bg-[#E9EAEB] px-8">
         <h2
           className={cn(
-            'text-xl lg:text-3xl w-full text-[#ee7103]',
+            'text-2xl xl:text-4xl w-full text-[#ee7103]',
             isArabic ? 'arabic-title-bold' : 'latin-title-bold'
           )}
         >
           {isArabic ? 'شركاء ديريف' : 'Nos Partenaires'}
         </h2>
-
-        <div className="flex justify-center gap-4">
-          <Button
-            onClick={() => toggleYearFilter('2022')}
-            className={cn(
-              'px-6 py-2 rounded-md font-semibold transition-all',
-              yearFilter === '2022'
-                ? 'bg-[#ee7103] text-white'
-                : 'bg-white text-[#ee7103] border-2 border-[#ee7103] hover:bg-[#ee7103] hover:text-white'
-            )}
-          >
-            2022
-          </Button>
-          <Button
-            onClick={() => toggleYearFilter('2024')}
-            className={cn(
-              'px-6 py-2 rounded-md font-semibold transition-all',
-              yearFilter === '2024'
-                ? 'bg-[#ee7103] text-white'
-                : 'bg-white text-[#ee7103] border-2 border-[#ee7103] hover:bg-[#ee7103] hover:text-white'
-            )}
-          >
-            2024
-          </Button>
-        </div>
       </div>
 
       {shouldShowSlider1 && partners2022.length > 0 && (
         <>
-          <div className="w-full hidden lg:flex py-4 text-start bg-[#E9EAEB] px-8">
-            <h3
-              className={cn(
-                'text-lg lg:text-2xl text-[#ee7103]',
-                isArabic ? 'arabic-title-bold' : 'latin-title-bold'
-              )}
-            >
-              2022
-            </h3>
-          </div>
-
           <div
             className="relative items-center w-[120vw] hidden lg:flex"
             ref={slider1ParentRef}
@@ -217,7 +181,7 @@ const PartnersImagesSlider = ({ partners }: PartnerSliderProps) => {
                     href={partner.hrefLink || '#'}
                     target={partner.hrefLink ? '_blank' : undefined}
                     rel={partner.hrefLink ? 'noopener noreferrer' : undefined}
-                    className="w-full h-full flex justify-center items-center group p-1 relative"
+                    className="w-full h-full flex justify-center items-center group relative"
                   >
                     <div className={cn('relative size-full overflow-hidden')}>
                       <Image
@@ -263,17 +227,6 @@ const PartnersImagesSlider = ({ partners }: PartnerSliderProps) => {
 
       {shouldShowSlider2 && partners2024.length > 0 && (
         <>
-          <div className="w-full hidden lg:flex py-4 text-start bg-[#E9EAEB] px-8">
-            <h3
-              className={cn(
-                'text-lg lg:text-2xl text-[#ee7103]',
-                isArabic ? 'arabic-title-bold' : 'latin-title-bold'
-              )}
-            >
-              2024
-            </h3>
-          </div>
-
           <div
             className="relative items-center w-[120vw] hidden lg:flex"
             ref={slider2ParentRef}
@@ -310,7 +263,7 @@ const PartnersImagesSlider = ({ partners }: PartnerSliderProps) => {
                     href={partner.hrefLink || '#'}
                     target={partner.hrefLink ? '_blank' : undefined}
                     rel={partner.hrefLink ? 'noopener noreferrer' : undefined}
-                    className="w-full h-full flex justify-center items-center group p-1 relative"
+                    className="w-full h-full flex justify-center items-center group relative"
                   >
                     <div className={cn('relative size-full overflow-hidden')}>
                       <Image
