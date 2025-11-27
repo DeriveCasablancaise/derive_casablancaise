@@ -78,6 +78,29 @@ export const homepageFormSchema = z.object({
   backgroundImage: z.string().min(1, 'Background image is required'),
 });
 
+export const derive2024FormSchema = z.object({
+  text1Fr: z.string().min(1, 'French subtitle is required'),
+  text1Ar: z.string().optional(),
+
+  text2Fr: z.string().min(1, 'French subtitle is required'),
+  text2Ar: z.string().optional(),
+
+  text3Fr: z.string().min(1, 'French subtitle is required'),
+  text3Ar: z.string().optional(),
+
+  video1Thumbnail: z.string().min(1, 'Video 1 thumbnail is required'),
+  video1IframeLink: z.string().min(1, 'Video 1 iframe link is required'),
+  video1TitleFr: z.string().min(1, 'Video 1 French title is required'),
+  video1TitleAr: z.string().optional(),
+
+  video2Thumbnail: z.string().min(1, 'Video 2 thumbnail is required'),
+  video2IframeLink: z.string().min(1, 'Video 2 iframe link is required'),
+  video2TitleFr: z.string().min(1, 'Video 2 French title is required'),
+  video2TitleAr: z.string().optional(),
+
+  backgroundImage: z.string().min(1, 'Background image is required'),
+});
+
 export const partnerFormSchema = z.object({
   frenchName: z
     .string()

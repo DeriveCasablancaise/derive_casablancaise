@@ -1,11 +1,10 @@
 'use client';
 
 import {
-  BookUser,
-  HandCoins,
   Handshake,
   HeadphonesIcon,
   HouseIcon,
+  LayersIcon,
   Menu,
   NewspaperIcon,
   Users,
@@ -45,6 +44,12 @@ const SIDEBAR_ITEMS = [
     icon: Handshake,
     color: '#EC4899',
     href: '/darja-admin/partners',
+  },
+  {
+    name: 'Pages',
+    icon: LayersIcon,
+    color: '#6366F1',
+    href: '/darja-admin/pages-to-modify',
   },
 ];
 

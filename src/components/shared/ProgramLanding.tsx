@@ -5,8 +5,6 @@ import { useInView, motion, useTransform, useScroll } from 'framer-motion';
 import React, { useEffect, useRef, useState } from 'react';
 import SubHeader from './SubHeader';
 import { useLocale, useTranslations } from 'next-intl';
-import Link from 'next/link';
-import RoundedBtn from './rounded';
 import { Plus_Jakarta_Sans } from 'next/font/google';
 import Image from 'next/image';
 import { PlayCircleIcon } from 'lucide-react';

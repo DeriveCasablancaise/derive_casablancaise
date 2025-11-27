@@ -40,7 +40,7 @@ const PartnersImagesSlider = ({ partners }: PartnerSliderProps) => {
   const [yearFilter, setYearFilter] = useState<YearFilter>('all');
 
   const x1 = useTransform(scrollYProgress, [0, 1], [0, 300]);
-  const x2 = useTransform(scrollYProgress, [0, 1], [0, -150]);
+  const x2 = useTransform(scrollYProgress, [0, 1], [0, 300]);
   const height = useTransform(scrollYProgress, [0, 0.9], [150, -20]);
 
   const locale = useLocale();
@@ -93,7 +93,7 @@ const PartnersImagesSlider = ({ partners }: PartnerSliderProps) => {
       );
     } else {
       setX2Offset((prev) =>
-        Math.min(ABSOLUTE_LEFT_OFFSET + 150, prev + SCROLL_AMOUNT * 2)
+        Math.min(ABSOLUTE_LEFT_OFFSET + 300, prev + SCROLL_AMOUNT * 2)
       );
     }
   };
@@ -139,7 +139,9 @@ const PartnersImagesSlider = ({ partners }: PartnerSliderProps) => {
             isArabic ? 'arabic-title-bold' : 'latin-title-bold'
           )}
         >
-          {isArabic ? 'شركاء ديريف' : 'Nos Partenaires'}
+          {isArabic
+            ? ' الشركاء الذين دعمونا'
+            : 'Les partenaires qui nous ont accompagnés'}
         </h2>
       </div>
 
@@ -172,7 +174,7 @@ const PartnersImagesSlider = ({ partners }: PartnerSliderProps) => {
               {partners2022.map((partner, index) => (
                 <div
                   key={index}
-                  className={cn('size-[12vw] flex justify-center items-center')}
+                  className={cn('size-[4vw] flex justify-center items-center')}
                   style={{
                     backgroundColor: '#094142',
                   }}
@@ -193,7 +195,7 @@ const PartnersImagesSlider = ({ partners }: PartnerSliderProps) => {
                       <div
                         dir={isArabic ? 'rtl' : 'ltr'}
                         className={cn(
-                          'absolute bottom-2 text-xs text-white z-20',
+                          'absolute bottom-2 text-[0.5rem] text-white z-20',
                           isArabic
                             ? 'right-2 arabic-subtitle-bold'
                             : 'left-2 latin-subtitle-regular'
@@ -254,7 +256,7 @@ const PartnersImagesSlider = ({ partners }: PartnerSliderProps) => {
               {partners2024.map((partner, index) => (
                 <div
                   key={index}
-                  className={cn('size-[12vw] flex justify-center items-center')}
+                  className={cn('size-[4vw] flex justify-center items-center')}
                   style={{
                     backgroundColor: '#094142',
                   }}
@@ -275,7 +277,7 @@ const PartnersImagesSlider = ({ partners }: PartnerSliderProps) => {
                       <div
                         dir={isArabic ? 'rtl' : 'ltr'}
                         className={cn(
-                          'absolute bottom-2 text-xs text-white z-20',
+                          'absolute bottom-2 text-[0.5rem] text-white z-20',
                           isArabic
                             ? 'right-2 arabic-subtitle-bold'
                             : 'left-2 latin-subtitle-regular'
