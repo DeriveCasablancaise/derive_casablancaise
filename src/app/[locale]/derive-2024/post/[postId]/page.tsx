@@ -1,17 +1,15 @@
 import { getPostById, getRelatedPosts } from '@/lib/actions/post.actions';
 import { getLocale } from 'next-intl/server';
-import Link from 'next/link';
-import { Calendar, Globe, LocateIcon } from 'lucide-react';
 import { format, isEqual } from 'date-fns';
 import { fr, arMA } from 'date-fns/locale';
 import { cn } from '@/lib/utils';
-import VideoThumbnail from '@/components/shared/VideoThumbnail';
 import SafeHtml from '@/components/shared/SafeHtml';
 import Contact from '@/components/shared/contact';
 import ClientWrapper from '@/components/shared/PostWrapper';
 import { ParentLink } from '@/components/shared/ParentLink'; // Import the new ParentLink component
 import ImageGallery from '@/components/shared/Derive2024/PostGallery';
 import Artist from '@/lib/database/models/artist.model';
+import SoundCloudEmbed from '@/components/shared/SoundCloudEmbed';
 
 type PostProps = {
   params: {
@@ -26,7 +24,8 @@ const page = async ({ params: { postId } }: PostProps) => {
     postId,
   });
   const locale = await getLocale();
-  const isArabic = locale === 'ar';
+  const hasArabicContent = post.arabicTitle && post.arabicText;
+  const isArabic = locale === 'ar' && hasArabicContent;
 
   let artists: any[] = [];
   if (post.artists && post.artists.length > 0) {
@@ -84,6 +83,7 @@ const page = async ({ params: { postId } }: PostProps) => {
                     )}
                   >
                     {isArabic ? artist.arabicName : artist.frenchName}
+                    {index < artists.length - 1 && ' - '}
                   </span>
                 ))}
               </div>
@@ -176,6 +176,24 @@ const page = async ({ params: { postId } }: PostProps) => {
                     : 'latin-subtitle-regular'
                 )}
               />
+
+              {post.videoSource && (
+                <div className="mt-8 pt-8 border-t border-gray-200">
+                  <p
+                    className={cn(
+                      'text-sm font-semibold mb-4 text-gray-600',
+                      isArabic
+                        ? 'arabic-subtitle-regular text-right'
+                        : 'latin-subtitle-regular'
+                    )}
+                  >
+                    {isArabic
+                      ? 'استمع على SoundCloud'
+                      : 'Écoutez sur SoundCloud'}
+                  </p>
+                  <SoundCloudEmbed url={post.videoSource} />
+                </div>
+              )}
             </div>
           </div>
         </div>

@@ -4,16 +4,13 @@ export const postFormSchema = z.object({
   frenchTitle: z
     .string()
     .min(3, 'Le titre doit consister de 3 caractères ou plus.'),
-  arabicTitle: z
-    .string()
-    .min(3, 'Le titre doit consister de 3 caractères ou plus.'),
+  arabicTitle: z.string().optional(),
   frenchText: z
     .string()
     .min(3, 'Le texte doit consister de 3 caractères ou plus.'),
-  arabicText: z
-    .string()
-    .min(3, 'Le texte doit consister de 3 caractères ou plus.'),
+  arabicText: z.string().optional(),
   images: z.array(z.string()).default([]),
+  thumbnailImage: z.string().optional(),
   videoSource: z.string().optional(),
   postCategory: z.enum(
     [
@@ -30,11 +27,10 @@ export const postFormSchema = z.object({
       message: 'Veuillez Choisir Une Catégorie',
     }
   ),
-  subCategory: z.enum(['rencontres', 'expositions']).optional(),
+  subCategory: z.enum(['rencontres', 'expositions', 'productions']).optional(),
   startDateTime: z.date(),
   endDateTime: z.date(),
   location: z.string().min(3, "Veuillez rentrer le lieu de l'événement. "),
-  isInHomepage: z.boolean(),
   url: z.string().optional(),
   artists: z.array(z.string()).default([]),
 });

@@ -4,10 +4,11 @@ import { Schema, Document, model, models } from 'mongoose';
 export interface IPost extends Document {
   _id: string;
   frenchTitle: string;
-  arabicTitle: string;
+  arabicTitle?: string;
   frenctText: string;
-  arabicText: string;
+  arabicText?: string;
   images: string[];
+  thumbnailImage?: string;
   videoSource?: string;
   startDateTime: Date;
   endDateTime: Date;
@@ -20,11 +21,10 @@ export interface IPost extends Document {
     | 'conference'
     | 'ateliers'
     | 'autres';
-  subCategory?: 'rencontres' | 'expositions';
+  subCategory?: 'rencontres' | 'expositions' | 'productions';
   location: string;
   url?: string;
   artists: string[];
-  isInHomepage: boolean;
   createdAt: Date;
   __v?: number;
 }
@@ -36,7 +36,7 @@ const PostSchema = new Schema({
   },
   arabicTitle: {
     type: String,
-    required: true,
+    required: false,
   },
   frenchText: {
     type: String,
@@ -44,11 +44,15 @@ const PostSchema = new Schema({
   },
   arabicText: {
     type: String,
-    required: true,
+    required: false,
   },
   images: {
     type: [String],
     default: [],
+  },
+  thumbnailImage: {
+    type: String,
+    required: false,
   },
   videoSource: {
     type: String,
@@ -73,12 +77,11 @@ const PostSchema = new Schema({
   },
   subCategory: {
     type: String,
-    enum: ['rencontres', 'expositions'],
+    enum: ['rencontres', 'expositions', 'productions'],
     required: false,
   },
   location: { type: String },
   url: { type: String, required: false },
-  isInHomepage: { type: Boolean, default: false },
   artists: {
     type: [String],
     default: [],

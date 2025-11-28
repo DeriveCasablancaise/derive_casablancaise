@@ -31,6 +31,7 @@ type CategoryKey = keyof typeof Categories;
 const SubCategories = {
   rencontres: { fr: 'Rencontres', ar: 'لقاءات' },
   expositions: { fr: 'Expositions', ar: 'معارض' },
+  productions: { fr: 'Productions', ar: 'إنتاجات' },
 } as const;
 
 type SubCategoryKey = keyof typeof SubCategories;
@@ -173,8 +174,12 @@ const CategoryPostsClient: React.FC<CategoryPostsClientProps> = ({
                     {post.images && (
                       <div className="absolute inset-0 flex justify-center items-center overflow-hidden">
                         <Image
-                          src={post.images[0] || '/placeholder.svg'}
-                          alt={isArabic ? post.arabicTitle : post.frenchTitle}
+                          src={
+                            post.thumbnailImage
+                              ? post.thumbnailImage
+                              : post.images[0]
+                          }
+                          alt={post.frenchTitle}
                           fill
                           className="object-cover transition-transform duration-700 ease-out group-hover:scale-110"
                         />
@@ -189,7 +194,9 @@ const CategoryPostsClient: React.FC<CategoryPostsClientProps> = ({
                             : 'latin-subtitle-regular'
                         )}
                       >
-                        {isArabic ? post.arabicTitle : post.frenchTitle}
+                        {isArabic && post.arabicTitle
+                          ? post.arabicTitle
+                          : post.frenchTitle}
                       </h3>
                     </div>
                   </Link>

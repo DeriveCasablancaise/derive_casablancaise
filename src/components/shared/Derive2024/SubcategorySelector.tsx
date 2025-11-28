@@ -7,6 +7,7 @@ import { cn } from '@/lib/utils';
 const SubCategories = {
   rencontres: { fr: 'Rencontres', ar: 'لقاءات' },
   expositions: { fr: 'Expositions', ar: 'معارض' },
+  productions: { fr: 'Productions', ar: 'إنتاجات' },
 } as const;
 
 type SubCategoryKey = keyof typeof SubCategories | null;

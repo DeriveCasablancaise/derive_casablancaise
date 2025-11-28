@@ -20,8 +20,8 @@ const TiptapEditor = ({
   onChange,
   dir = 'ltr',
 }: {
-  content: string;
-  onChange: (content: string) => void;
+  content?: string;
+  onChange: (content?: string) => void;
   dir?: 'ltr' | 'rtl';
 }) => {
   const editor = useEditor({

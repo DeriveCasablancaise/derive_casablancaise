@@ -32,6 +32,7 @@ import { IArtist } from '@/lib/database/models/artist.model';
 import ArtistMultiSelect from './ArtistMultiSelect';
 import { getAllArtists } from '@/lib/actions/artists.actions';
 import SubCategoryDropdown from './SubcategoryDropdown';
+import { ThumbnailUploader } from './ThumbnailUploader';
 
 type PostFormProps = {
   type: 'Create' | 'Update';
@@ -41,6 +42,7 @@ type PostFormProps = {
 
 const PostForm = ({ type, post, postId }: PostFormProps) => {
   const [files, setFiles] = useState<File[]>([]);
+  const [thumbnailFile, setThumbnailFile] = useState<File | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [artists, setArtists] = useState<IArtist[]>([]);
 
@@ -78,6 +80,7 @@ const PostForm = ({ type, post, postId }: PostFormProps) => {
     setIsLoading(true);
 
     let uploadedImageUrls = values.images;
+    let uploadedThumbnailUrl = values.thumbnailImage;
 
     if (files.length > 0) {
       const uploadedImages = await startUpload(files);
@@ -89,11 +92,20 @@ const PostForm = ({ type, post, postId }: PostFormProps) => {
       uploadedImageUrls = uploadedImages.map((img) => img.url);
     }
 
+    if (thumbnailFile) {
+      const uploadedThumbnails = await startUpload([thumbnailFile]);
+      if (!uploadedThumbnails) {
+        return;
+      }
+      uploadedThumbnailUrl = uploadedThumbnails[0].url;
+    }
+
     if (type === 'Create') {
       try {
         const newPost = await createPost({
           ...values,
           images: uploadedImageUrls,
+          thumbnailImage: uploadedThumbnailUrl,
         });
 
         if (newPost) {
@@ -114,7 +126,12 @@ const PostForm = ({ type, post, postId }: PostFormProps) => {
 
       try {
         const updatedPost = await updatePost({
-          post: { ...values, images: uploadedImageUrls, _id: postId },
+          post: {
+            ...values,
+            images: uploadedImageUrls,
+            thumbnailImage: uploadedThumbnailUrl,
+            _id: postId,
+          },
         });
 
         if (updatedPost) {
@@ -394,23 +411,18 @@ const PostForm = ({ type, post, postId }: PostFormProps) => {
             </FormItem>
           )}
         />
+
         <FormField
           control={form.control}
-          name="isInHomepage"
+          name="thumbnailImage"
           render={({ field }) => (
             <FormItem className="w-full">
-              <FormControl>
-                <div className="flex items-center gap-4">
-                  <Checkbox
-                    id="isInHomepage"
-                    checked={field.value}
-                    onCheckedChange={field.onChange}
-                    className=""
-                  />
-                  <label htmlFor="isInHomepage" className="checkbox-label">
-                    Ajouter ce poste à la page d'accueil
-                  </label>
-                </div>
+              <FormControl className="h-72">
+                <ThumbnailUploader
+                  imageUrl={field.value || ''}
+                  onFieldChange={field.onChange}
+                  setFile={setThumbnailFile}
+                />
               </FormControl>
               <FormMessage />
             </FormItem>

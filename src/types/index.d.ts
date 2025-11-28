@@ -46,10 +46,11 @@ export type CreateArtistCategoryParams = {
 // POST PARAMS
 export type CreatePostParams = {
   frenchTitle: string;
-  arabicTitle: string;
+  arabicTitle?: string;
   frenchText: string;
-  arabicText: string;
+  arabicText?: string;
   images: string[];
+  thumbnailImage?: string;
   videoSource?: string;
   startDateTime: Date;
   endDateTime: Date;
@@ -62,8 +63,8 @@ export type CreatePostParams = {
     | 'conference'
     | 'ateliers'
     | 'autres';
+  subCategory?: 'rencontres' | 'expositions' | 'productions';
   location: string;
-  isInHomepage: boolean;
   url?: string;
 };
 
@@ -71,10 +72,11 @@ export type UpdatePostParams = {
   post: {
     _id: string;
     frenchTitle: string;
-    arabicTitle: string;
+    arabicTitle?: string;
     frenchText: string;
-    arabicText: string;
+    arabicText?: string;
     images: string[];
+    thumbnailImage?: string;
     videoSource?: string;
     startDateTime: Date;
     endDateTime: Date;
@@ -87,8 +89,8 @@ export type UpdatePostParams = {
       | 'conference'
       | 'ateliers'
       | 'autres';
+    subCategory?: 'rencontres' | 'expositions' | 'productions';
     location: string;
-    isInHomepage: boolean;
     url?: string;
   };
 };
