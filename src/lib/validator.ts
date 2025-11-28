@@ -94,6 +94,8 @@ export const derive2024FormSchema = z.object({
   video2TitleFr: z.string().min(1, 'Video 2 French title is required'),
   video2TitleAr: z.string().optional(),
 
+  carouselImages: z.array(z.string()).optional(),
+
   backgroundImage: z.string().min(1, 'Background image is required'),
 });
 

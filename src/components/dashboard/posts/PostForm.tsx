@@ -384,7 +384,7 @@ const PostForm = ({ type, post, postId }: PostFormProps) => {
               <FormItem className="w-full">
                 <FormControl>
                   <Input
-                    placeholder="Source de la video"
+                    placeholder="Source d'audio"
                     className="input-field"
                     {...field}
                   />

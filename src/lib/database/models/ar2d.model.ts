@@ -22,6 +22,8 @@ export interface IAr2d extends Document {
   video2TitleFr: string;
   video2TitleAr?: string;
 
+  carouselImages?: string[];
+
   backgroundImage: string;
 
   createdAt: Date;
@@ -85,6 +87,10 @@ const Ar2dSchema = new Schema(
     },
     video2TitleAr: {
       type: String,
+      required: false,
+    },
+    carouselImages: {
+      type: [String],
       required: false,
     },
     backgroundImage: {

@@ -24,6 +24,7 @@ import { IDerive2022 } from '@/lib/database/models/derive2022.model';
 import { updateDerive2022 } from '@/lib/actions/derive2022.actions';
 import { IAr2d } from '@/lib/database/models/ar2d.model';
 import { updateAr2d } from '@/lib/actions/ar2d.actions';
+import { FileUploader } from '../FileUploader';
 
 type Ar2dFormProps = {
   ar2d?: IAr2d;
@@ -33,6 +34,7 @@ const Ar2dForm = ({ ar2d }: Ar2dFormProps) => {
   const [video1File, setVideo1File] = useState<File[] | null>(null);
   const [video2File, setVideo2File] = useState<File[] | null>(null);
   const [bgImageFile, setBgImageFile] = useState<File[] | null>(null);
+  const [files, setFiles] = useState<File[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
   const initialValues = ar2d || {
@@ -43,6 +45,7 @@ const Ar2dForm = ({ ar2d }: Ar2dFormProps) => {
     text3Fr: '',
     text3Ar: '',
     backgroundImage: '',
+    carouselImages: [],
     video1Thumbnail: '',
     video1IframeLink: '',
     video1TitleFr: '',
@@ -71,6 +74,7 @@ const Ar2dForm = ({ ar2d }: Ar2dFormProps) => {
         text3Fr: ar2d.text3Fr || '',
         text3Ar: ar2d.text3Ar || '',
         backgroundImage: ar2d.backgroundImage || '',
+        carouselImages: ar2d.carouselImages || [],
         video1Thumbnail: ar2d.video1Thumbnail || '',
         video1IframeLink: ar2d.video1IframeLink || '',
         video1TitleFr: ar2d.video1TitleFr || '',
@@ -83,6 +87,7 @@ const Ar2dForm = ({ ar2d }: Ar2dFormProps) => {
       setVideo1File(null);
       setVideo2File(null);
       setBgImageFile(null);
+      setFiles([]);
     }
   }, [ar2d, form]);
 
@@ -90,6 +95,17 @@ const Ar2dForm = ({ ar2d }: Ar2dFormProps) => {
     setIsLoading(true);
 
     let updatedValues = { ...values };
+    let uploadedImageUrls = values.carouselImages;
+
+    if (files.length > 0) {
+      const uploadedImages = await startUpload(files);
+
+      if (!uploadedImages) {
+        return;
+      }
+
+      uploadedImageUrls = uploadedImages.map((img) => img.url);
+    }
 
     if (video1File && video1File.length > 0) {
       const uploadedImage = await startUpload(video1File);
@@ -123,6 +139,7 @@ const Ar2dForm = ({ ar2d }: Ar2dFormProps) => {
         ar2d: {
           ...updatedValues,
           _id: ar2d?._id,
+          carouselImages: uploadedImageUrls,
         },
       });
 
@@ -306,6 +323,26 @@ const Ar2dForm = ({ ar2d }: Ar2dFormProps) => {
                     onFieldChange={field.onChange}
                     imageUrl={field.value || ''}
                     setFile={setBgImageFile}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+
+        <div className="border-t-2 pt-4">
+          <h3 className="text-lg font-semibold mb-4">Images de gallerie</h3>
+          <FormField
+            control={form.control}
+            name="carouselImages"
+            render={({ field }) => (
+              <FormItem className="w-full">
+                <FormControl className="h-72">
+                  <FileUploader
+                    onFieldChange={field.onChange}
+                    imageUrls={field.value || []}
+                    setFiles={setFiles}
                   />
                 </FormControl>
                 <FormMessage />
