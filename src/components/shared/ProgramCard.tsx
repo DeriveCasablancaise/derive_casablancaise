@@ -15,7 +15,8 @@ interface ProgramCardProps {
 
 const ProgramCard: React.FC<ProgramCardProps> = ({ post, index }) => {
   const locale = useLocale();
-  const isArabic = locale === 'ar';
+  const hasArabicContent = post.arabicTitle && post.arabicText;
+  const isArabic = locale === 'ar' && hasArabicContent;
 
   return (
     <motion.div
@@ -32,8 +33,8 @@ const ProgramCard: React.FC<ProgramCardProps> = ({ post, index }) => {
         <div className="aspect-[3/4] relative overflow-hidden">
           {post.images && (
             <Image
-              src={post.images[0]}
-              alt={isArabic ? post.arabicTitle : post.frenchTitle}
+              src={post.thumbnailImage ? post.thumbnailImage : post.images[0]}
+              alt={post.frenchTitle}
               layout="fill"
               objectFit="cover"
               className="transform transition-transform duration-700 group-hover:scale-110"
