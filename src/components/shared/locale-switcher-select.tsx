@@ -1,18 +1,8 @@
 'use client';
 
-import { cn } from '../../lib/utils';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import React, { ChangeEvent, ReactNode, useTransition } from 'react';
-import { useLocale, useTranslations } from 'next-intl';
-import {
-  DropdownMenu,
-  DropdownMenuCheckboxItem,
-  DropdownMenuContent,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from '../ui/dropdown-menu';
-import { Button } from '../ui/button';
+import React, { useTransition } from 'react';
+import { useLocale } from 'next-intl';
 
 export default function LocaleSwitcher() {
   const router = useRouter();
@@ -37,7 +27,7 @@ export default function LocaleSwitcher() {
       className="cursor-pointer"
       onClick={() => handleLocaleChange(nextLocale)}
     >
-      <p className="latin-title-bold font-[800] text-xl"> FR / AR</p>
+      <p className=" font-[800] text-xl"> FR / AR</p>
     </div>
   );
 }

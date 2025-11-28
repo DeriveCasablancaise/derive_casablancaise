@@ -1,15 +1,17 @@
 'use client';
+
 import {
-  NavigationMenu, // Import from custom path
+  NavigationMenu,
   NavigationMenuContent,
   NavigationMenuItem,
   NavigationMenuLink,
   NavigationMenuList,
   NavigationMenuTrigger,
-} from '@/components/ui/navigation-menu'; // Changed import path to your custom component
+} from '@/components/ui/navigation-menu';
 import { cn } from '@/lib/utils';
 import { useLocale, useTranslations } from 'next-intl';
 import { useEffect, useState } from 'react';
+import LocaleSwitcher from './locale-switcher-select';
 
 const DesktopNav = () => {
   const t = useTranslations('Layout');
@@ -54,7 +56,7 @@ const DesktopNav = () => {
             {t(`Navigation.${navKeys[0]}.title`)}
           </NavigationMenuLink>
         </NavigationMenuItem>
-        <NavigationMenuItem className="group w-full h-full flex justify-center items-center hover:bg-[#00b0db] hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none disabled:pointer-events-none disabled:opacity-50 data-[active]:bg-[#00b0db] text-white nav-trigger">
+        <NavigationMenuItem className="group w-full h-full flex justify-center items-center hover:bg-[#00b0db] hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none disabled:pointer-events-none disabled:opacity-50 data-[active]:bg-[#00b0db] text-white nav-trigger relative">
           <NavigationMenuTrigger
             className={cn(
               ' text-xl bg-transparent font-extrabold',
@@ -66,13 +68,10 @@ const DesktopNav = () => {
             {t('Navigation.derivecasa')}
           </NavigationMenuTrigger>
           <NavigationMenuContent
-            className={cn('bg-[#094142]', isArabic && 'right-0')}
+            className={cn('bg-[#094142] left-0', isArabic && 'right-0')}
             style={{ width: `${triggerWidth + 2}px` }}
           >
-            <ul
-              className="flex flex-col w-full gap-3 "
-              dir={isArabic ? 'rtl' : 'ltr'}
-            >
+            <ul className="flex flex-col gap-3 " dir={isArabic ? 'rtl' : 'ltr'}>
               {deriveNavKeys.map((deriveNav, i) => (
                 <NavigationMenuLink
                   key={`b_${i}`}
@@ -114,6 +113,14 @@ const DesktopNav = () => {
             </NavigationMenuItem>
           );
         })}
+        <NavigationMenuItem
+          className={cn(
+            'w-full h-full flex justify-center items-center border-white hover:bg-[#00b0db] hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none disabled:pointer-events-none disabled:opacity-50 data-[active]:bg-[#00b0db] text-white data-[state=open]:bg-[#00b0db] bg-[#094142] ',
+            isArabic ? 'border-r-2' : 'border-l-2'
+          )}
+        >
+          <LocaleSwitcher />
+        </NavigationMenuItem>
       </NavigationMenuList>
     </NavigationMenu>
   );

@@ -23,9 +23,7 @@ export default async function RootLayout({
   return (
     <html lang={locale}>
       <body
-        className={`${inter.className} ${
-          locale === 'ar' ? '__rtl_lang text-right' : ''
-        } bg-[#E9EAEB] text-gray-950 relative`}
+        className={`${inter.className}  bg-[#E9EAEB] text-gray-950 relative`}
       >
         <NextIntlClientProvider locale={locale} messages={messages}>
           <Providers>

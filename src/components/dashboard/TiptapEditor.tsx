@@ -14,6 +14,7 @@ import {
   Undo,
 } from 'lucide-react';
 import { Button } from '../ui/button';
+import TextAlign from '@tiptap/extension-text-align';
 
 const TiptapEditor = ({
   content,
@@ -30,12 +31,16 @@ const TiptapEditor = ({
       Link.configure({
         openOnClick: false,
       }),
+      TextAlign.configure({
+        types: ['heading', 'paragraph'],
+      }),
     ],
     content,
+    immediatelyRender: false,
     editorProps: {
       attributes: {
         class:
-          'prose prose-sm sm:prose-base dark:prose-invert focus:outline-none max-w-full min-h-[150px] p-4 bg-gray-800 placeholder:text-gray-500 ',
+          'prose prose-sm sm:prose-base dark:prose-invert focus:outline-none max-w-full min-h-[150px] p-4 bg-gray-800  ',
         dir,
       },
     },

@@ -31,7 +31,8 @@ const ProgramLanding = ({ homepage }: ProgramLandingProps) => {
   const [isAfterMovieModalOpen, setIsAfterMovieModalOpen] =
     useState<boolean>(false);
   const locale = useLocale();
-  const isArabic = locale === 'ar';
+  const hasArabicContent = homepage.textAr && homepage.textAr !== '';
+  const isArabic = locale === 'ar' && hasArabicContent;
   const t = useTranslations('Derive2024');
   const t2 = useTranslations('HomePage');
 
@@ -76,12 +77,13 @@ const ProgramLanding = ({ homepage }: ProgramLandingProps) => {
             backgroundRepeat: 'no-repeat',
           }}
         >
-          <div className="lg:absolute lg:left-0 lg:-bottom-24 lg:h-auto lg:bg-[#E9EAEB] lg:w-[60%] bg-white/70 h-fit  my-auto lg:flex flex-col justify-start py-4 lg:py-6 items-start gap-4 2xl:gap-8 text-[#00b0db] md:text-black/90 px-4 lg:px-6">
-            <motion.div
-              variants={descOpacity}
-              animate={isInView ? 'open' : 'closed'}
+          <div
+            className="lg:absolute lg:left-0 lg:-bottom-24 lg:h-auto lg:bg-[#E9EAEB] lg:w-[60%] bg-white/70 h-fit  my-auto lg:flex flex-col justify-start py-4 lg:py-6 items-start gap-4 2xl:gap-8 text-[#00b0db] md:text-black/90 px-4 lg:px-6"
+            dir={isArabic ? 'rtl' : 'ltr'}
+          >
+            <div
               className={cn(
-                'w-full font-bold text-[#094142] m-0 tiptap-content',
+                'w-full font-bold text-[#094142] m-0 prose',
                 jakarta.className
               )}
               dangerouslySetInnerHTML={{
