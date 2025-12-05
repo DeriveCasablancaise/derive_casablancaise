@@ -177,7 +177,7 @@ const page = async ({ params: { postId } }: PostProps) => {
                 )}
               />
 
-              {post.videoSource && (
+              {post.url && (
                 <div className="mt-8 pt-8 border-t border-gray-200">
                   <p
                     className={cn(
@@ -191,7 +191,7 @@ const page = async ({ params: { postId } }: PostProps) => {
                       ? 'استمع على SoundCloud'
                       : 'Écoutez sur SoundCloud'}
                   </p>
-                  <SoundCloudEmbed url={post.videoSource} />
+                  <SoundCloudEmbed url={post.url} />
                 </div>
               )}
             </div>
