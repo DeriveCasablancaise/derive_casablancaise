@@ -35,6 +35,10 @@ export async function getAr2dData() {
         video2IframeLink: 'https://www.youtube.com/watch?v=chv70l147CE',
         video2TitleFr: 'Aftermovie Dérive Casablancaise 2024',
         video2TitleAr: 'إعلان دعائي لـلمنعطف البيضاوي 2024',
+        video3Thumbnail: '/images/thumbTeaser.jpg',
+        video3IframeLink: 'https://www.youtube.com/watch?v=chv70l147CE',
+        video3TitleFr: 'Titre Vidéo 3',
+        video3TitleAr: 'عنوان الفيديو 3',
         backgroundImage: '/desc-bg.png',
       });
     }

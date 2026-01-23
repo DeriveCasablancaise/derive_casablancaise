@@ -13,6 +13,7 @@ import { PlayCircleIcon } from 'lucide-react';
 import TeaserModal from '../TeaserModal';
 import AfterMovieModal from '../AfterMovieModal';
 import GalleryCarousel from '../GalleryCarousel';
+import VideoModal from '../VideoModal';
 
 const jakarta = Plus_Jakarta_Sans({
   weight: ['600', '700', '800'],
@@ -47,12 +48,11 @@ const AboutLanding = ({ ar2d }: AboutLandingProps) => {
   const imageContainerRef = useRef(null);
   const isInView = useInView(imageContainerRef);
   const [isMobile, setIsMobile] = useState(false);
-  const [isTeaseModalOpen, setIsTeaseModalOpen] = useState<boolean>(false);
-  const [isAfterMovieModalOpen, setIsAfterMovieModalOpen] =
-    useState<boolean>(false);
+  const [activeVideo, setActiveVideo] = useState<string | null>(null);
 
   const video1EmbedLink = convertYouTubeToEmbed(ar2d.video1IframeLink);
   const video2EmbedLink = convertYouTubeToEmbed(ar2d.video2IframeLink);
+  const video3EmbedLink = convertYouTubeToEmbed(ar2d.video3IframeLink);
 
   const locale = useLocale();
   const isArabic = locale === 'ar';
@@ -77,6 +77,54 @@ const AboutLanding = ({ ar2d }: AboutLandingProps) => {
     scrollYProgress,
     [0.4, 1],
     isMobile ? ['cover', 'cover'] : ['100%', '200%']
+  );
+
+  const renderVideoCard = (
+    thumbnail: string,
+    title: string,
+    videoLink: string,
+    delay: number
+  ) => (
+    <div className="flex flex-col items-center w-full">
+      <motion.div
+        variants={fadeIn('up', delay)}
+        initial="hidden"
+        whileInView="show"
+        viewport={{ once: true, amount: 0.3 }}
+        className="relative flex justify-center items-center shadow-md cursor-pointer group w-full"
+        onClick={() => setActiveVideo(videoLink)}
+      >
+        <Image
+          src={thumbnail}
+          width={600}
+          height={600}
+          alt="video_thumbnail"
+          className="w-full object-cover aspect-video rounded-lg"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#094142]/50 via-transparent to-transparent rounded-lg"></div>
+        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 flex items-center justify-center">
+          <motion.div
+            initial={{ scale: 0.8, opacity: 0.8 }}
+            whileHover={{ scale: 1.1, opacity: 1 }}
+            transition={{ type: 'spring', stiffness: 400, damping: 10 }}
+            className="bg-white/20 backdrop-blur-md rounded-full p-4 md:p-6"
+          >
+            <PlayCircleIcon className="h-12 w-12 md:h-16 md:w-16 text-[#ee7103]" />
+          </motion.div>
+        </div>
+      </motion.div>
+      <motion.div
+        initial={{ y: 20, opacity: 0 }}
+        whileInView={{ y: 0, opacity: 1 }}
+        transition={{ delay: delay + 0.1 }}
+        className={cn(
+          'mt-4 text-center text-base md:text-lg font-bold text-[#094142]',
+          isArabic ? 'arabic-subtitle-bold' : 'latin-subtitle-bold'
+        )}
+      >
+        {title}
+      </motion.div>
+    </div>
   );
 
   return (
@@ -175,99 +223,39 @@ const AboutLanding = ({ ar2d }: AboutLandingProps) => {
                 isArabic ? 'arabic-title-bold' : 'latin-title-bold'
               )}
             >
-              {isArabic
-                ? ' الفيلم الختامي لفعالية المنعطف البيضاوي '
-                : 'Actualités'}
+              {isArabic ? ' مقاطع فيديو' : 'Vidéos'}
             </h2>
           </motion.div>
-          <div className="flex flex-col lg:flex-row justify-center items-start mx-auto my-8 md:my-10 xl:my-12 max-w-4xl gap-8 px-4">
-            {/* First Video Showcase */}
-            <div className="flex flex-col items-center w-full lg:w-1/2">
-              <motion.div
-                variants={fadeIn('up', 0.1)}
-                initial="hidden"
-                whileInView="show"
-                viewport={{ once: true, amount: 0.3 }}
-                className="relative flex justify-center items-center shadow-md cursor-pointer group w-full"
-                onClick={() => setIsTeaseModalOpen(true)}
-              >
-                <Image
-                  src={ar2d.video1Thumbnail}
-                  width={600}
-                  height={600}
-                  alt="tease_thumbnail"
-                  className="w-full object-contain rounded-lg"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#094142]/50 via-transparent to-transparent rounded-lg"></div>
-                <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 flex items-center justify-center">
-                  <motion.div
-                    initial={{ scale: 0.8, opacity: 0.8 }}
-                    whileHover={{ scale: 1.1, opacity: 1 }}
-                    transition={{ type: 'spring', stiffness: 400, damping: 10 }}
-                    className="bg-white/20 backdrop-blur-md rounded-full p-6"
-                  >
-                    <PlayCircleIcon className="h-16 w-16 md:h-20 md:w-20 text-[#ee7103]" />
-                  </motion.div>
-                </div>
-              </motion.div>
-              <motion.div
-                initial={{ y: 20, opacity: 0 }}
-                whileInView={{ y: 0, opacity: 1 }}
-                transition={{ delay: 0.2 }}
-                className={cn(
-                  'mt-4 text-center text-base md:text-lg font-bold text-[#094142]',
-                  isArabic ? 'arabic-subtitle-bold' : 'latin-subtitle-bold'
-                )}
-              >
-                {isArabic
-                  ? ar2d.video1TitleAr || ar2d.video1TitleFr
-                  : ar2d.video1TitleFr}
-              </motion.div>
-            </div>
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mx-auto my-8 md:my-10 xl:my-12 max-w-7xl px-4">
+            {/* Video 1 */}
+            {renderVideoCard(
+              ar2d.video1Thumbnail,
+              isArabic
+                ? ar2d.video1TitleAr || ar2d.video1TitleFr
+                : ar2d.video1TitleFr,
+              video1EmbedLink,
+              0.1
+            )}
 
-            {/* Second Video Showcase (Placeholder) */}
-            <div className="flex flex-col items-center w-full lg:w-1/2 mt-8 lg:mt-0">
-              <motion.div
-                variants={fadeIn('up', 0.1)}
-                initial="hidden"
-                whileInView="show"
-                viewport={{ once: true, amount: 0.3 }}
-                className="relative flex justify-center items-center shadow-md cursor-pointer group w-full"
-                onClick={() => setIsAfterMovieModalOpen(true)}
-              >
-                <Image
-                  src={ar2d.video2Thumbnail}
-                  width={600}
-                  height={600}
-                  alt="tease_thumbnail"
-                  className="w-full object-contain rounded-lg"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#094142]/50 via-transparent to-transparent rounded-lg"></div>
-                <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 flex items-center justify-center">
-                  <motion.div
-                    initial={{ scale: 0.8, opacity: 0.8 }}
-                    whileHover={{ scale: 1.1, opacity: 1 }}
-                    transition={{ type: 'spring', stiffness: 400, damping: 10 }}
-                    className="bg-white/20 backdrop-blur-md rounded-full p-6"
-                  >
-                    <PlayCircleIcon className="h-16 w-16 md:h-20 md:w-20 text-[#ee7103]" />
-                  </motion.div>
-                </div>
-              </motion.div>
-              <motion.div
-                initial={{ y: 20, opacity: 0 }}
-                whileInView={{ y: 0, opacity: 1 }}
-                transition={{ delay: 0.2 }}
-                className={cn(
-                  'mt-4 text-center text-base md:text-lg font-bold text-[#094142]',
-                  isArabic ? 'arabic-subtitle-bold' : 'latin-subtitle-bold'
-                )}
-              >
-                {isArabic
-                  ? ar2d.video2TitleAr || ar2d.video2TitleFr
-                  : ar2d.video2TitleFr}
-              </motion.div>
-            </div>
+            {/* Video 2 */}
+            {renderVideoCard(
+              ar2d.video2Thumbnail,
+              isArabic
+                ? ar2d.video2TitleAr || ar2d.video2TitleFr
+                : ar2d.video2TitleFr,
+              video2EmbedLink,
+              0.2
+            )}
+
+            {/* Video 3 */}
+            {renderVideoCard(
+              ar2d.video3Thumbnail,
+              isArabic
+                ? ar2d.video3TitleAr || ar2d.video3TitleFr
+                : ar2d.video3TitleFr,
+              video3EmbedLink,
+              0.3
+            )}
           </div>
         </ClientWrapper>
       ) : (
@@ -285,99 +273,39 @@ const AboutLanding = ({ ar2d }: AboutLandingProps) => {
                 isArabic ? 'arabic-title-bold' : 'latin-title-bold'
               )}
             >
-              {isArabic
-                ? ' الفيلم الختامي لفعالية المنعطف البيضاوي '
-                : 'Actualités'}
+              {isArabic ? ' مقاطع فيديو' : 'Vidéos'}
             </h2>
           </motion.div>
-          <div className="flex flex-col lg:flex-row justify-center items-start mx-auto my-8 md:my-10 xl:my-12 max-w-4xl gap-8 px-4">
-            {/* First Video Showcase */}
-            <div className="flex flex-col items-center w-full lg:w-1/2">
-              <motion.div
-                variants={fadeIn('up', 0.1)}
-                initial="hidden"
-                whileInView="show"
-                viewport={{ once: true, amount: 0.3 }}
-                className="relative flex justify-center items-center shadow-md cursor-pointer group w-full"
-                onClick={() => setIsTeaseModalOpen(true)}
-              >
-                <Image
-                  src={ar2d.video1Thumbnail}
-                  width={600}
-                  height={600}
-                  alt="tease_thumbnail"
-                  className="w-full object-contain rounded-lg"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#094142]/50 via-transparent to-transparent rounded-lg"></div>
-                <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 flex items-center justify-center">
-                  <motion.div
-                    initial={{ scale: 0.8, opacity: 0.8 }}
-                    whileHover={{ scale: 1.1, opacity: 1 }}
-                    transition={{ type: 'spring', stiffness: 400, damping: 10 }}
-                    className="bg-white/20 backdrop-blur-md rounded-full p-6"
-                  >
-                    <PlayCircleIcon className="h-16 w-16 md:h-20 md:w-20 text-[#ee7103]" />
-                  </motion.div>
-                </div>
-              </motion.div>
-              <motion.div
-                initial={{ y: 20, opacity: 0 }}
-                whileInView={{ y: 0, opacity: 1 }}
-                transition={{ delay: 0.2 }}
-                className={cn(
-                  'mt-4 text-center text-base md:text-lg font-bold text-[#094142]',
-                  isArabic ? 'arabic-subtitle-bold' : 'latin-subtitle-bold'
-                )}
-              >
-                {isArabic
-                  ? ar2d.video1TitleAr || ar2d.video1TitleFr
-                  : ar2d.video1TitleFr}
-              </motion.div>
-            </div>
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mx-auto my-8 md:my-10 xl:my-12 max-w-7xl px-4">
+            {/* Video 1 */}
+            {renderVideoCard(
+              ar2d.video1Thumbnail,
+              isArabic
+                ? ar2d.video1TitleAr || ar2d.video1TitleFr
+                : ar2d.video1TitleFr,
+              video1EmbedLink,
+              0.1
+            )}
 
-            {/* Second Video Showcase (Placeholder) */}
-            <div className="flex flex-col items-center w-full lg:w-1/2 mt-8 lg:mt-0">
-              <motion.div
-                variants={fadeIn('up', 0.1)}
-                initial="hidden"
-                whileInView="show"
-                viewport={{ once: true, amount: 0.3 }}
-                className="relative flex justify-center items-center shadow-md cursor-pointer group w-full"
-                onClick={() => setIsAfterMovieModalOpen(true)}
-              >
-                <Image
-                  src={ar2d.video2Thumbnail}
-                  width={600}
-                  height={600}
-                  alt="tease_thumbnail"
-                  className="w-full object-contain rounded-lg"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#094142]/50 via-transparent to-transparent rounded-lg"></div>
-                <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 flex items-center justify-center">
-                  <motion.div
-                    initial={{ scale: 0.8, opacity: 0.8 }}
-                    whileHover={{ scale: 1.1, opacity: 1 }}
-                    transition={{ type: 'spring', stiffness: 400, damping: 10 }}
-                    className="bg-white/20 backdrop-blur-md rounded-full p-6"
-                  >
-                    <PlayCircleIcon className="h-16 w-16 md:h-20 md:w-20 text-[#ee7103]" />
-                  </motion.div>
-                </div>
-              </motion.div>
-              <motion.div
-                initial={{ y: 20, opacity: 0 }}
-                whileInView={{ y: 0, opacity: 1 }}
-                transition={{ delay: 0.2 }}
-                className={cn(
-                  'mt-4 text-center text-base md:text-lg font-bold text-[#094142]',
-                  isArabic ? 'arabic-subtitle-bold' : 'latin-subtitle-bold'
-                )}
-              >
-                {isArabic
-                  ? ar2d.video2TitleAr || ar2d.video2TitleFr
-                  : ar2d.video2TitleFr}
-              </motion.div>
-            </div>
+            {/* Video 2 */}
+            {renderVideoCard(
+              ar2d.video2Thumbnail,
+              isArabic
+                ? ar2d.video2TitleAr || ar2d.video2TitleFr
+                : ar2d.video2TitleFr,
+              video2EmbedLink,
+              0.2
+            )}
+
+            {/* Video 3 */}
+            {renderVideoCard(
+              ar2d.video3Thumbnail,
+              isArabic
+                ? ar2d.video3TitleAr || ar2d.video3TitleFr
+                : ar2d.video3TitleFr,
+              video3EmbedLink,
+              0.3
+            )}
           </div>
           <ClientWrapper>
             <motion.div
@@ -385,7 +313,7 @@ const AboutLanding = ({ ar2d }: AboutLandingProps) => {
               initial="hidden"
               whileInView="show"
               viewport={{ once: true, amount: 0.3 }}
-              className="text-center mt-24 lg:mt-48"
+              className="text-center mt-24"
             >
               <h2
                 className={cn(
@@ -404,15 +332,10 @@ const AboutLanding = ({ ar2d }: AboutLandingProps) => {
         </>
       )}
 
-      <TeaserModal
-        isOpen={isTeaseModalOpen}
-        onClose={() => setIsTeaseModalOpen(false)}
-        videoLink={video1EmbedLink}
-      />
-      <AfterMovieModal
-        isOpen={isAfterMovieModalOpen}
-        onClose={() => setIsAfterMovieModalOpen(false)}
-        videoLink={video2EmbedLink}
+      <VideoModal
+        isOpen={!!activeVideo}
+        onClose={() => setActiveVideo(null)}
+        videoLink={activeVideo || ''}
       />
     </>
   );

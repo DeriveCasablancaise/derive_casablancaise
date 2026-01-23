@@ -1,115 +1,43 @@
 'use client';
 
-import { useScroll, useTransform, motion } from 'framer-motion';
-import { useLocale, useTranslations } from 'next-intl';
+import {
+  useScroll,
+  useTransform,
+  motion,
+  useMotionValue,
+  animate,
+} from 'framer-motion';
+import { useLocale } from 'next-intl';
 import Image from 'next/image';
 import Link from 'next/link';
-import React, { useRef, useState, useEffect, useCallback } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '../ui/button';
 import { IPartner } from '@/lib/database/models/partner.model';
-
-const SCROLL_AMOUNT = 150;
-const ABSOLUTE_LEFT_OFFSET = -150;
+import ClientWrapper from './PostWrapper';
 
 interface PartnerSliderProps {
   partners: IPartner[];
 }
 
 type YearFilter = 'all' | '2022' | '2024';
+const SCROLL_AMOUNT = 300; // How many pixels to move per click
 
 const PartnersImagesSlider = ({ partners }: PartnerSliderProps) => {
   const container = useRef(null);
-  const slider1Ref = useRef<HTMLDivElement>(null);
-  const slider1ParentRef = useRef<HTMLDivElement>(null);
-  const slider2Ref = useRef<HTMLDivElement>(null);
-  const slider2ParentRef = useRef<HTMLDivElement>(null);
+  const [yearFilter, setYearFilter] = useState<YearFilter>('all');
+  const locale = useLocale();
+  const isArabic = locale === 'ar';
 
+  // Bottom curve animation linked to page scroll
   const { scrollYProgress } = useScroll({
     target: container,
     offset: ['start end', 'end start'],
   });
 
-  const [x1Offset, setX1Offset] = useState(ABSOLUTE_LEFT_OFFSET + 300);
-  const [x2Offset, setX2Offset] = useState(ABSOLUTE_LEFT_OFFSET + 150);
-
-  const [maxScroll1, setMaxScroll1] = useState(0);
-  const [maxScroll2, setMaxScroll2] = useState(0);
-
-  const [yearFilter, setYearFilter] = useState<YearFilter>('all');
-
-  const x1 = useTransform(scrollYProgress, [0, 1], [0, 300]);
-  const x2 = useTransform(scrollYProgress, [0, 1], [0, 300]);
-  const height = useTransform(scrollYProgress, [0, 0.9], [150, -20]);
-
-  const locale = useLocale();
-  const isArabic = locale === 'ar';
-
-  const calculateMaxScroll = useCallback(
-    (
-      sliderRef: React.RefObject<HTMLDivElement>,
-      parentRef: React.RefObject<HTMLDivElement>
-    ) => {
-      if (sliderRef.current && parentRef.current) {
-        const sliderWidth = sliderRef.current.scrollWidth;
-        const parentWidth = parentRef.current.clientWidth;
-
-        const maxScrollValue =
-          ABSOLUTE_LEFT_OFFSET - (sliderWidth - parentWidth);
-        return Math.min(ABSOLUTE_LEFT_OFFSET, maxScrollValue);
-      }
-      return 0;
-    },
-    []
-  );
-
-  useEffect(() => {
-    const updateMaxScrolls = () => {
-      setMaxScroll1(calculateMaxScroll(slider1Ref, slider1ParentRef));
-      setMaxScroll2(calculateMaxScroll(slider2Ref, slider2ParentRef));
-    };
-
-    updateMaxScrolls();
-    window.addEventListener('resize', updateMaxScrolls);
-
-    return () => {
-      window.removeEventListener('resize', updateMaxScrolls);
-    };
-  }, [partners, calculateMaxScroll]);
-
-  const handleScrollRight = (slider: 'slider1' | 'slider2') => {
-    if (slider === 'slider1') {
-      setX1Offset((prev) => Math.max(maxScroll1, prev - SCROLL_AMOUNT));
-    } else {
-      setX2Offset((prev) => Math.max(maxScroll2, prev - SCROLL_AMOUNT));
-    }
-  };
-
-  const handleScrollLeft = (slider: 'slider1' | 'slider2') => {
-    if (slider === 'slider1') {
-      setX1Offset((prev) =>
-        Math.min(ABSOLUTE_LEFT_OFFSET + 300, prev + SCROLL_AMOUNT * 2)
-      );
-    } else {
-      setX2Offset((prev) =>
-        Math.min(ABSOLUTE_LEFT_OFFSET + 300, prev + SCROLL_AMOUNT * 2)
-      );
-    }
-  };
-
-  const canScrollLeft = (slider: 'slider1' | 'slider2') => {
-    const offset = slider === 'slider1' ? x1Offset : x2Offset;
-    const initialOffsetForSlider =
-      slider === 'slider1' ? ABSOLUTE_LEFT_OFFSET + 100 : ABSOLUTE_LEFT_OFFSET;
-    return offset < initialOffsetForSlider;
-  };
-
-  const canScrollRight = (slider: 'slider1' | 'slider2') => {
-    const offset = slider === 'slider1' ? x1Offset : x2Offset;
-    const currentMaxScroll = slider === 'slider1' ? maxScroll1 : maxScroll2;
-    return offset > currentMaxScroll;
-  };
+  // Adjusted height animation for the bottom decorative curve
+  const height = useTransform(scrollYProgress, [0, 0.9], [150, 0]);
 
   const partners2022 = partners.filter((p) => p.yearOfPartnership === '2022');
   const partners2024 = partners.filter((p) => p.yearOfPartnership === '2024');
@@ -117,209 +45,214 @@ const PartnersImagesSlider = ({ partners }: PartnerSliderProps) => {
   const shouldShowSlider1 = yearFilter === 'all' || yearFilter === '2022';
   const shouldShowSlider2 = yearFilter === 'all' || yearFilter === '2024';
 
-  const toggleYearFilter = (year: '2022' | '2024') => {
-    if (yearFilter === year) {
-      setYearFilter('all');
+  return (
+    <ClientWrapper>
+      <div
+        ref={container}
+        className="flex flex-col gap-12 relative bg-[#E9EAEB] lg:mt-12 2xl:mt-24 z-[1] pb-24"
+      >
+        {/* Title Section */}
+        <div className="w-full hidden lg:flex flex-col gap-6 py-4 xl:py-8 text-center bg-[#E9EAEB] px-8">
+          <h2
+            className={cn(
+              'text-2xl xl:text-4xl w-full text-[#ee7103]',
+              isArabic ? 'arabic-title-bold' : 'latin-title-bold'
+            )}
+          >
+            {isArabic
+              ? ' الشركاء الذين دعمونا'
+              : 'Les partenaires qui nous ont accompagnés'}
+          </h2>
+        </div>
+
+        {/* Sliders Container */}
+        <div className="flex flex-col gap-16 px-4 md:px-0">
+          {shouldShowSlider1 && partners2022.length > 0 && (
+            <SliderInstance
+              partners={partners2022}
+              isArabic={isArabic}
+              title="2022"
+            />
+          )}
+
+          {shouldShowSlider2 && partners2024.length > 0 && (
+            <SliderInstance
+              partners={partners2024}
+              isArabic={isArabic}
+              title="2024"
+            />
+          )}
+        </div>
+
+        {/* Bottom Curve Decoration */}
+        <motion.div
+          style={{ height }}
+          className="absolute bottom-0 w-full bg-[#141516] z-0 overflow-hidden"
+        >
+          <div
+            className="h-[300%] w-[120%] -left-[10%] custom-border-radius bg-[#E9EAEB] absolute top-0"
+            style={{ boxShadow: '0px 60px 50px rgba(0, 0, 0, 0.748)' }}
+          ></div>
+        </motion.div>
+      </div>
+    </ClientWrapper>
+  );
+};
+
+// --- Reusable Slider Logic to avoid code duplication ---
+
+interface SliderInstanceProps {
+  partners: IPartner[];
+  isArabic: boolean;
+  title: string;
+}
+
+const SliderInstance = ({ partners, isArabic, title }: SliderInstanceProps) => {
+  const trackRef = useRef<HTMLDivElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  // We use useMotionValue for performant animations without re-renders
+  const x = useMotionValue(0);
+
+  const [constraints, setConstraints] = useState({ min: 0, max: 0 });
+  const [canScrollLeft, setCanScrollLeft] = useState(false);
+  const [canScrollRight, setCanScrollRight] = useState(true);
+
+  // Measure the track width vs container width to determine scroll limits
+  useEffect(() => {
+    const measure = () => {
+      if (!trackRef.current || !containerRef.current) return;
+
+      const trackWidth = trackRef.current.scrollWidth;
+      const containerWidth = containerRef.current.offsetWidth;
+
+      // If content fits, no scrolling needed
+      if (trackWidth < containerWidth) {
+        setConstraints({ min: 0, max: 0 });
+        setCanScrollRight(false);
+        setCanScrollLeft(false);
+      } else {
+        // Max scroll is negative (moving track left)
+        const maxScroll = -(trackWidth - containerWidth + 40); // 40px buffer
+        setConstraints({ min: 0, max: maxScroll });
+        setCanScrollRight(true);
+      }
+    };
+
+    measure();
+    window.addEventListener('resize', measure);
+    return () => window.removeEventListener('resize', measure);
+  }, [partners]);
+
+  // Update button states when x changes
+  useEffect(() => {
+    const unsubscribe = x.on('change', (latest) => {
+      setCanScrollLeft(latest < 0); // Can go left (back to start) if x is negative
+      setCanScrollRight(latest > constraints.max); // Can go right if we haven't hit the limit
+    });
+    return () => unsubscribe();
+  }, [x, constraints]);
+
+  const handleSlide = (direction: 'left' | 'right') => {
+    const currentX = x.get();
+    let newX;
+
+    if (direction === 'left') {
+      // Move towards 0 (Positive visual movement)
+      newX = Math.min(currentX + SCROLL_AMOUNT, 0);
     } else {
-      setYearFilter(year);
+      // Move towards negative (Negative visual movement)
+      newX = Math.max(currentX - SCROLL_AMOUNT, constraints.max);
     }
+
+    animate(x, newX, {
+      type: 'spring',
+      stiffness: 300,
+      damping: 30,
+    });
   };
 
   return (
-    <div
-      ref={container}
-      className={cn(
-        'flex flex-col gap-[3vw] relative bg-[#E9EAEB] lg:mt-12 2xl:mt-24 z-[1]'
-      )}
-    >
-      <div className="w-full hidden lg:flex flex-col gap-6 py-4 xl:py-8 text-center bg-[#E9EAEB] px-8">
-        <h2
-          className={cn(
-            'text-2xl xl:text-4xl w-full text-[#ee7103]',
-            isArabic ? 'arabic-title-bold' : 'latin-title-bold'
-          )}
-        >
-          {isArabic
-            ? ' الشركاء الذين دعمونا'
-            : 'Les partenaires qui nous ont accompagnés'}
-        </h2>
-      </div>
-
-      {shouldShowSlider1 && partners2022.length > 0 && (
-        <>
-          <div
-            className="relative items-center w-[120vw] hidden lg:flex"
-            ref={slider1ParentRef}
-          >
-            <Button
-              onClick={() => handleScrollLeft('slider1')}
-              disabled={!canScrollLeft('slider1')}
-              className={cn(
-                'absolute z-10 bg-transparent hover:bg-transparent text-[#094142] px-4 py-2 rounded-md mx-4 disabled:opacity-50 disabled:cursor-not-allowed',
-                isArabic ? 'right-0' : 'left-0'
-              )}
-            >
-              <ChevronLeft
-                className={cn('size-16', isArabic ? 'rotate-180' : '')}
-              />
-            </Button>
-            <motion.div
-              ref={slider1Ref}
-              style={{ x: x1, translateX: x1Offset }}
-              className={cn(
-                'hidden md:flex relative gap-[3vw] w-[240vw]',
-                isArabic ? 'right-[-10vw]' : 'left-[-10vw]'
-              )}
-            >
-              {partners2022.map((partner, index) => (
-                <div
-                  key={index}
-                  className={cn('size-[4vw] flex justify-center items-center')}
-                  style={{
-                    backgroundColor: '#094142',
-                  }}
-                >
-                  <Link
-                    href={partner.hrefLink || '#'}
-                    target={partner.hrefLink ? '_blank' : undefined}
-                    rel={partner.hrefLink ? 'noopener noreferrer' : undefined}
-                    className="w-full h-full flex justify-center items-center group relative"
-                  >
-                    <div className={cn('relative size-full overflow-hidden')}>
-                      <Image
-                        fill={true}
-                        alt={partner.frenchName}
-                        src={partner.logoImage || '/placeholder.svg'}
-                        className="object-cover object-center transition duration-700 group-hover:scale-110"
-                      />
-                      <div
-                        dir={isArabic ? 'rtl' : 'ltr'}
-                        className={cn(
-                          'absolute bottom-2 text-[0.5rem] text-white z-20',
-                          isArabic
-                            ? 'right-2 arabic-subtitle-bold'
-                            : 'left-2 latin-subtitle-regular'
-                        )}
-                      >
-                        {isArabic
-                          ? partner.arabicName || partner.frenchName
-                          : partner.frenchName}
-                      </div>
-                      <div className="absolute inset-0 bg-gradient-to-t from-[#094142]/90 via-transparent to-transparent" />
-                    </div>
-                  </Link>
-                </div>
-              ))}
-            </motion.div>
-            <Button
-              onClick={() => handleScrollRight('slider1')}
-              disabled={!canScrollRight('slider1')}
-              className={cn(
-                'absolute z-10 bg-transparent hover:bg-transparent text-[#094142] px-4 py-2 rounded-md mx-4 disabled:opacity-50 disabled:cursor-not-allowed',
-                isArabic ? 'left-[20vw]' : 'right-[20vw]'
-              )}
-            >
-              <ChevronRight
-                className={cn('size-16', isArabic ? 'rotate-180' : '')}
-              />
-            </Button>
-          </div>
-        </>
-      )}
-
-      {shouldShowSlider2 && partners2024.length > 0 && (
-        <>
-          <div
-            className="relative items-center w-[120vw] hidden lg:flex"
-            ref={slider2ParentRef}
-          >
-            <Button
-              onClick={() => handleScrollLeft('slider2')}
-              disabled={!canScrollLeft('slider2')}
-              className={cn(
-                'absolute z-10 bg-transparent hover:bg-transparent text-[#094142] px-4 py-2 rounded-md mx-4 disabled:opacity-50 disabled:cursor-not-allowed',
-                isArabic ? 'right-0' : 'left-0'
-              )}
-            >
-              <ChevronLeft
-                className={cn('size-16', isArabic ? 'rotate-180' : '')}
-              />
-            </Button>
-            <motion.div
-              ref={slider2Ref}
-              style={{ x: x2, translateX: x2Offset }}
-              className={cn(
-                'hidden md:flex relative gap-[3vw] w-[240vw]',
-                isArabic ? 'right-[-10vw]' : 'left-[-10vw]'
-              )}
-            >
-              {partners2024.map((partner, index) => (
-                <div
-                  key={index}
-                  className={cn('size-[4vw] flex justify-center items-center')}
-                  style={{
-                    backgroundColor: '#094142',
-                  }}
-                >
-                  <Link
-                    href={partner.hrefLink || '#'}
-                    target={partner.hrefLink ? '_blank' : undefined}
-                    rel={partner.hrefLink ? 'noopener noreferrer' : undefined}
-                    className="w-full h-full flex justify-center items-center group relative"
-                  >
-                    <div className={cn('relative size-full overflow-hidden')}>
-                      <Image
-                        fill={true}
-                        alt={partner.frenchName}
-                        src={partner.logoImage || '/placeholder.svg'}
-                        className="object-cover object-center transition duration-700 group-hover:scale-110"
-                      />
-                      <div
-                        dir={isArabic ? 'rtl' : 'ltr'}
-                        className={cn(
-                          'absolute bottom-2 text-[0.5rem] text-white z-20',
-                          isArabic
-                            ? 'right-2 arabic-subtitle-bold'
-                            : 'left-2 latin-subtitle-regular'
-                        )}
-                      >
-                        {isArabic
-                          ? partner.arabicName || partner.frenchName
-                          : partner.frenchName}
-                      </div>
-                      <div className="absolute inset-0 bg-gradient-to-t from-[#094142]/90 via-transparent to-transparent" />
-                    </div>
-                  </Link>
-                </div>
-              ))}
-            </motion.div>
-            <Button
-              onClick={() => handleScrollRight('slider2')}
-              disabled={!canScrollRight('slider2')}
-              className={cn(
-                'absolute z-10 bg-transparent hover:bg-transparent text-[#094142] px-4 py-2 rounded-md mx-4 disabled:opacity-50 disabled:cursor-not-allowed',
-                isArabic ? 'left-[20vw]' : 'right-[20vw]'
-              )}
-            >
-              <ChevronRight
-                className={cn('size-16', isArabic ? 'rotate-180' : '')}
-              />
-            </Button>
-          </div>
-        </>
-      )}
-
-      <motion.div
-        style={{ height }}
-        className={cn('relative mt-24 bg-[#141516]')}
+    <div className="relative w-full max-w-7xl mx-auto group">
+      {/* Button Left */}
+      <Button
+        onClick={() => handleSlide(isArabic ? 'right' : 'left')}
+        disabled={isArabic ? !canScrollRight : !canScrollLeft}
+        variant="ghost"
+        className={cn(
+          'absolute top-1/2 -translate-y-1/2 z-20 h-12 w-12 rounded-full bg-white/50 backdrop-blur-sm hover:bg-white text-[#094142] border border-[#094142]/20 disabled:opacity-0 transition-opacity duration-300',
+          isArabic ? 'right-2 md:-right-12' : 'left-2 md:-left-12'
+        )}
       >
-        <div
-          className={cn(
-            'h-full md:h-[250%] w-[120%] -left-[10%] custom-border-radius bg-[#E9EAEB] absolute z-[1]'
-          )}
-          style={{ boxShadow: '0px 60px 50px rgba(0, 0, 0, 0.748)' }}
-        ></div>
-      </motion.div>
+        <ChevronLeft className={cn('h-8 w-8', isArabic && 'rotate-180')} />
+      </Button>
+
+      {/* Button Right */}
+      <Button
+        onClick={() => handleSlide(isArabic ? 'left' : 'right')}
+        disabled={isArabic ? !canScrollLeft : !canScrollRight}
+        variant="ghost"
+        className={cn(
+          'absolute top-1/2 -translate-y-1/2 z-20 h-12 w-12 rounded-full bg-white/50 backdrop-blur-sm hover:bg-white text-[#094142] border border-[#094142]/20 disabled:opacity-0 transition-opacity duration-300',
+          isArabic ? 'left-2 md:-left-12' : 'right-2 md:-right-12'
+        )}
+      >
+        <ChevronRight className={cn('h-8 w-8', isArabic && 'rotate-180')} />
+      </Button>
+
+      {/* Window (Overflow Hidden) */}
+      <div
+        ref={containerRef}
+        className="overflow-hidden w-full px-4"
+        dir="ltr" // Force LTR for calculation simplicity, we handle visual RTL via Flex direction if needed
+      >
+        {/* Track (Moving Part) */}
+        <motion.div
+          ref={trackRef}
+          style={{ x }}
+          className="flex w-max gap-6 md:gap-8 items-center"
+        >
+          {partners.map((partner, index) => (
+            <div
+              key={index}
+              className="relative shrink-0 flex justify-center items-center bg-[#094142] h-24 w-36 md:h-32 md:w-48 overflow-hidden shadow-lg group/card"
+            >
+              <Link
+                href={partner.hrefLink || '#'}
+                target={partner.hrefLink ? '_blank' : undefined}
+                rel={partner.hrefLink ? 'noopener noreferrer' : undefined}
+                className="w-full h-full flex justify-center items-center relative"
+              >
+                {/* Image Container */}
+                <div className="relative w-full h-full p-4">
+                  <Image
+                    fill
+                    alt={partner.frenchName}
+                    src={partner.logoImage || '/placeholder.svg'}
+                    className="object-contain p-2 transition duration-500 group-hover/card:scale-110"
+                  />
+                </div>
+
+                {/* Overlay Text */}
+                <div className="absolute inset-0 bg-gradient-to-t from-[#094142]/90 via-transparent to-transparent opacity-0 group-hover/card:opacity-100 transition-opacity duration-300 flex items-end p-3">
+                  <span
+                    className={cn(
+                      'text-white text-xs font-semibold w-full',
+                      isArabic
+                        ? 'text-right arabic-subtitle-bold'
+                        : 'text-left latin-subtitle-regular'
+                    )}
+                  >
+                    {isArabic
+                      ? partner.arabicName || partner.frenchName
+                      : partner.frenchName}
+                  </span>
+                </div>
+              </Link>
+            </div>
+          ))}
+        </motion.div>
+      </div>
     </div>
   );
 };

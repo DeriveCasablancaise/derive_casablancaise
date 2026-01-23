@@ -1,6 +1,5 @@
 import React from 'react';
 import AboutLanding from '@/components/shared/About/AboutLanding';
-import VideoSection from '@/components/shared/Derive2024/VideoSection';
 import Contact from '@/components/shared/contact';
 import { getAr2dData } from '@/lib/actions/ar2d.actions';
 

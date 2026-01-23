@@ -18,10 +18,8 @@ import { handleError } from '@/lib/utils';
 import SubmitButton from '../SubmitButton';
 import TiptapEditor from '../TiptapEditor';
 import { VideoFileUploader } from './VideoFileUploader';
-import { derive2024FormSchema } from '@/lib/validator';
+import { ar2dFormSchema, derive2024FormSchema } from '@/lib/validator';
 import { BgImageUploader } from './BgImageUploader';
-import { IDerive2022 } from '@/lib/database/models/derive2022.model';
-import { updateDerive2022 } from '@/lib/actions/derive2022.actions';
 import { IAr2d } from '@/lib/database/models/ar2d.model';
 import { updateAr2d } from '@/lib/actions/ar2d.actions';
 import { FileUploader } from '../FileUploader';
@@ -33,6 +31,7 @@ type Ar2dFormProps = {
 const Ar2dForm = ({ ar2d }: Ar2dFormProps) => {
   const [video1File, setVideo1File] = useState<File[] | null>(null);
   const [video2File, setVideo2File] = useState<File[] | null>(null);
+  const [video3File, setVideo3File] = useState<File[] | null>(null);
   const [bgImageFile, setBgImageFile] = useState<File[] | null>(null);
   const [files, setFiles] = useState<File[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -54,14 +53,18 @@ const Ar2dForm = ({ ar2d }: Ar2dFormProps) => {
     video2IframeLink: '',
     video2TitleFr: '',
     video2TitleAr: '',
+    video3Thumbnail: '',
+    video3IframeLink: '',
+    video3TitleFr: '',
+    video3TitleAr: '',
   };
 
   const router = useRouter();
   const { startUpload } = useUploadThing('imageUploader');
 
-  const form = useForm<z.infer<typeof derive2024FormSchema>>({
-    resolver: zodResolver(derive2024FormSchema),
-    defaultValues: initialValues as z.infer<typeof derive2024FormSchema>,
+  const form = useForm<z.infer<typeof ar2dFormSchema>>({
+    resolver: zodResolver(ar2dFormSchema),
+    defaultValues: initialValues as z.infer<typeof ar2dFormSchema>,
   });
 
   useEffect(() => {
@@ -83,15 +86,20 @@ const Ar2dForm = ({ ar2d }: Ar2dFormProps) => {
         video2IframeLink: ar2d.video2IframeLink || '',
         video2TitleFr: ar2d.video2TitleFr || '',
         video2TitleAr: ar2d.video2TitleAr || '',
+        video3Thumbnail: ar2d.video3Thumbnail || '',
+        video3IframeLink: ar2d.video3IframeLink || '',
+        video3TitleFr: ar2d.video3TitleFr || '',
+        video3TitleAr: ar2d.video3TitleAr || '',
       });
       setVideo1File(null);
       setVideo2File(null);
+      setVideo3File(null);
       setBgImageFile(null);
       setFiles([]);
     }
   }, [ar2d, form]);
 
-  async function onSubmit(values: z.infer<typeof derive2024FormSchema>) {
+  async function onSubmit(values: z.infer<typeof ar2dFormSchema>) {
     setIsLoading(true);
 
     let updatedValues = { ...values };
@@ -123,6 +131,15 @@ const Ar2dForm = ({ ar2d }: Ar2dFormProps) => {
       }
     } else if (!updatedValues.video2Thumbnail) {
       updatedValues.video2Thumbnail = '';
+    }
+
+    if (video3File && video3File.length > 0) {
+      const uploadedImage = await startUpload(video3File);
+      if (uploadedImage) {
+        updatedValues.video3Thumbnail = uploadedImage[0].url;
+      }
+    } else if (!updatedValues.video3Thumbnail) {
+      updatedValues.video3Thumbnail = '';
     }
 
     if (bgImageFile && bgImageFile.length > 0) {
@@ -500,6 +517,84 @@ const Ar2dForm = ({ ar2d }: Ar2dFormProps) => {
                       onFieldChange={field.onChange}
                       imageUrl={field.value || ''}
                       setFile={setVideo2File}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+        </div>
+
+        <div className="border-t-2 pt-4">
+          <h3 className="text-lg font-semibold mb-4">Video 3</h3>
+
+          <div className="flex flex-col gap-5 md:flex-row">
+            <FormField
+              control={form.control}
+              name="video3TitleFr"
+              render={({ field }) => (
+                <FormItem className="w-full">
+                  <FormControl>
+                    <Input
+                      placeholder="Titre vidéo 3 (Français)"
+                      className="input-field"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="video3TitleAr"
+              render={({ field }) => (
+                <FormItem className="w-full">
+                  <FormControl>
+                    <Input
+                      placeholder="العنوان الثالث (اختياري)"
+                      className="input-field"
+                      {...field}
+                      dir="rtl"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+
+          <div className="flex flex-col gap-5 md:flex-row mt-4">
+            <FormField
+              control={form.control}
+              name="video3IframeLink"
+              render={({ field }) => (
+                <FormItem className="w-full">
+                  <FormControl>
+                    <Input
+                      placeholder="Lien iframe vidéo 3 (embed link)"
+                      className="input-field"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+
+          <div className="mt-4">
+            <FormField
+              control={form.control}
+              name="video3Thumbnail"
+              render={({ field }) => (
+                <FormItem className="w-full">
+                  <FormControl className="h-72">
+                    <VideoFileUploader
+                      onFieldChange={field.onChange}
+                      imageUrl={field.value || ''}
+                      setFile={setVideo3File}
                     />
                   </FormControl>
                   <FormMessage />

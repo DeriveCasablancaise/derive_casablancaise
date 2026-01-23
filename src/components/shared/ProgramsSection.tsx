@@ -27,7 +27,7 @@ const categoryImageMap: Record<CategoryKey, string> = {
   cinema: '/assets/categories/cinema.jpg',
   conference: '/assets/categories/conférences.jpg',
   ateliers: '/assets/categories/ateliers.jpg',
-  autres: '/assets/categories/autres.jpg',
+  autres: '/assets/categories/en-marge.jpeg',
 };
 
 const ProgramSection = () => {
