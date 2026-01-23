@@ -17,6 +17,19 @@ type PostProps = {
   };
 };
 
+const getLocalFromUTC = (dateString: Date | string) => {
+  const date = new Date(dateString);
+
+  return new Date(
+    date.getUTCFullYear(),
+    date.getUTCMonth(),
+    date.getUTCDate(),
+    date.getUTCHours(),
+    date.getUTCMinutes(),
+    date.getUTCSeconds()
+  );
+};
+
 const page = async ({ params: { postId } }: PostProps) => {
   const post = await getPostById(postId);
   const relatedPosts = await getRelatedPosts({
@@ -29,11 +42,22 @@ const page = async ({ params: { postId } }: PostProps) => {
 
   let artists: any[] = [];
   if (post.artists && post.artists.length > 0) {
-    artists = await Artist.find({ _id: { $in: post.artists } });
+    const fetchedArtists = await Artist.find({ _id: { $in: post.artists } });
+
+    // 2. Create a Map for instant lookup by ID
+    // We convert the ObjectId to string to ensure keys match
+    const artistsMap = new Map(
+      fetchedArtists.map((artist: any) => [artist._id.toString(), artist])
+    );
+
+    // 3. Rebuild the array using the original order from 'post.artists'
+    artists = post.artists
+      .map((id: string) => artistsMap.get(id.toString()))
+      .filter((artist: any) => artist !== undefined); // Safety check
   }
 
-  const startDate = new Date(post.startDateTime);
-  const endDate = new Date(post.endDateTime);
+  const startDate = getLocalFromUTC(post.startDateTime);
+  const endDate = getLocalFromUTC(post.endDateTime);
   const isSameDateTime = isEqual(startDate, endDate);
 
   const formatTime = (date: Date) => {
@@ -41,6 +65,11 @@ const page = async ({ params: { postId } }: PostProps) => {
       locale: isArabic ? arMA : fr,
     });
   };
+
+  const galleryImages = [
+    ...(post.thumbnailImage ? [post.thumbnailImage] : []),
+    ...(post.images || []),
+  ];
 
   return (
     <div className="overflow-hidden">
@@ -96,7 +125,7 @@ const page = async ({ params: { postId } }: PostProps) => {
               {/* Image Gallery */}
               <div className="w-full">
                 <ImageGallery
-                  images={post.images}
+                  images={galleryImages}
                   alt={isArabic ? post.arabicTitle : post.frenchTitle}
                 />
               </div>

@@ -21,7 +21,6 @@ import { createPost, updatePost } from '@/lib/actions/post.actions';
 import { handleError } from '@/lib/utils';
 import { FileUploader } from '../FileUploader';
 import SubmitButton from '../SubmitButton';
-import { Checkbox } from '@/components/ui/checkbox';
 import TiptapEditor from '../TiptapEditor';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
@@ -33,6 +32,34 @@ import ArtistMultiSelect from './ArtistMultiSelect';
 import { getAllArtists } from '@/lib/actions/artists.actions';
 import SubCategoryDropdown from './SubcategoryDropdown';
 import { ThumbnailUploader } from './ThumbnailUploader';
+
+// --- TIMEZONE FIX HELPERS ---
+const toFloatingUTC = (date: Date) => {
+  if (!date) return date;
+  return new Date(
+    Date.UTC(
+      date.getFullYear(),
+      date.getMonth(),
+      date.getDate(),
+      date.getHours(),
+      date.getMinutes(),
+      date.getSeconds()
+    )
+  );
+};
+
+const fromFloatingUTC = (dateString: Date | string) => {
+  if (!dateString) return new Date();
+  const date = new Date(dateString);
+  return new Date(
+    date.getUTCFullYear(),
+    date.getUTCMonth(),
+    date.getUTCDate(),
+    date.getUTCHours(),
+    date.getUTCMinutes(),
+    date.getUTCSeconds()
+  );
+};
 
 type PostFormProps = {
   type: 'Create' | 'Update';
@@ -50,12 +77,12 @@ const PostForm = ({ type, post, postId }: PostFormProps) => {
     post && type === 'Update'
       ? {
           ...post,
-          startDateTime: new Date(post.startDateTime),
-          endDateTime: new Date(post.endDateTime),
+          startDateTime: fromFloatingUTC(post.startDateTime),
+          endDateTime: fromFloatingUTC(post.endDateTime),
         }
       : postDefaultValues;
-  const router = useRouter();
 
+  const router = useRouter();
   const { startUpload } = useUploadThing('imageUploader');
 
   useEffect(() => {
@@ -79,9 +106,16 @@ const PostForm = ({ type, post, postId }: PostFormProps) => {
   async function onSubmit(values: z.infer<typeof postFormSchema>) {
     setIsLoading(true);
 
-    let uploadedImageUrls = values.images;
+    // 1. Start with existing valid URLs (Filter out blob: previews)
+    // "values.images" contains [OldServerURL, BlobPreviewURL]
+    // We want to keep OldServerURL, but discard BlobPreviewURL (because we will get the real one from uploadthing)
+    let uploadedImageUrls = values.images.filter(
+      (url) => !url.startsWith('blob:')
+    );
+
     let uploadedThumbnailUrl = values.thumbnailImage;
 
+    // 2. Upload NEW files
     if (files.length > 0) {
       const uploadedImages = await startUpload(files);
 
@@ -89,7 +123,9 @@ const PostForm = ({ type, post, postId }: PostFormProps) => {
         return;
       }
 
-      uploadedImageUrls = uploadedImages.map((img) => img.url);
+      // 3. Append the NEW Real URLs to the EXISTING URLs
+      const newImageUrls = uploadedImages.map((img) => img.url);
+      uploadedImageUrls = [...uploadedImageUrls, ...newImageUrls];
     }
 
     if (thumbnailFile) {
@@ -100,16 +136,20 @@ const PostForm = ({ type, post, postId }: PostFormProps) => {
       uploadedThumbnailUrl = uploadedThumbnails[0].url;
     }
 
+    const finalStart = toFloatingUTC(values.startDateTime);
+    const finalEnd = toFloatingUTC(values.endDateTime);
+
     if (type === 'Create') {
       try {
         const newPost = await createPost({
           ...values,
+          startDateTime: finalStart,
+          endDateTime: finalEnd,
           images: uploadedImageUrls,
           thumbnailImage: uploadedThumbnailUrl,
         });
 
         if (newPost) {
-          console.log(newPost.images);
           form.reset();
           router.push(`/darja-admin/posts`);
         }
@@ -128,6 +168,8 @@ const PostForm = ({ type, post, postId }: PostFormProps) => {
         const updatedPost = await updatePost({
           post: {
             ...values,
+            startDateTime: finalStart,
+            endDateTime: finalEnd,
             images: uploadedImageUrls,
             thumbnailImage: uploadedThumbnailUrl,
             _id: postId,
@@ -153,6 +195,8 @@ const PostForm = ({ type, post, postId }: PostFormProps) => {
         onSubmit={form.handleSubmit(onSubmit)}
         className="flex flex-col gap-5"
       >
+        {/* ... All your form fields remain exactly the same ... */}
+
         <div className="flex flex-col gap-5 md:flex-row">
           <FormField
             control={form.control}
@@ -289,7 +333,6 @@ const PostForm = ({ type, post, postId }: PostFormProps) => {
           />
         </div>
 
-        {/* Conditional subCategory field when postCategory is "autres" */}
         {form.watch('postCategory') === 'autres' && (
           <FormField
             control={form.control}
