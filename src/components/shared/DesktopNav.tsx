@@ -68,7 +68,10 @@ const DesktopNav = () => {
             {t('Navigation.derivecasa')}
           </NavigationMenuTrigger>
           <NavigationMenuContent
-            className={cn('bg-[#094142] left-0', isArabic && 'right-0')}
+            className={cn(
+              'bg-[#094142] left-0 border-white',
+              isArabic && 'right-0'
+            )}
             style={{ width: `${triggerWidth + 2}px` }}
           >
             <ul className="flex flex-col gap-3 " dir={isArabic ? 'rtl' : 'ltr'}>
