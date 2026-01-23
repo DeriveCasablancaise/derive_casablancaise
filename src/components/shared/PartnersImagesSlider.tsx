@@ -22,7 +22,7 @@ interface PartnerSliderProps {
 }
 
 type YearFilter = 'all' | '2022' | '2024';
-const SCROLL_AMOUNT = 300; // How many pixels to move per click
+const SCROLL_AMOUNT = 300;
 
 const PartnersImagesSlider = ({ partners }: PartnerSliderProps) => {
   const container = useRef(null);
@@ -30,13 +30,11 @@ const PartnersImagesSlider = ({ partners }: PartnerSliderProps) => {
   const locale = useLocale();
   const isArabic = locale === 'ar';
 
-  // Bottom curve animation linked to page scroll
   const { scrollYProgress } = useScroll({
     target: container,
     offset: ['start end', 'end start'],
   });
 
-  // Adjusted height animation for the bottom decorative curve
   const height = useTransform(scrollYProgress, [0, 0.9], [150, 0]);
 
   const partners2022 = partners.filter((p) => p.yearOfPartnership === '2022');
@@ -51,7 +49,6 @@ const PartnersImagesSlider = ({ partners }: PartnerSliderProps) => {
         ref={container}
         className="flex flex-col gap-12 relative bg-[#E9EAEB] lg:mt-12 2xl:mt-24 z-[1] pb-24"
       >
-        {/* Title Section */}
         <div className="w-full hidden lg:flex flex-col gap-6 py-4 xl:py-8 text-center bg-[#E9EAEB] px-8">
           <h2
             className={cn(
@@ -65,7 +62,6 @@ const PartnersImagesSlider = ({ partners }: PartnerSliderProps) => {
           </h2>
         </div>
 
-        {/* Sliders Container */}
         <div className="flex flex-col gap-16 px-4 md:px-0">
           {shouldShowSlider1 && partners2022.length > 0 && (
             <SliderInstance
@@ -84,7 +80,6 @@ const PartnersImagesSlider = ({ partners }: PartnerSliderProps) => {
           )}
         </div>
 
-        {/* Bottom Curve Decoration */}
         <motion.div
           style={{ height }}
           className="absolute bottom-0 w-full bg-[#141516] z-0 overflow-hidden"
@@ -99,7 +94,7 @@ const PartnersImagesSlider = ({ partners }: PartnerSliderProps) => {
   );
 };
 
-// --- Reusable Slider Logic to avoid code duplication ---
+// --- Reusable Slider Logic ---
 
 interface SliderInstanceProps {
   partners: IPartner[];
@@ -110,15 +105,12 @@ interface SliderInstanceProps {
 const SliderInstance = ({ partners, isArabic, title }: SliderInstanceProps) => {
   const trackRef = useRef<HTMLDivElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
-
-  // We use useMotionValue for performant animations without re-renders
   const x = useMotionValue(0);
 
   const [constraints, setConstraints] = useState({ min: 0, max: 0 });
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(true);
 
-  // Measure the track width vs container width to determine scroll limits
   useEffect(() => {
     const measure = () => {
       if (!trackRef.current || !containerRef.current) return;
@@ -126,14 +118,12 @@ const SliderInstance = ({ partners, isArabic, title }: SliderInstanceProps) => {
       const trackWidth = trackRef.current.scrollWidth;
       const containerWidth = containerRef.current.offsetWidth;
 
-      // If content fits, no scrolling needed
       if (trackWidth < containerWidth) {
         setConstraints({ min: 0, max: 0 });
         setCanScrollRight(false);
         setCanScrollLeft(false);
       } else {
-        // Max scroll is negative (moving track left)
-        const maxScroll = -(trackWidth - containerWidth + 40); // 40px buffer
+        const maxScroll = -(trackWidth - containerWidth + 40);
         setConstraints({ min: 0, max: maxScroll });
         setCanScrollRight(true);
       }
@@ -144,11 +134,10 @@ const SliderInstance = ({ partners, isArabic, title }: SliderInstanceProps) => {
     return () => window.removeEventListener('resize', measure);
   }, [partners]);
 
-  // Update button states when x changes
   useEffect(() => {
     const unsubscribe = x.on('change', (latest) => {
-      setCanScrollLeft(latest < 0); // Can go left (back to start) if x is negative
-      setCanScrollRight(latest > constraints.max); // Can go right if we haven't hit the limit
+      setCanScrollLeft(latest < 0);
+      setCanScrollRight(latest > constraints.max);
     });
     return () => unsubscribe();
   }, [x, constraints]);
@@ -158,10 +147,8 @@ const SliderInstance = ({ partners, isArabic, title }: SliderInstanceProps) => {
     let newX;
 
     if (direction === 'left') {
-      // Move towards 0 (Positive visual movement)
       newX = Math.min(currentX + SCROLL_AMOUNT, 0);
     } else {
-      // Move towards negative (Negative visual movement)
       newX = Math.max(currentX - SCROLL_AMOUNT, constraints.max);
     }
 
@@ -174,7 +161,6 @@ const SliderInstance = ({ partners, isArabic, title }: SliderInstanceProps) => {
 
   return (
     <div className="relative w-full max-w-7xl mx-auto group">
-      {/* Button Left */}
       <Button
         onClick={() => handleSlide(isArabic ? 'right' : 'left')}
         disabled={isArabic ? !canScrollRight : !canScrollLeft}
@@ -187,7 +173,6 @@ const SliderInstance = ({ partners, isArabic, title }: SliderInstanceProps) => {
         <ChevronLeft className={cn('h-8 w-8', isArabic && 'rotate-180')} />
       </Button>
 
-      {/* Button Right */}
       <Button
         onClick={() => handleSlide(isArabic ? 'left' : 'right')}
         disabled={isArabic ? !canScrollLeft : !canScrollRight}
@@ -200,13 +185,7 @@ const SliderInstance = ({ partners, isArabic, title }: SliderInstanceProps) => {
         <ChevronRight className={cn('h-8 w-8', isArabic && 'rotate-180')} />
       </Button>
 
-      {/* Window (Overflow Hidden) */}
-      <div
-        ref={containerRef}
-        className="overflow-hidden w-full px-4"
-        dir="ltr" // Force LTR for calculation simplicity, we handle visual RTL via Flex direction if needed
-      >
-        {/* Track (Moving Part) */}
+      <div ref={containerRef} className="overflow-hidden w-full px-4" dir="ltr">
         <motion.div
           ref={trackRef}
           style={{ x }}
@@ -215,7 +194,8 @@ const SliderInstance = ({ partners, isArabic, title }: SliderInstanceProps) => {
           {partners.map((partner, index) => (
             <div
               key={index}
-              className="relative shrink-0 flex justify-center items-center bg-[#094142] h-24 w-36 md:h-32 md:w-48 overflow-hidden shadow-lg group/card"
+              // UPDATED: Changed bg-color to white, added rounded-xl and subtle shadow
+              className="relative shrink-0 flex justify-center items-center bg-[#E9EAEB] h-24 w-36 md:h-32 md:w-48 overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-300 group/card border border-gray-100"
             >
               <Link
                 href={partner.hrefLink || '#'}
@@ -223,18 +203,19 @@ const SliderInstance = ({ partners, isArabic, title }: SliderInstanceProps) => {
                 rel={partner.hrefLink ? 'noopener noreferrer' : undefined}
                 className="w-full h-full flex justify-center items-center relative"
               >
-                {/* Image Container */}
-                <div className="relative w-full h-full p-4">
+                {/* UPDATED: Increased padding (p-6) so logos don't touch edges */}
+                <div className="relative w-full h-full p-6">
                   <Image
                     fill
                     alt={partner.frenchName}
                     src={partner.logoImage || '/placeholder.svg'}
-                    className="object-contain p-2 transition duration-500 group-hover/card:scale-110"
+                    // UPDATED: Added grayscale filter that removes on hover
+                    className="object-contain p-1 transition-all duration-500 group-hover/card:scale-110 filter grayscale group-hover/card:grayscale-0 opacity-70 group-hover/card:opacity-100"
                   />
                 </div>
 
-                {/* Overlay Text */}
-                <div className="absolute inset-0 bg-gradient-to-t from-[#094142]/90 via-transparent to-transparent opacity-0 group-hover/card:opacity-100 transition-opacity duration-300 flex items-end p-3">
+                {/* UPDATED: Changed gradient to black since background is now white */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover/card:opacity-100 transition-opacity duration-300 flex items-end p-3">
                   <span
                     className={cn(
                       'text-white text-xs font-semibold w-full',
