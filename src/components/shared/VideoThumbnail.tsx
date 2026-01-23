@@ -40,7 +40,7 @@ const VideoThumbnail: React.FC<VideoThumbnailProps> = ({
       <TeaserModal
         isOpen={isModalOpen}
         onClose={closeModal}
-        videoUrl={videoUrl}
+        videoLink={videoUrl}
       />
     </>
   );
