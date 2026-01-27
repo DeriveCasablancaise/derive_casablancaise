@@ -209,7 +209,6 @@ const SliderInstance = ({ partners, isArabic, title }: SliderInstanceProps) => {
                     fill
                     alt={partner.frenchName}
                     src={partner.logoImage || '/placeholder.svg'}
-                    // UPDATED: Added grayscale filter that removes on hover
                     className="object-contain p-1 transition-all duration-500 group-hover/card:scale-110"
                   />
                 </div>
