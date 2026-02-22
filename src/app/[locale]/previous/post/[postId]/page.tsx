@@ -44,16 +44,13 @@ const page = async ({ params: { postId } }: PostProps) => {
   if (post.artists && post.artists.length > 0) {
     const fetchedArtists = await Artist.find({ _id: { $in: post.artists } });
 
-    // 2. Create a Map for instant lookup by ID
-    // We convert the ObjectId to string to ensure keys match
     const artistsMap = new Map(
       fetchedArtists.map((artist: any) => [artist._id.toString(), artist]),
     );
 
-    // 3. Rebuild the array using the original order from 'post.artists'
     artists = post.artists
       .map((id: string) => artistsMap.get(id.toString()))
-      .filter((artist: any) => artist !== undefined); // Safety check
+      .filter((artist: any) => artist !== undefined);
   }
 
   const startDate = getLocalFromUTC(post.startDateTime);

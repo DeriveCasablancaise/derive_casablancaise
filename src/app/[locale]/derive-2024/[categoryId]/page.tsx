@@ -55,6 +55,7 @@ const CategoryPage = async ({ params: { categoryId } }: CategoryPageProps) => {
         initialPosts={filteredPosts || []}
         locale={locale}
         isArabic={isArabic}
+        yearOfEdition="2024"
       />
       <Contact />
     </div>

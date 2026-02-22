@@ -41,6 +41,7 @@ interface CategoryPostsClientProps {
   initialPosts: IPost[];
   locale: string;
   isArabic: boolean;
+  yearOfEdition: '2022' | '2024';
 }
 
 const CategoryPostsClient: React.FC<CategoryPostsClientProps> = ({
@@ -48,6 +49,7 @@ const CategoryPostsClient: React.FC<CategoryPostsClientProps> = ({
   initialPosts,
   locale,
   isArabic,
+  yearOfEdition,
 }) => {
   const sectionRef = useRef(null);
   const isInView = useInView(sectionRef, { once: false, amount: 0.1 });
@@ -72,9 +74,13 @@ const CategoryPostsClient: React.FC<CategoryPostsClientProps> = ({
 
   const handleCategoryChange = (category: CategoryKey) => {
     if (category === selectedCategory) {
-      router.push(`/${locale}/derive-2024#program_section`);
+      router.push(
+        `/${locale}/${yearOfEdition === '2022' ? 'previous' : 'derive-2024'}#program_section`,
+      );
     } else {
-      router.push(`/${locale}/derive-2024/${category}`);
+      router.push(
+        `/${locale}/${yearOfEdition === '2022' ? 'previous' : 'derive-2024'}/${category}`,
+      );
     }
   };
 
@@ -88,7 +94,7 @@ const CategoryPostsClient: React.FC<CategoryPostsClientProps> = ({
         <ParentLink
           label={isArabic ? 'العودة' : 'Retour'}
           className="px-4 mb-4"
-          href={`/${locale}/derive-2024#program_section`}
+          href={`/${locale}/${yearOfEdition === '2022' ? 'previous' : 'derive-2024'}#program_section`}
         />
 
         <motion.div
@@ -100,7 +106,7 @@ const CategoryPostsClient: React.FC<CategoryPostsClientProps> = ({
           <h1
             className={cn(
               'text-2xl xl:text-4xl text-[#FF5C00] mb-8 text-center',
-              isArabic ? 'arabic-title-bold' : 'latin-title-bold'
+              isArabic ? 'arabic-title-bold' : 'latin-title-bold',
             )}
           >
             {isArabic
@@ -132,14 +138,14 @@ const CategoryPostsClient: React.FC<CategoryPostsClientProps> = ({
                         : 'text-[#094142] hover:text-[#00b0db] hover:before:scale-x-100',
                       isArabic
                         ? 'arabic-subtitle-regular'
-                        : 'latin-subtitle-regular'
+                        : 'latin-subtitle-regular',
                     )}
                   >
                     {isArabic
                       ? Categories[category].ar
                       : Categories[category].fr}
                   </motion.button>
-                )
+                ),
               )}
             </div>
           </motion.div>
@@ -168,7 +174,7 @@ const CategoryPostsClient: React.FC<CategoryPostsClientProps> = ({
                   className="shadow-lg overflow-hidden"
                 >
                   <Link
-                    href={`/${locale}/derive-2024/post/${post._id}`}
+                    href={`/${locale}/${yearOfEdition === '2022' ? 'previous' : 'derive-2024'}/post/${post._id}`}
                     className="block aspect-[16/9] md:aspect-[3/4] lg:aspect-[1/1] relative group overflow-hidden"
                   >
                     {post.images && (
@@ -191,7 +197,7 @@ const CategoryPostsClient: React.FC<CategoryPostsClientProps> = ({
                           'text-white text-lg mb-1 font-semibold capitalize',
                           isArabic
                             ? 'arabic-subtitle-regular'
-                            : 'latin-subtitle-regular'
+                            : 'latin-subtitle-regular',
                         )}
                       >
                         {isArabic && post.arabicTitle
@@ -210,7 +216,7 @@ const CategoryPostsClient: React.FC<CategoryPostsClientProps> = ({
                     'text-xl text-[#094142]',
                     isArabic
                       ? 'arabic-subtitle-regular'
-                      : 'latin-subtitle-regular'
+                      : 'latin-subtitle-regular',
                   )}
                 >
                   {isArabic
