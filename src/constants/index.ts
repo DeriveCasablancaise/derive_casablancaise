@@ -43,6 +43,7 @@ export const postDefaultValues = {
   postCategory: '',
   location: '',
   isInHomepage: false,
+  yearOfEdition: '2024',
   artists: [],
   url: '',
 };

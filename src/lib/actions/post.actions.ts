@@ -57,7 +57,7 @@ export async function updatePost({ post }: UpdatePostParams) {
         images: post.images, // Explicitly update the images array
         postCategory: post.postCategory,
       },
-      { new: true }
+      { new: true },
     );
 
     revalidatePath('/darja-admin/posts');
@@ -107,7 +107,7 @@ export async function getPostById(postId: string) {
 // Get All Posts
 export async function getAllPosts(
   category?: ValidCategory,
-  subCategory?: SubCategoryKey
+  subCategory?: SubCategoryKey,
 ) {
   try {
     await connectToDatabase();
@@ -219,7 +219,8 @@ export async function getHomepagePosts() {
 
 export async function getPostsByCategory(
   category: string,
-  subCategory?: string
+  subCategory?: string,
+  yearOfEdition?: '2022' | '2024',
 ) {
   try {
     await connectToDatabase();
@@ -228,6 +229,10 @@ export async function getPostsByCategory(
 
     if (subCategory) {
       condition.subCategory = subCategory;
+    }
+
+    if (yearOfEdition) {
+      condition.yearOfEdition = yearOfEdition;
     }
 
     const postsQuery = Post.find(condition).sort({ startDateTime: 1 });

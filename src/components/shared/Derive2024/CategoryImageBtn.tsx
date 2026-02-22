@@ -30,6 +30,7 @@ interface CategoryImageButtonProps {
   isInView: boolean;
   isNavigationMode?: boolean;
   locale?: string;
+  year: '2022' | '2024';
 }
 
 export const CategoryImageButton: React.FC<CategoryImageButtonProps> = ({
@@ -42,6 +43,7 @@ export const CategoryImageButton: React.FC<CategoryImageButtonProps> = ({
   index,
   isInView,
   isNavigationMode = false,
+  year,
 }) => {
   const locale = useLocale();
 
@@ -53,7 +55,9 @@ export const CategoryImageButton: React.FC<CategoryImageButtonProps> = ({
       className={cn(
         'relative aspect-square overflow-hidden cursor-pointer group',
         'transform transition-all duration-300 hover:scale-105 hover:shadow-xl',
-        isSelected && !isNavigationMode ? 'ring-4 ring-[#00b0db] shadow-xl' : ''
+        isSelected && !isNavigationMode
+          ? 'ring-4 ring-[#00b0db] shadow-xl'
+          : '',
       )}
     >
       <Image
@@ -70,7 +74,7 @@ export const CategoryImageButton: React.FC<CategoryImageButtonProps> = ({
             'text-white text-center px-4 py-2 font-semibold',
             'text-sm md:text-base lg:text-lg',
             'transform transition-all duration-300 group-hover:scale-110',
-            isArabic ? 'arabic-subtitle-regular' : 'latin-subtitle-regular'
+            isArabic ? 'arabic-subtitle-regular' : 'latin-subtitle-regular',
           )}
         >
           {isArabic ? categoryName.ar : categoryName.fr}
@@ -81,7 +85,9 @@ export const CategoryImageButton: React.FC<CategoryImageButtonProps> = ({
 
   if (isNavigationMode) {
     return (
-      <Link href={`/${locale}/derive-2024/${categoryKey}`}>
+      <Link
+        href={`/${locale}/${year === '2022' ? 'previous' : 'derive-2024'}/${categoryKey}`}
+      >
         {buttonContent}
       </Link>
     );
@@ -92,7 +98,7 @@ export const CategoryImageButton: React.FC<CategoryImageButtonProps> = ({
       onClick={() => onClick(categoryKey)}
       className={cn(
         'relative group aspect-square overflow-hidden shadow-md transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#00b0db]',
-        isSelected ? 'ring-4 ring-[#00b0db] ring-offset-2' : 'hover:shadow-xl'
+        isSelected ? 'ring-4 ring-[#00b0db] ring-offset-2' : 'hover:shadow-xl',
       )}
     >
       <Image
@@ -108,7 +114,7 @@ export const CategoryImageButton: React.FC<CategoryImageButtonProps> = ({
             'text-white text-center px-4 py-2 font-semibold',
             'text-sm md:text-base lg:text-lg',
             'transform transition-all duration-300 group-hover:scale-110',
-            isArabic ? 'arabic-subtitle-regular' : 'latin-subtitle-regular'
+            isArabic ? 'arabic-subtitle-regular' : 'latin-subtitle-regular',
           )}
         >
           {isArabic ? categoryName.ar : categoryName.fr}

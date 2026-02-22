@@ -45,8 +45,7 @@ const CategoryPage = async ({ params: { categoryId } }: CategoryPageProps) => {
     );
   }
 
-  // 2. Fetch posts filtered directly by category and '2024' edition from the database
-  const filteredPosts = await getPostsByCategory(categoryId, undefined, '2024');
+  const filteredPosts = await getPostsByCategory(categoryId, undefined, '2022');
 
   return (
     <div className="overflow-hidden">

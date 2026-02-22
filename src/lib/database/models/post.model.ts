@@ -22,6 +22,7 @@ export interface IPost extends Document {
     | 'ateliers'
     | 'autres';
   subCategory?: 'rencontres' | 'expositions' | 'productions';
+  yearOfEdition: '2022';
   location: string;
   url?: string;
   artists: string[];
@@ -79,6 +80,11 @@ const PostSchema = new Schema({
     type: String,
     enum: ['rencontres', 'expositions', 'productions'],
     required: false,
+  },
+  yearOfEdition: {
+    type: String,
+    enum: ['2022', '2024'],
+    required: true,
   },
   location: { type: String },
   url: { type: String, required: false },

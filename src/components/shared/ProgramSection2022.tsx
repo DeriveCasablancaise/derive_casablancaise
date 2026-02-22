@@ -30,12 +30,12 @@ const categoryImageMap: Record<CategoryKey, string> = {
   autres: '/assets/categories/en-marge.jpeg',
 };
 
-const ProgramSection = () => {
+const ProgramSection2022 = () => {
   const sectionRef = useRef(null);
   const isInView = useInView(sectionRef, { once: false, amount: 0.1 });
   const locale = useLocale();
   const isArabic = locale === 'ar';
-  const t = useTranslations('Derive2024');
+  const t = useTranslations('Derive2022');
   const t2 = useTranslations('Layout');
 
   return (
@@ -84,7 +84,7 @@ const ProgramSection = () => {
                     isInView={isInView}
                     isNavigationMode={true}
                     locale={locale}
-                    year="2024"
+                    year="2022"
                   />
                 ),
               )}
@@ -108,4 +108,4 @@ const ProgramSection = () => {
   );
 };
 
-export default ProgramSection;
+export default ProgramSection2022;

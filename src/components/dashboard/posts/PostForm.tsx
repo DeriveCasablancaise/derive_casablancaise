@@ -32,6 +32,7 @@ import ArtistMultiSelect from './ArtistMultiSelect';
 import { getAllArtists } from '@/lib/actions/artists.actions';
 import SubCategoryDropdown from './SubcategoryDropdown';
 import { ThumbnailUploader } from './ThumbnailUploader';
+import EditionDropdown from './EditionDropdown';
 
 // --- TIMEZONE FIX HELPERS ---
 const toFloatingUTC = (date: Date) => {
@@ -43,8 +44,8 @@ const toFloatingUTC = (date: Date) => {
       date.getDate(),
       date.getHours(),
       date.getMinutes(),
-      date.getSeconds()
-    )
+      date.getSeconds(),
+    ),
   );
 };
 
@@ -57,7 +58,7 @@ const fromFloatingUTC = (dateString: Date | string) => {
     date.getUTCDate(),
     date.getUTCHours(),
     date.getUTCMinutes(),
-    date.getUTCSeconds()
+    date.getUTCSeconds(),
   );
 };
 
@@ -110,7 +111,7 @@ const PostForm = ({ type, post, postId }: PostFormProps) => {
     // "values.images" contains [OldServerURL, BlobPreviewURL]
     // We want to keep OldServerURL, but discard BlobPreviewURL (because we will get the real one from uploadthing)
     let uploadedImageUrls = values.images.filter(
-      (url) => !url.startsWith('blob:')
+      (url) => !url.startsWith('blob:'),
     );
 
     let uploadedThumbnailUrl = values.thumbnailImage;
@@ -315,16 +316,16 @@ const PostForm = ({ type, post, postId }: PostFormProps) => {
               </FormItem>
             )}
           />
+
           <FormField
             control={form.control}
-            name="location"
+            name="yearOfEdition"
             render={({ field }) => (
               <FormItem className="w-full">
                 <FormControl>
-                  <Input
-                    placeholder="Lieu de l'événement"
-                    className="input-field"
-                    {...field}
+                  <EditionDropdown
+                    value={field.value}
+                    onChangeHandler={(value) => field.onChange(value)}
                   />
                 </FormControl>
                 <FormMessage />
@@ -332,6 +333,23 @@ const PostForm = ({ type, post, postId }: PostFormProps) => {
             )}
           />
         </div>
+
+        <FormField
+          control={form.control}
+          name="location"
+          render={({ field }) => (
+            <FormItem className="w-full">
+              <FormControl>
+                <Input
+                  placeholder="Lieu de l'événement"
+                  className="input-field"
+                  {...field}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
 
         {form.watch('postCategory') === 'autres' && (
           <FormField
