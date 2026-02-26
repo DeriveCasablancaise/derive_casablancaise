@@ -11,7 +11,7 @@ export type CreatePartnerParams = {
   frenchName: string;
   arabicName?: string;
   hrefLink?: string;
-  yearOfPartnership: '2022' | '2024';
+  yearOfPartnership: '2022' | '2024' | 'both';
   logoImage: string;
 };
 
@@ -59,7 +59,7 @@ export async function updatePartner({ partner }: UpdatePartnerParams) {
         logoImage: partner.logoImage,
         yearOfPartnership: partner.yearOfPartnership,
       },
-      { new: true }
+      { new: true },
     );
 
     revalidatePath('/darja-admin/partners');
@@ -107,14 +107,19 @@ export async function getPartnerById(partnerId: string) {
 }
 
 // Get All Partners
-export async function getAllPartners(yearOfPartnership?: '2022' | '2024') {
+export async function getAllPartners(
+  yearOfPartnership?: '2022' | '2024' | 'both',
+) {
   try {
     await connectToDatabase();
 
     const condition: any = {};
 
     if (yearOfPartnership) {
-      condition.yearOfPartnership = yearOfPartnership;
+      condition.$or = [
+        { yearOfPartnership: yearOfPartnership },
+        { yearOfPartnership: 'both' },
+      ];
     }
 
     const partnersQuery = Partner.find(condition).sort({ createdAt: 'desc' });
@@ -156,10 +161,10 @@ export async function getPartnerCounts() {
 
     // Count partners by year
     const partners2022 = partners.filter(
-      (p) => p.yearOfPartnership === '2022'
+      (p) => p.yearOfPartnership === '2022',
     ).length;
     const partners2024 = partners.filter(
-      (p) => p.yearOfPartnership === '2024'
+      (p) => p.yearOfPartnership === '2024',
     ).length;
 
     return {

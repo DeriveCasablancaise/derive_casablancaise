@@ -17,6 +17,8 @@ type DropdownProps = {
 const categories = [
   { id: '2022', name: '2022' },
   { id: '2024', name: '2024' },
+  { id: '2026', name: '2026' },
+  { id: 'all', name: 'Toutes les années' },
 ];
 
 const Dropdown = ({ value, onChangeHandler }: DropdownProps) => {

@@ -9,7 +9,7 @@ export interface IArtist extends Document {
   arabicText: string;
   images: string[];
   videoSource?: string;
-  artistCategory: '2022' | '2024' | '2026';
+  artistCategory: '2022' | '2024' | '2026' | 'all';
   url?: string;
   isInHomepage: boolean;
   createdAt: Date;
@@ -42,7 +42,7 @@ const ArtistSchema = new Schema({
   },
   artistCategory: {
     type: String,
-    enum: ['2022', '2024', '2026'],
+    enum: ['2022', '2024', '2026', 'all'],
     required: true,
     default: null,
   },

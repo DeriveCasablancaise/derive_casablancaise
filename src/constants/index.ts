@@ -110,4 +110,5 @@ export const partnerDefaultValues: Partial<IPartner> = {
 export const partnerYearOptions = [
   { value: '2022', label: '2022' },
   { value: '2024', label: '2024' },
+  { value: 'both', label: 'Les deux (2022 & 2024)' },
 ];

@@ -42,10 +42,10 @@ const PartnersTable = ({ currentUserIsAdmin }: PartnersTableProps) => {
 
   const handleDelete = (partnerId: string) => {
     setPartners((prevPartners) =>
-      prevPartners.filter((partner) => partner._id !== partnerId)
+      prevPartners.filter((partner) => partner._id !== partnerId),
     );
     setFilteredPartners((prevFiltered) =>
-      prevFiltered.filter((partner) => partner._id !== partnerId)
+      prevFiltered.filter((partner) => partner._id !== partnerId),
     );
   };
 
@@ -55,7 +55,7 @@ const PartnersTable = ({ currentUserIsAdmin }: PartnersTableProps) => {
     const filtered = partners.filter(
       (partner) =>
         partner.frenchName.toLowerCase().includes(term) ||
-        partner.arabicName.toLowerCase().includes(term)
+        partner.arabicName.toLowerCase().includes(term),
     );
     setFilteredPartners(filtered);
   };

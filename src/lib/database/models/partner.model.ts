@@ -5,7 +5,7 @@ export interface IPartner extends Document {
   frenchName: string;
   arabicName?: string;
   hrefLink?: string;
-  yearOfPartnership: '2022' | '2024';
+  yearOfPartnership: '2022' | '2024' | 'both';
   logoImage: string;
   createdAt: Date;
   __v?: number;
@@ -27,7 +27,7 @@ const PartnerSchema = new Schema({
   },
   yearOfPartnership: {
     type: String,
-    enum: ['2022', '2024'],
+    enum: ['2022', '2024', 'both'],
     required: true,
   },
   logoImage: {

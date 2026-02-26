@@ -53,7 +53,7 @@ export const artistFormSchema = z.object({
     .min(3, 'Le texte doit consister de 3 caractères ou plus.'),
   images: z.array(z.string()).default([]),
   videoSource: z.string().optional(),
-  artistCategory: z.enum(['2022', '2024'], {
+  artistCategory: z.enum(['2022', '2024', '2026', 'all'], {
     message: 'Veuillez Choisir Une Catégorie',
   }),
   isInHomepage: z.boolean(),
@@ -144,6 +144,6 @@ export const partnerFormSchema = z.object({
       message: 'Arabic name must be at least 2 characters if provided',
     }),
   hrefLink: z.string().url('Must be a valid URL').optional().or(z.literal('')),
-  yearOfPartnership: z.enum(['2022', '2024']),
+  yearOfPartnership: z.enum(['2022', '2024', 'both']),
   logoImage: z.string().min(1, 'Logo image is required'),
 });

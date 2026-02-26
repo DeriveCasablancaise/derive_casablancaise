@@ -37,8 +37,12 @@ const PartnersImagesSlider = ({ partners }: PartnerSliderProps) => {
 
   const height = useTransform(scrollYProgress, [0, 0.9], [150, 0]);
 
-  const partners2022 = partners.filter((p) => p.yearOfPartnership === '2022');
-  const partners2024 = partners.filter((p) => p.yearOfPartnership === '2024');
+  const partners2022 = partners.filter(
+    (p) => p.yearOfPartnership === '2022' || p.yearOfPartnership === 'both',
+  );
+  const partners2024 = partners.filter(
+    (p) => p.yearOfPartnership === '2024' || p.yearOfPartnership === 'both',
+  );
 
   const shouldShowSlider1 = yearFilter === 'all' || yearFilter === '2022';
   const shouldShowSlider2 = yearFilter === 'all' || yearFilter === '2024';

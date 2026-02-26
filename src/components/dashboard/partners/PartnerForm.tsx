@@ -79,7 +79,10 @@ const PartnerForm = ({ type, partner, partnerId }: PartnerFormProps) => {
       try {
         const newPartner = await createPartner({
           ...values,
-          yearOfPartnership: values.yearOfPartnership as '2022' | '2024',
+          yearOfPartnership: values.yearOfPartnership as
+            | '2022'
+            | '2024'
+            | 'both',
           logoImage: uploadedLogoUrl,
         });
 

@@ -7,7 +7,7 @@ import { revalidatePath } from 'next/cache';
 import { Types } from 'mongoose';
 import Artist from '../database/models/artist.model';
 
-const validCategories = ['2022', '2024', '2026'] as const;
+const validCategories = ['2022', '2024', '2026', 'all'] as const;
 
 type ValidCategory = (typeof validCategories)[number];
 
@@ -51,7 +51,7 @@ export async function updateArtist({ artist }: UpdateArtistParams) {
         artistCategory: artist.artistCategory,
         images: artist.images,
       },
-      { new: true }
+      { new: true },
     );
 
     revalidatePath('/darja-admin/posts');
