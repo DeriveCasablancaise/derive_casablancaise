@@ -99,7 +99,7 @@ const ProgramSection2022 = () => {
             isArabic ? 'arabic-title-light' : 'latin-title-light',
           )}
         >
-          <a href="/programme.pdf" download target="_blank">
+          <a href="/programme2022.pdf" download target="_blank">
             {t2('Download')}
           </a>
         </div>
