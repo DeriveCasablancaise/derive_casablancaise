@@ -53,7 +53,7 @@ const PartnersImagesSlider = ({ partners }: PartnerSliderProps) => {
           <h2
             className={cn(
               'text-2xl xl:text-4xl w-full text-[#ee7103]',
-              isArabic ? 'arabic-title-bold' : 'latin-title-bold'
+              isArabic ? 'arabic-title-bold' : 'latin-title-bold',
             )}
           >
             {isArabic
@@ -167,7 +167,7 @@ const SliderInstance = ({ partners, isArabic, title }: SliderInstanceProps) => {
         variant="ghost"
         className={cn(
           'absolute top-1/2 -translate-y-1/2 z-20 h-12 w-12 rounded-full bg-white/50 backdrop-blur-sm hover:bg-white text-[#094142] border border-[#094142]/20 disabled:opacity-0 transition-opacity duration-300',
-          isArabic ? 'right-2 md:-right-12' : 'left-2 md:-left-12'
+          isArabic ? 'right-2 md:-right-12' : 'left-2 md:-left-12',
         )}
       >
         <ChevronLeft className={cn('h-8 w-8', isArabic && 'rotate-180')} />
@@ -179,7 +179,7 @@ const SliderInstance = ({ partners, isArabic, title }: SliderInstanceProps) => {
         variant="ghost"
         className={cn(
           'absolute top-1/2 -translate-y-1/2 z-20 h-12 w-12 rounded-full bg-white/50 backdrop-blur-sm hover:bg-white text-[#094142] border border-[#094142]/20 disabled:opacity-0 transition-opacity duration-300',
-          isArabic ? 'left-2 md:-left-12' : 'right-2 md:-right-12'
+          isArabic ? 'left-2 md:-left-12' : 'right-2 md:-right-12',
         )}
       >
         <ChevronRight className={cn('h-8 w-8', isArabic && 'rotate-180')} />
@@ -195,7 +195,7 @@ const SliderInstance = ({ partners, isArabic, title }: SliderInstanceProps) => {
             <div
               key={index}
               // UPDATED: Changed bg-color to white, added rounded-xl and subtle shadow
-              className="relative shrink-0 flex justify-center items-center bg-[#E9EAEB] h-24 w-36 md:h-32 md:w-48 overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-300 group/card border border-gray-100"
+              className="relative shrink-0 flex justify-center items-center bg-[#E9EAEB] h-24 w-36 md:h-32 md:w-48 overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-300 group/card "
             >
               <Link
                 href={partner.hrefLink || '#'}
@@ -220,7 +220,7 @@ const SliderInstance = ({ partners, isArabic, title }: SliderInstanceProps) => {
                       'text-white text-xs font-semibold w-full',
                       isArabic
                         ? 'text-right arabic-subtitle-bold'
-                        : 'text-left latin-subtitle-regular'
+                        : 'text-left latin-subtitle-regular',
                     )}
                   >
                     {isArabic
