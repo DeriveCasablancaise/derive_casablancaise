@@ -145,9 +145,9 @@
   "ContactPage": {
     "heading": "خاطبونا",
     "ContactForm": {
-      "name": "الإسم الكامل ؟",
+      "name": "الإسم الكامل",
       "namePlaceholder": "محمد بن الطاهر",
-      "email": "البريد الإلكتروني ؟",
+      "email": "البريد الإلكتروني",
       "message": "رسالتكم",
       "messagePlaceholder": "السلام عليكم ، انا فنان/متابع ..."
     },

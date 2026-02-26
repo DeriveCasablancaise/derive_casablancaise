@@ -143,9 +143,9 @@
   "ContactPage": {
     "heading": "Contactez-nous",
     "ContactForm": {
-      "name": "Nom & Prénom ?",
+      "name": "Nom & Prénom ",
       "namePlaceholder": "John Doe",
-      "email": "Adresse Email ?",
+      "email": "Adresse Email ",
       "message": "Message",
       "messagePlaceholder": "Bonjour, je suis ..."
     },
