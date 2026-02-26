@@ -21,12 +21,10 @@ interface PartnerSliderProps {
   partners: IPartner[];
 }
 
-type YearFilter = 'all' | '2022' | '2024';
 const SCROLL_AMOUNT = 300;
 
 const PartnersImagesSlider = ({ partners }: PartnerSliderProps) => {
   const container = useRef(null);
-  const [yearFilter, setYearFilter] = useState<YearFilter>('all');
   const locale = useLocale();
   const isArabic = locale === 'ar';
 
@@ -36,16 +34,6 @@ const PartnersImagesSlider = ({ partners }: PartnerSliderProps) => {
   });
 
   const height = useTransform(scrollYProgress, [0, 0.9], [150, 0]);
-
-  const partners2022 = partners.filter(
-    (p) => p.yearOfPartnership === '2022' || p.yearOfPartnership === 'both',
-  );
-  const partners2024 = partners.filter(
-    (p) => p.yearOfPartnership === '2024' || p.yearOfPartnership === 'both',
-  );
-
-  const shouldShowSlider1 = yearFilter === 'all' || yearFilter === '2022';
-  const shouldShowSlider2 = yearFilter === 'all' || yearFilter === '2024';
 
   return (
     <ClientWrapper>
@@ -66,20 +54,13 @@ const PartnersImagesSlider = ({ partners }: PartnerSliderProps) => {
           </h2>
         </div>
 
+        {/* WE NOW RENDER JUST ONE SLIDER INSTANCE WITH THE PASSED PARTNERS */}
         <div className="flex flex-col gap-16 px-4 md:px-0">
-          {shouldShowSlider1 && partners2022.length > 0 && (
+          {partners.length > 0 && (
             <SliderInstance
-              partners={partners2022}
+              partners={partners}
               isArabic={isArabic}
-              title="2022"
-            />
-          )}
-
-          {shouldShowSlider2 && partners2024.length > 0 && (
-            <SliderInstance
-              partners={partners2024}
-              isArabic={isArabic}
-              title="2024"
+              title="Partenaires"
             />
           )}
         </div>
@@ -198,7 +179,6 @@ const SliderInstance = ({ partners, isArabic, title }: SliderInstanceProps) => {
           {partners.map((partner, index) => (
             <div
               key={index}
-              // UPDATED: Changed bg-color to white, added rounded-xl and subtle shadow
               className="relative shrink-0 flex justify-center items-center bg-[#E9EAEB] h-24 w-36 md:h-32 md:w-48 overflow-hidden shadow-sm hover:shadow-md transition-shadow duration-300 group/card "
             >
               <Link
@@ -207,7 +187,6 @@ const SliderInstance = ({ partners, isArabic, title }: SliderInstanceProps) => {
                 rel={partner.hrefLink ? 'noopener noreferrer' : undefined}
                 className="w-full h-full flex justify-center items-center relative"
               >
-                {/* UPDATED: Increased padding (p-6) so logos don't touch edges */}
                 <div className="relative w-full h-full p-6">
                   <Image
                     fill
@@ -217,7 +196,6 @@ const SliderInstance = ({ partners, isArabic, title }: SliderInstanceProps) => {
                   />
                 </div>
 
-                {/* UPDATED: Changed gradient to black since background is now white */}
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover/card:opacity-100 transition-opacity duration-300 flex items-end p-3">
                   <span
                     className={cn(
