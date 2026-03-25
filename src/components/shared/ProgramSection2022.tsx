@@ -20,14 +20,14 @@ const Categories = {
 type CategoryKey = keyof typeof Categories;
 
 const categoryImageMap: Record<CategoryKey, string> = {
-  danse: '/assets/categories/danse.jpg',
-  theatre: '/assets/categories/theatre.jpg',
-  musique: '/assets/categories/musique.jpg',
-  lectures: '/assets/categories/lectures.jpeg',
-  cinema: '/assets/categories/cinema.jpg',
-  conference: '/assets/categories/conférences.jpg',
-  ateliers: '/assets/categories/ateliers.jpg',
-  autres: '/assets/categories/en-marge.jpeg',
+  danse: '/assets/categories/2022/danse.jpg',
+  theatre: '/assets/categories/2022/theatre.jpg',
+  musique: '/assets/categories/2022/musique.jpg',
+  lectures: '/assets/categories/2022/lectures.jpg',
+  cinema: '/assets/categories/2022/cinema.png',
+  conference: '/assets/categories/2022/rencontres.png',
+  ateliers: '/assets/categories/2022/ateliers.jpg',
+  autres: '/assets/categories/2022/en-marge.jpg',
 };
 
 const ProgramSection2022 = () => {

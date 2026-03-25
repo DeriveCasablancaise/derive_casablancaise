@@ -76,7 +76,7 @@ const page = async ({ params: { postId } }: PostProps) => {
           <ParentLink
             label={isArabic ? 'العودة' : 'Retour'}
             className="px-4 mb-4"
-            href={`/${locale}/derive-2024/${post.postCategory}`}
+            href={`/${locale}/previous/${post.postCategory}`}
           />
 
           {/* Title */}
