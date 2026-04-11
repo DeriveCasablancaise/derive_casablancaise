@@ -5,6 +5,7 @@ import Partner from '../database/models/partner.model';
 import { handleError } from '../utils';
 import { revalidatePath } from 'next/cache';
 import { Types } from 'mongoose';
+import Order from '../database/models/order.model';
 
 // Type definitions for partner operations
 export type CreatePartnerParams = {
@@ -70,6 +71,20 @@ export async function updatePartner({ partner }: UpdatePartnerParams) {
   }
 }
 
+// Update Order
+export async function updatePartnerOrder(
+  orderedIds: string[],
+  year: '2022' | '2024',
+) {
+  try {
+    await connectToDatabase();
+    await Order.findOneAndUpdate({ year }, { orderedIds }, { upsert: true });
+    revalidatePath('/darja-admin/partners');
+  } catch (error) {
+    handleError(error);
+  }
+}
+
 // Delete Partner
 export async function deletePartner({
   partnerId,
@@ -107,32 +122,38 @@ export async function getPartnerById(partnerId: string) {
 }
 
 // Get All Partners
-export async function getAllPartners(
-  yearOfPartnership?: '2022' | '2024' | 'both',
-) {
-  try {
-    await connectToDatabase();
+export async function getAllPartners(year: '2022' | '2024') {
+  await connectToDatabase();
 
-    const condition: any = {};
+  // 1. Get the order array - Explicitly type 'id' as any or mongoose.Types.ObjectId
+  const orderDoc = await Order.findOne({ year });
+  const orderedIds: string[] =
+    orderDoc?.orderedIds.map((id: any) => id.toString()) || [];
 
-    if (yearOfPartnership) {
-      condition.$or = [
-        { yearOfPartnership: yearOfPartnership },
-        { yearOfPartnership: 'both' },
-      ];
-    }
+  // 2. Get the partners
+  const partners = await Partner.find({
+    $or: [{ yearOfPartnership: year }, { yearOfPartnership: 'both' }],
+  });
 
-    const partnersQuery = Partner.find(condition).sort({ createdAt: 'desc' });
+  // 3. Sort partners based on the orderedIds array
+  // We type 'a' and 'b' as 'any' here because JSON.stringify makes them plain objects,
+  // or you can use your IPartner interface if it's imported.
+  const sortedPartners = JSON.parse(JSON.stringify(partners)).sort(
+    (a: any, b: any) => {
+      const indexA = orderedIds.indexOf(a._id);
+      const indexB = orderedIds.indexOf(b._id);
 
-    const partners = await populatePartner(partnersQuery);
+      // If an item isn't in the orderedIds list yet, move it to the end
+      if (indexA === -1 && indexB === -1) return 0;
+      if (indexA === -1) return 1;
+      if (indexB === -1) return -1;
 
-    return JSON.parse(JSON.stringify(partners));
-  } catch (error) {
-    console.error('Error Getting All Partners', error);
-    handleError(error);
-  }
+      return indexA - indexB;
+    },
+  );
+
+  return sortedPartners;
 }
-
 // Get Partners By Year
 export async function getPartnersByYear(year: '2022' | '2024') {
   try {

@@ -7,6 +7,7 @@ export interface IPartner extends Document {
   hrefLink?: string;
   yearOfPartnership: '2022' | '2024' | 'both';
   logoImage: string;
+  order: number;
   createdAt: Date;
   __v?: number;
 }
@@ -33,6 +34,10 @@ const PartnerSchema = new Schema({
   logoImage: {
     type: String,
     required: true,
+  },
+  order: {
+    type: Number,
+    default: 0,
   },
   createdAt: {
     type: Date,
