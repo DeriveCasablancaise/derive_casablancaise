@@ -14,6 +14,7 @@ import TeaserModal from '../TeaserModal';
 import AfterMovieModal from '../AfterMovieModal';
 import GalleryCarousel from '../GalleryCarousel';
 import VideoModal from '../VideoModal';
+import Link from 'next/link';
 
 const jakarta = Plus_Jakarta_Sans({
   weight: ['600', '700', '800'],
@@ -76,14 +77,14 @@ const AboutLanding = ({ ar2d }: AboutLandingProps) => {
   const backgroundSize = useTransform(
     scrollYProgress,
     [0.4, 1],
-    isMobile ? ['cover', 'cover'] : ['100%', '200%']
+    isMobile ? ['cover', 'cover'] : ['100%', '200%'],
   );
 
   const renderVideoCard = (
     thumbnail: string,
     title: string,
     videoLink: string,
-    delay: number
+    delay: number,
   ) => (
     <div className="flex flex-col items-center w-full">
       <motion.div
@@ -119,7 +120,7 @@ const AboutLanding = ({ ar2d }: AboutLandingProps) => {
         transition={{ delay: delay + 0.1 }}
         className={cn(
           'mt-4 text-center text-base md:text-lg font-bold text-[#094142]',
-          isArabic ? 'arabic-subtitle-bold' : 'latin-subtitle-bold'
+          isArabic ? 'arabic-subtitle-bold' : 'latin-subtitle-bold',
         )}
       >
         {title}
@@ -144,7 +145,7 @@ const AboutLanding = ({ ar2d }: AboutLandingProps) => {
           <motion.div
             className={cn(
               'lg:absolute lg:left-0 lg:top-0 lg:h-auto lg:bg-[#E9EAEB]/95 lg:w-[45%] bg-white/80 backdrop-blur-sm h-fit lg:flex flex-col justify-start py-6 lg:py-8 items-start gap-6 2xl:gap-8 text-[#00b0db] md:text-black/90 px-6 lg:px-8 shadow-xl',
-              jakarta.className
+              jakarta.className,
             )}
             variants={descOpacity}
             animate={isInView ? 'open' : 'closed'}
@@ -154,7 +155,7 @@ const AboutLanding = ({ ar2d }: AboutLandingProps) => {
               animate={isInView ? 'open' : 'closed'}
               className={cn(
                 'w-full font-bold text-[#094142] m-0 tiptap-content',
-                jakarta.className
+                jakarta.className,
               )}
               dangerouslySetInnerHTML={{
                 __html: isArabic ? ar2d.text1Ar || ar2d.text1Fr : ar2d.text1Fr,
@@ -166,7 +167,7 @@ const AboutLanding = ({ ar2d }: AboutLandingProps) => {
           <motion.div
             className={cn(
               'lg:absolute lg:right-0 lg:top-64 lg:h-auto lg:bg-[#E9EAEB]/95 lg:w-[45%] bg-white/80 backdrop-blur-sm h-fit lg:flex flex-col justify-start py-6 lg:py-8 items-start gap-6 2xl:gap-8 text-[#00b0db] md:text-black/90 px-6 lg:px-8 shadow-xl',
-              jakarta.className
+              jakarta.className,
             )}
             variants={descOpacity}
             animate={isInView ? 'open' : 'closed'}
@@ -176,7 +177,7 @@ const AboutLanding = ({ ar2d }: AboutLandingProps) => {
               animate={isInView ? 'open' : 'closed'}
               className={cn(
                 'w-full font-bold text-[#094142] m-0 tiptap-content',
-                jakarta.className
+                jakarta.className,
               )}
               dangerouslySetInnerHTML={{
                 __html: isArabic ? ar2d.text2Ar || ar2d.text2Fr : ar2d.text2Fr,
@@ -188,7 +189,7 @@ const AboutLanding = ({ ar2d }: AboutLandingProps) => {
           <motion.div
             className={cn(
               'lg:absolute lg:left-0 lg:bottom-16 lg:h-auto lg:bg-[#E9EAEB]/95 lg:w-[45%] bg-white/80 backdrop-blur-sm h-fit lg:my-16 lg:flex flex-col justify-start py-6 lg:py-8 items-start gap-6 2xl:gap-8 text-[#00b0db] md:text-black/90 px-6 lg:px-8 order-2 shadow-xl',
-              jakarta.className
+              jakarta.className,
             )}
             variants={descOpacity}
             animate={isInView ? 'open' : 'closed'}
@@ -198,7 +199,7 @@ const AboutLanding = ({ ar2d }: AboutLandingProps) => {
               animate={isInView ? 'open' : 'closed'}
               className={cn(
                 'w-full font-bold text-[#094142] m-0 tiptap-content',
-                jakarta.className
+                jakarta.className,
               )}
               dangerouslySetInnerHTML={{
                 __html: isArabic ? ar2d.text3Ar || ar2d.text3Fr : ar2d.text3Fr,
@@ -215,16 +216,44 @@ const AboutLanding = ({ ar2d }: AboutLandingProps) => {
             initial="hidden"
             whileInView="show"
             viewport={{ once: true, amount: 0.3 }}
-            className="text-center mt-24 lg:mt-48"
+            className="text-center mt-24 lg:mt-48 flex flex-col items-center gap-2"
           >
             <h2
               className={cn(
-                'text-[#ee7103] text-xl lg:text-3xl mb-4',
-                isArabic ? 'arabic-title-bold' : 'latin-title-bold'
+                'text-[#ee7103] text-xl lg:text-3xl',
+                isArabic ? 'arabic-title-bold' : 'latin-title-bold',
               )}
             >
               {isArabic ? ' مقاطع فيديو' : 'Vidéos'}
             </h2>
+
+            {/* The new YouTube Link */}
+            <Link
+              href="https://www.youtube.com/@DarjaEspace/videos"
+              target="_blank"
+              rel="noopener noreferrer"
+              className={cn(
+                'text-sm md:text-base text-[#094142] hover:text-[#ee7103] transition-colors duration-300 flex items-center gap-2 underline underline-offset-4',
+                isArabic ? 'arabic-subtitle-regular' : 'latin-subtitle-regular',
+              )}
+            >
+              {isArabic
+                ? 'مشاهدة جميع الفيديوهات على يوتيوب'
+                : 'Voir toutes les vidéos sur YouTube'}
+              <svg
+                className={cn('w-4 h-4', isArabic && 'rotate-180')}
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M14 5l7 7m0 0l-7 7m7-7H3"
+                />
+              </svg>
+            </Link>
           </motion.div>
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mx-auto my-8 md:my-10 xl:my-12 max-w-7xl px-4">
             {/* Video 1 */}
@@ -234,7 +263,7 @@ const AboutLanding = ({ ar2d }: AboutLandingProps) => {
                 ? ar2d.video1TitleAr || ar2d.video1TitleFr
                 : ar2d.video1TitleFr,
               video1EmbedLink,
-              0.1
+              0.1,
             )}
 
             {/* Video 2 */}
@@ -244,7 +273,7 @@ const AboutLanding = ({ ar2d }: AboutLandingProps) => {
                 ? ar2d.video2TitleAr || ar2d.video2TitleFr
                 : ar2d.video2TitleFr,
               video2EmbedLink,
-              0.2
+              0.2,
             )}
 
             {/* Video 3 */}
@@ -254,7 +283,7 @@ const AboutLanding = ({ ar2d }: AboutLandingProps) => {
                 ? ar2d.video3TitleAr || ar2d.video3TitleFr
                 : ar2d.video3TitleFr,
               video3EmbedLink,
-              0.3
+              0.3,
             )}
           </div>
         </ClientWrapper>
@@ -265,16 +294,44 @@ const AboutLanding = ({ ar2d }: AboutLandingProps) => {
             initial="hidden"
             whileInView="show"
             viewport={{ once: true, amount: 0.3 }}
-            className="text-center mt-24 lg:mt-48"
+            className="text-center mt-24 lg:mt-48 flex flex-col items-center gap-2"
           >
             <h2
               className={cn(
-                'text-[#ee7103] text-xl lg:text-3xl mb-4',
-                isArabic ? 'arabic-title-bold' : 'latin-title-bold'
+                'text-[#ee7103] text-xl lg:text-3xl',
+                isArabic ? 'arabic-title-bold' : 'latin-title-bold',
               )}
             >
               {isArabic ? ' مقاطع فيديو' : 'Vidéos'}
             </h2>
+
+            {/* The new YouTube Link */}
+            <Link
+              href="https://www.youtube.com/@DarjaEspace/videos"
+              target="_blank"
+              rel="noopener noreferrer"
+              className={cn(
+                'text-sm md:text-base text-[#094142] hover:text-[#ee7103] transition-colors duration-300 flex items-center gap-2 underline underline-offset-4',
+                isArabic ? 'arabic-subtitle-regular' : 'latin-subtitle-regular',
+              )}
+            >
+              {isArabic
+                ? 'مشاهدة جميع الفيديوهات على يوتيوب'
+                : 'Voir toutes les vidéos sur YouTube'}
+              <svg
+                className={cn('w-4 h-4', isArabic && 'rotate-180')}
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M14 5l7 7m0 0l-7 7m7-7H3"
+                />
+              </svg>
+            </Link>
           </motion.div>
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mx-auto my-8 md:my-10 xl:my-12 max-w-7xl px-4">
             {/* Video 1 */}
@@ -284,7 +341,7 @@ const AboutLanding = ({ ar2d }: AboutLandingProps) => {
                 ? ar2d.video1TitleAr || ar2d.video1TitleFr
                 : ar2d.video1TitleFr,
               video1EmbedLink,
-              0.1
+              0.1,
             )}
 
             {/* Video 2 */}
@@ -294,7 +351,7 @@ const AboutLanding = ({ ar2d }: AboutLandingProps) => {
                 ? ar2d.video2TitleAr || ar2d.video2TitleFr
                 : ar2d.video2TitleFr,
               video2EmbedLink,
-              0.2
+              0.2,
             )}
 
             {/* Video 3 */}
@@ -304,7 +361,7 @@ const AboutLanding = ({ ar2d }: AboutLandingProps) => {
                 ? ar2d.video3TitleAr || ar2d.video3TitleFr
                 : ar2d.video3TitleFr,
               video3EmbedLink,
-              0.3
+              0.3,
             )}
           </div>
           <ClientWrapper>
@@ -318,7 +375,7 @@ const AboutLanding = ({ ar2d }: AboutLandingProps) => {
               <h2
                 className={cn(
                   'text-[#ee7103] text-xl lg:text-3xl mb-4 lg:mb-8',
-                  isArabic ? 'arabic-title-bold' : 'latin-title-bold'
+                  isArabic ? 'arabic-title-bold' : 'latin-title-bold',
                 )}
               >
                 {isArabic ? ' معرض الصور ' : "Galerie d'images"}
