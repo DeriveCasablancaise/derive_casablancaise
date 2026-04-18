@@ -1,7 +1,7 @@
 'use client';
 
 import { useCallback, Dispatch, SetStateAction } from 'react';
-import { useDropzone } from '@uploadthing/react/hooks';
+import { useDropzone } from 'react-dropzone';
 import { generateClientDropzoneAccept } from 'uploadthing/client';
 import { Button } from '@/components/ui/button';
 import { convertFileToUrl } from '@/lib/utils';
@@ -26,7 +26,7 @@ export function VideoFileUploader({
         onFieldChange(previewUrl);
       }
     },
-    [setFile, onFieldChange]
+    [setFile, onFieldChange],
   );
 
   const { getRootProps, getInputProps } = useDropzone({
