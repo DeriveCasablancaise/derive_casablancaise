@@ -154,7 +154,10 @@ const ArtistSliderInstance = ({
         variant="ghost"
         className={cn(
           'absolute top-1/2 -translate-y-1/2 z-20 h-12 w-12 rounded-full bg-white/50 backdrop-blur-sm hover:bg-white text-[#094142] border border-[#094142]/20 disabled:opacity-0 transition-opacity duration-300',
-          isArabic ? 'right-2 md:-right-12' : 'left-2 md:-left-12',
+
+          isArabic
+            ? 'right-2 md:right-4 lg:right-6'
+            : 'left-2 md:left-4 lg:left-6',
         )}
       >
         <ChevronLeft className={cn('h-8 w-8', isArabic && 'rotate-180')} />
@@ -166,7 +169,10 @@ const ArtistSliderInstance = ({
         variant="ghost"
         className={cn(
           'absolute top-1/2 -translate-y-1/2 z-20 h-12 w-12 rounded-full bg-white/50 backdrop-blur-sm hover:bg-white text-[#094142] border border-[#094142]/20 disabled:opacity-0 transition-opacity duration-300',
-          isArabic ? 'left-2 md:-left-12' : 'right-2 md:-right-12',
+
+          isArabic
+            ? 'left-2 md:left-4 lg:left-6'
+            : 'right-2 md:right-4 lg:right-6',
         )}
       >
         <ChevronRight className={cn('h-8 w-8', isArabic && 'rotate-180')} />

@@ -119,7 +119,7 @@ const page = async ({ params: { postId } }: PostProps) => {
             </div>
           )}
           {/* Two Column Layout */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 px-4">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12 px-4 mt-12">
             {/* Left Column - Image Gallery and Details */}
             <div className="space-y-6">
               {/* Image Gallery */}

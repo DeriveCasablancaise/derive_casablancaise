@@ -48,17 +48,15 @@ const ProgramLanding = ({ homepage }: ProgramLandingProps) => {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  // Scroll-based animation setup
   const { scrollYProgress } = useScroll({
     target: sectionRef,
-    offset: ['start end', 'end end'], // When section starts and ends
+    offset: ['start end', 'end end'],
   });
 
-  // Create a zoom effect: scaling from 1 to 1.3 based on scroll position
   const backgroundSize = useTransform(
     scrollYProgress,
     [0.4, 1],
-    isMobile ? ['cover', 'cover'] : ['80%', '130%']
+    isMobile ? ['cover', 'cover'] : ['80%', '130%'],
   );
 
   return (
@@ -72,7 +70,7 @@ const ProgramLanding = ({ homepage }: ProgramLandingProps) => {
           className="w-full min-h-screen relative py-8 mb-8 lg:mt-[400px] md:mb-16 2xl:mb-[23rem] 2xl: mt-[26rem]  flex flex-col lg:flex-row lg:items-center border-b-2"
           style={{
             backgroundSize,
-            backgroundImage: `url(${homepage.backgroundImage})`, // Use dynamic image
+            backgroundImage: `url(${homepage.backgroundImage})`,
             backgroundPosition: 'center',
             backgroundRepeat: 'no-repeat',
           }}
@@ -84,7 +82,7 @@ const ProgramLanding = ({ homepage }: ProgramLandingProps) => {
             <div
               className={cn(
                 'w-full font-bold text-[#094142] m-0 prose',
-                jakarta.className
+                jakarta.className,
               )}
               dangerouslySetInnerHTML={{
                 __html: isArabic
@@ -105,7 +103,7 @@ const ProgramLanding = ({ homepage }: ProgramLandingProps) => {
         <h2
           className={cn(
             'text-[#ee7103] text-xl lg:text-3xl mb-4',
-            isArabic ? 'arabic-title-bold' : 'latin-title-bold'
+            isArabic ? 'arabic-title-bold' : 'latin-title-bold',
           )}
         >
           {isArabic
@@ -149,7 +147,7 @@ const ProgramLanding = ({ homepage }: ProgramLandingProps) => {
             transition={{ delay: 0.2 }}
             className={cn(
               'mt-4 text-center text-base md:text-lg font-bold text-[#094142]',
-              isArabic ? 'arabic-subtitle-bold' : 'latin-subtitle-bold'
+              isArabic ? 'arabic-subtitle-bold' : 'latin-subtitle-bold',
             )}
           >
             {isArabic
@@ -193,7 +191,7 @@ const ProgramLanding = ({ homepage }: ProgramLandingProps) => {
             transition={{ delay: 0.2 }}
             className={cn(
               'mt-4 text-center text-base md:text-lg font-bold text-[#094142]',
-              isArabic ? 'arabic-subtitle-bold' : 'latin-subtitle-bold'
+              isArabic ? 'arabic-subtitle-bold' : 'latin-subtitle-bold',
             )}
           >
             {isArabic

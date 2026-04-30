@@ -119,7 +119,7 @@ const AboutLanding = ({ ar2d }: AboutLandingProps) => {
         whileInView={{ y: 0, opacity: 1 }}
         transition={{ delay: delay + 0.1 }}
         className={cn(
-          'mt-4 text-center text-base md:text-lg font-bold text-[#094142]',
+          'mt-4 text-center text-base md:text-lg font-bold text-[#ee7103]',
           isArabic ? 'arabic-subtitle-bold' : 'latin-subtitle-bold',
         )}
       >
