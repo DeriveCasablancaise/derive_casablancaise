@@ -31,8 +31,8 @@ export const postFormSchema = z.object({
   yearOfEdition: z.enum(['2022', '2024'], {
     message: "Veuillez choisir l'année d'édition",
   }),
-  startDateTime: z.date(),
-  endDateTime: z.date(),
+  startDateTime: z.date().optional(),
+  endDateTime: z.date().optional(),
   location: z.string().min(3, "Veuillez rentrer le lieu de l'événement. "),
   url: z.string().optional(),
   artists: z.array(z.string()).default([]),

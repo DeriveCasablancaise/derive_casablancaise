@@ -52,8 +52,8 @@ export type CreatePostParams = {
   images: string[];
   thumbnailImage?: string;
   videoSource?: string;
-  startDateTime: Date;
-  endDateTime: Date;
+  startDateTime?: Date;
+  endDateTime?: Date;
   postCategory:
     | 'danse'
     | 'musique'
@@ -79,8 +79,8 @@ export type UpdatePostParams = {
     images: string[];
     thumbnailImage?: string;
     videoSource?: string;
-    startDateTime: Date;
-    endDateTime: Date;
+    startDateTime?: Date;
+    endDateTime?: Date;
     postCategory:
       | 'danse'
       | 'musique'

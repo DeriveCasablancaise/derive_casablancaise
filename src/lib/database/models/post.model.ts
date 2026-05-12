@@ -11,7 +11,7 @@ export interface IPost extends Document {
   thumbnailImage?: string;
   videoSource?: string;
   startDateTime: Date;
-  endDateTime: Date;
+  endDateTime?: Date;
   postCategory:
     | 'danse'
     | 'musique'
@@ -60,7 +60,7 @@ const PostSchema = new Schema({
     required: false,
   },
   startDateTime: { type: Date, default: Date.now },
-  endDateTime: { type: Date, default: Date.now },
+  endDateTime: { type: Date, default: Date.now, required: false },
   postCategory: {
     type: String,
     enum: [

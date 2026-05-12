@@ -16,6 +16,7 @@ interface Post {
   frenchText: string;
   arabicText: string;
   images: string[];
+  thumbnailImage?: string;
   videoSource?: string;
   postCategory:
     | 'danse'
@@ -51,7 +52,7 @@ const PostsTable = ({ currentUserIsAdmin }: PostsTableProps) => {
     // Update both posts and filteredPosts states after deletion
     setPosts((prevPosts) => prevPosts.filter((post) => post._id !== postId));
     setFilteredPosts((prevFiltered) =>
-      prevFiltered.filter((post) => post._id !== postId)
+      prevFiltered.filter((post) => post._id !== postId),
     );
   };
 
@@ -59,7 +60,7 @@ const PostsTable = ({ currentUserIsAdmin }: PostsTableProps) => {
     const term = e.target.value.toLowerCase();
     setSearchTerm(term);
     const filtered = posts.filter((post) =>
-      post.frenchTitle.toLowerCase().includes(term)
+      post.frenchTitle.toLowerCase().includes(term),
     );
     setFilteredPosts(filtered);
   };
@@ -127,9 +128,16 @@ const PostsTable = ({ currentUserIsAdmin }: PostsTableProps) => {
                             sizes="96px"
                           />
                         ) : (
-                          <div className="w-full h-full flex items-center justify-center text-gray-500 text-xs">
-                            No image
-                          </div>
+                          // <div className="w-full h-full flex items-center justify-center text-gray-500 text-xs">
+                          //   No image
+                          // </div>
+                          <Image
+                            src={post.thumbnailImage!}
+                            alt={post.frenchTitle}
+                            fill
+                            className="object-cover"
+                            sizes="96px"
+                          />
                         )}
                       </div>
                     </div>

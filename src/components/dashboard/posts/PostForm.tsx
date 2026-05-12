@@ -34,9 +34,8 @@ import SubCategoryDropdown from './SubcategoryDropdown';
 import { ThumbnailUploader } from './ThumbnailUploader';
 import EditionDropdown from './EditionDropdown';
 
-// --- TIMEZONE FIX HELPERS ---
-const toFloatingUTC = (date: Date) => {
-  if (!date) return date;
+const toFloatingUTC = (date?: Date) => {
+  if (!date) return undefined;
   return new Date(
     Date.UTC(
       date.getFullYear(),
@@ -49,8 +48,8 @@ const toFloatingUTC = (date: Date) => {
   );
 };
 
-const fromFloatingUTC = (dateString: Date | string) => {
-  if (!dateString) return new Date();
+const fromFloatingUTC = (dateString?: Date | string) => {
+  if (!dateString) return undefined;
   const date = new Date(dateString);
   return new Date(
     date.getUTCFullYear(),
@@ -107,9 +106,6 @@ const PostForm = ({ type, post, postId }: PostFormProps) => {
   async function onSubmit(values: z.infer<typeof postFormSchema>) {
     setIsLoading(true);
 
-    // 1. Start with existing valid URLs (Filter out blob: previews)
-    // "values.images" contains [OldServerURL, BlobPreviewURL]
-    // We want to keep OldServerURL, but discard BlobPreviewURL (because we will get the real one from uploadthing)
     let uploadedImageUrls = values.images.filter(
       (url) => !url.startsWith('blob:'),
     );
@@ -124,7 +120,6 @@ const PostForm = ({ type, post, postId }: PostFormProps) => {
         return;
       }
 
-      // 3. Append the NEW Real URLs to the EXISTING URLs
       const newImageUrls = uploadedImages.map((img) => img.url);
       uploadedImageUrls = [...uploadedImageUrls, ...newImageUrls];
     }
@@ -196,8 +191,6 @@ const PostForm = ({ type, post, postId }: PostFormProps) => {
         onSubmit={form.handleSubmit(onSubmit)}
         className="flex flex-col gap-5"
       >
-        {/* ... All your form fields remain exactly the same ... */}
-
         <div className="flex flex-col gap-5 md:flex-row">
           <FormField
             control={form.control}
