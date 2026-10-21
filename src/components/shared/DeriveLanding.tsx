@@ -1,7 +1,13 @@
 'use client';
 
 import { cn, convertYouTubeToEmbed, descOpacity } from '@/lib/utils';
-import { useInView, motion, useTransform, useScroll } from 'framer-motion';
+import {
+  useInView,
+  motion,
+  useTransform,
+  useScroll,
+  useReducedMotion,
+} from 'framer-motion';
 import React, { useEffect, useRef, useState } from 'react';
 import { useLocale, useTranslations } from 'next-intl';
 import { Plus_Jakarta_Sans } from 'next/font/google';
@@ -19,6 +25,8 @@ const jakarta = Plus_Jakarta_Sans({
 
 interface DeriveLandingProps {
   data: LandingData;
+  // anchored: absolute blocks at fixed anchors (2022, 2024). flow: blocks in normal flow (2026)
+  layout?: 'anchored' | 'flow';
 }
 
 const BLOCK_CLASS: Record<number, string> = {
@@ -110,7 +118,123 @@ const LandingBackground = ({
   );
 };
 
-const DeriveLanding = ({ data }: DeriveLandingProps) => {
+interface LandingFlowProps {
+  texts: { n: number; html: string; rtl: boolean }[];
+  backgroundImage: string;
+  isArabic: boolean;
+}
+
+// The image is a sticky full-screen layer, not absolute inset-0: the section can
+// be several screens tall, and a cover image stretched over all of it would be
+// cropped to a thin strip. Sticky keeps the whole picture in view between blocks.
+const LandingFlow = ({ texts, backgroundImage, isArabic }: LandingFlowProps) => {
+  const sectionRef = useRef<HTMLElement>(null);
+  const reduceMotion = useReducedMotion();
+  const [isDesktop, setIsDesktop] = useState(false);
+
+  useEffect(() => {
+    const mq = window.matchMedia('(min-width: 768px)');
+    const update = () => setIsDesktop(mq.matches);
+    update();
+    mq.addEventListener('change', update);
+    return () => mq.removeEventListener('change', update);
+  }, []);
+
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ['start end', 'end start'],
+  });
+
+  // transform only. Small screens and reduced motion keep a fixed scale,
+  // and the translate stays inside what the scale leaves as margin
+  const scale = useTransform(
+    scrollYProgress,
+    [0, 1],
+    reduceMotion ? [1, 1] : isDesktop ? [1, 1.15] : [1.08, 1.08]
+  );
+  const y = useTransform(
+    scrollYProgress,
+    [0, 1],
+    reduceMotion ? ['0%', '0%'] : isDesktop ? ['0%', '-5%'] : ['0%', '-3%']
+  );
+
+  const hasImage = Boolean(backgroundImage);
+  const dir = isArabic ? 'rtl' : 'ltr';
+
+  return (
+    <section
+      ref={sectionRef}
+      data-scroll-section=""
+      dir={dir}
+      className={cn(
+        'relative bg-[#E9EAEB] border-b-2',
+        hasImage && 'min-h-screen'
+      )}
+    >
+      {hasImage && (
+        <div
+          aria-hidden
+          className="sticky top-0 z-0 h-screen -mb-[100vh] overflow-hidden"
+        >
+          <motion.div
+            style={{ scale, y }}
+            className="relative h-full w-full will-change-transform"
+          >
+            <Image
+              src={backgroundImage}
+              alt=""
+              fill
+              sizes="100vw"
+              priority={false}
+              className="object-cover"
+            />
+          </motion.div>
+        </div>
+      )}
+      <div
+        className={cn(
+          'relative z-10 flex flex-col',
+          hasImage
+            ? 'gap-16 py-16 lg:gap-[20vh] lg:py-[20vh]'
+            : 'gap-8 py-8 lg:gap-12 lg:py-16'
+        )}
+      >
+        {texts.map(({ n, html, rtl }, i) => {
+          const atStart = i % 2 === 0;
+          // slides in from the side it sits on, the sides flip with the locale
+          const fromLeft = atStart !== isArabic;
+          return (
+            <motion.div
+              key={n}
+              dir={rtl ? 'rtl' : 'ltr'}
+              variants={fadeIn(fromLeft ? 'right' : 'left', 0.1)}
+              initial="hidden"
+              whileInView="show"
+              viewport={{ once: true, amount: 0.1 }}
+              className={cn(
+                'landing-flow-block w-full lg:w-[60%] bg-white/70 lg:bg-[#E9EAEB] py-4 lg:py-6 px-4 lg:px-6 text-[#00b0db] md:text-black/90',
+                atStart ? 'self-start' : 'self-end',
+                rtl ? 'text-right' : 'text-left'
+              )}
+            >
+              <div
+                className={cn(
+                  'w-full font-bold text-[#094142] m-0 tiptap-content',
+                  rtl
+                    ? 'arabic-text-bold text-xl lg:text-2xl'
+                    : cn('text-sm', jakarta.className)
+                )}
+                dangerouslySetInnerHTML={{ __html: html }}
+              />
+            </motion.div>
+          );
+        })}
+      </div>
+    </section>
+  );
+};
+
+const DeriveLanding = ({ data, layout = 'anchored' }: DeriveLandingProps) => {
   const locale = useLocale();
   const isArabic = locale === 'ar';
   const t = useTranslations('Layout.Landing');
@@ -118,38 +242,54 @@ const DeriveLanding = ({ data }: DeriveLandingProps) => {
   const [isAfterMovieModalOpen, setIsAfterMovieModalOpen] =
     useState<boolean>(false);
 
-  const { texts, videos, backgroundImage, showBackground } = getLandingView(
-    data,
-    isArabic
-  );
+  const { texts, videos, videosHeading, backgroundImage, showBackground } =
+    getLandingView(data, isArabic);
+
+  const isFlow = layout === 'flow';
+  // the 2026 heading is editable and can be empty, the others keep the fixed one
+  const heading = isFlow
+    ? videosHeading && {
+        text: videosHeading.text,
+        arabic: videosHeading.rtl,
+      }
+    : { text: t('videosHeading'), arabic: isArabic };
 
   return (
     <>
-      {showBackground && (
-        <LandingBackground
-          texts={texts}
-          backgroundImage={backgroundImage}
-          isArabic={isArabic}
-        />
-      )}
+      {showBackground &&
+        (isFlow ? (
+          <LandingFlow
+            texts={texts}
+            backgroundImage={backgroundImage}
+            isArabic={isArabic}
+          />
+        ) : (
+          <LandingBackground
+            texts={texts}
+            backgroundImage={backgroundImage}
+            isArabic={isArabic}
+          />
+        ))}
       {videos.length > 0 && (
         <>
-          <motion.div
-            variants={fadeIn('up', 0.2)}
-            initial="hidden"
-            whileInView="show"
-            viewport={{ once: true, amount: 0.3 }}
-            className="text-center mt-24 lg:mt-48"
-          >
-            <h2
-              className={cn(
-                'text-[#ee7103] text-xl lg:text-3xl mb-4',
-                isArabic ? 'arabic-title-bold' : 'latin-title-bold'
-              )}
+          {heading && (
+            <motion.div
+              variants={fadeIn('up', 0.2)}
+              initial="hidden"
+              whileInView="show"
+              viewport={{ once: true, amount: 0.3 }}
+              className="text-center mt-24 lg:mt-48"
             >
-              {t('videosHeading')}
-            </h2>
-          </motion.div>
+              <h2
+                className={cn(
+                  'text-[#ee7103] text-xl lg:text-3xl mb-4',
+                  heading.arabic ? 'arabic-title-bold' : 'latin-title-bold'
+                )}
+              >
+                {heading.text}
+              </h2>
+            </motion.div>
+          )}
           <div className="flex flex-col lg:flex-row justify-center items-start mx-auto my-8 md:my-10 xl:my-12 max-w-4xl gap-8 px-4">
             {videos.map(({ n, thumbnail, title }) => (
               <div

@@ -15,4 +15,6 @@ export const DERIVE_2026_DEFAULTS = {
   video2TitleFr: '',
   video2TitleAr: '',
   backgroundImage: '',
+  videosHeadingFr: '',
+  videosHeadingAr: '',
 };
