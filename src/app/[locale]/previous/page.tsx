@@ -9,8 +9,14 @@ const DerivePage = async () => {
   const derive2022 = await getDerive2022Data();
 
   return (
-    <div className="overflow-hidden">
-      <DeriveLanding data={derive2022} />
+    // overflow-x-clip, not hidden: hidden would break the sticky background
+    <div className="overflow-x-clip">
+      <DeriveLanding
+        data={derive2022}
+        layout="flow"
+        backgroundFit="pan"
+        headingSource="translation"
+      />
       {/* <VideoSection /> */}
       <ProgramSection edition="2022" />
       <PartnersSlider edition="2022" />
