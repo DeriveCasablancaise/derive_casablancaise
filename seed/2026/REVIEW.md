@@ -37,8 +37,12 @@ AR : عريب / عُريب طوقان · « تيسير  البطنيجي » (dou
 - Fin du doc : un 2e texte AR court (style annonce, « البرنامج الكامل قريباً ») non utilisé.
 
 ## e) Catégories
-danse : Ciel ×2, CH’TTAHH, Autothérapie · theatre : Chapitre 4, Silence, ça tourne ! · cinema : Soundtrack…, Gestes ×2 · lectures : Bibliothèques vivantes, Rencontre performative · musique : Dwarfs of East Agouza · autres/expositions : Lettres à Dérive ×3.
-Aucune nouvelle catégorie nécessaire.
+Libellés du document (grille + pitchs) : DANSE / رقص · THÉÂTRE / مسرح · CINÉMA / سينما · EXPOSITION / معرض · CONCERT / حفل موسيقي · « LECTURE CHORALE » / قراءة جماعية (sous-titre de Bibliothèques vivantes seulement).
+Catégories 2026 (ordre des tuiles) : danse : Ciel ×2, CH’TTAHH, Autothérapie · lectures : Rencontre performative, Bibliothèques vivantes · cinema : Soundtrack…, Gestes ×2 · exposition : Lettres à Dérive ×3 · theatre : Chapitre 4, Silence, ça tourne ! · concert : Dwarfs of East Agouza.
+Nouvelles clés : `exposition` (Exposition / معرض) et `concert` (Concert / حفل موسيقي). `musique` et `autres` ne sont plus proposées en 2026.
+Sans libellé dans le document : Rencontre performative (le titre seul), Gestes Cinématographiques. Gardées dans lectures (libellé partagé « Lectures », absent du document : à confirmer) et cinema (CINÉMA du document).
+La sous-catégorie `expositions` reste sur les trois Lettres à Dérive (inerte hors de « autres »).
+Mise à jour de la base : `scripts/recategorize-2026-posts.mjs` (dry run, puis `--apply --confirm-db`).
 
 ## f) Images
 `out/manifest.csv` introuvable (recherché dans C:\Users\DELL) : tous les champs images sont vides. Pistes par nom de dossier source seulement, à refaire avec le manifest :

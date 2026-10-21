@@ -9,9 +9,18 @@ export const CATEGORIES = {
   conference: { fr: 'Conférences', ar: 'مؤتمر' },
   ateliers: { fr: 'Ateliers', ar: 'ورش عمل' },
   autres: { fr: 'En Marge...', ar: 'أخرى' },
+  // 2026 labels, as written in the organisers' programme
+  exposition: { fr: 'Exposition', ar: 'معرض' },
+  concert: { fr: 'Concert', ar: 'حفل موسيقي' },
 } as const;
 
 export type CategoryKey = keyof typeof CATEGORIES;
+
+// same keys as CATEGORIES, as the non-empty tuple z.enum and mongoose expect
+export const CATEGORY_KEYS = Object.keys(CATEGORIES) as [
+  CategoryKey,
+  ...CategoryKey[],
+];
 
 export const isCategoryKey = (x: string): x is CategoryKey =>
   Object.keys(CATEGORIES).includes(x);
@@ -21,7 +30,9 @@ export interface Edition {
   routeBase: 'derive-2024' | 'previous' | 'derive-2026';
   translationNamespace: string | undefined;
   programmePdf: string | undefined;
-  categoryImages: Record<CategoryKey, string> | undefined;
+  // key order is the tile order
+  categories: readonly CategoryKey[];
+  categoryImages: Partial<Record<CategoryKey, string>> | undefined;
 }
 
 export const EDITIONS: Record<EditionYear, Edition> = {
@@ -30,6 +41,16 @@ export const EDITIONS: Record<EditionYear, Edition> = {
     routeBase: 'previous',
     translationNamespace: 'Derive2022',
     programmePdf: '/programme2022.pdf',
+    categories: [
+      'danse',
+      'theatre',
+      'musique',
+      'lectures',
+      'cinema',
+      'conference',
+      'ateliers',
+      'autres',
+    ],
     categoryImages: {
       danse: '/assets/categories/2022/danse.jpg',
       theatre: '/assets/categories/2022/theatre.jpg',
@@ -46,6 +67,16 @@ export const EDITIONS: Record<EditionYear, Edition> = {
     routeBase: 'derive-2024',
     translationNamespace: 'Derive2024',
     programmePdf: '/programme.pdf',
+    categories: [
+      'danse',
+      'theatre',
+      'musique',
+      'lectures',
+      'cinema',
+      'conference',
+      'ateliers',
+      'autres',
+    ],
     categoryImages: {
       danse: '/assets/categories/danse.jpg',
       theatre: '/assets/categories/theatre.jpg',
@@ -63,6 +94,8 @@ export const EDITIONS: Record<EditionYear, Edition> = {
     routeBase: 'derive-2026',
     translationNamespace: undefined,
     programmePdf: undefined,
+    // the labels of the programme grid, in the order they first appear
+    categories: ['danse', 'lectures', 'cinema', 'exposition', 'theatre', 'concert'],
     categoryImages: undefined,
   },
 };
@@ -77,6 +110,9 @@ export const getEdition = (year: EditionYear): Edition => EDITIONS[year];
 // Paths have no locale prefix, callers add `/${locale}` as before.
 export const editionHref = (year: EditionYear) =>
   `/${EDITIONS[year].routeBase}`;
+
+export const isEditionCategory = (year: EditionYear, x: string): x is CategoryKey =>
+  (EDITIONS[year].categories as readonly string[]).includes(x);
 
 export const categoryHref = (year: EditionYear, categoryId: string) =>
   `${editionHref(year)}/${categoryId}`;

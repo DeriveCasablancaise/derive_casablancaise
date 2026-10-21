@@ -17,6 +17,7 @@ import {
   CATEGORIES,
   categoryHref,
   editionHref,
+  getEdition,
   postHref,
   type CategoryKey,
   type EditionYear,
@@ -115,7 +116,7 @@ const CategoryPostsClient: React.FC<CategoryPostsClientProps> = ({
             className="mb-12"
           >
             <div className="flex flex-wrap gap-6 md:gap-8 justify-center">
-              {(Object.keys(CATEGORIES) as CategoryKey[]).map(
+              {getEdition(edition).categories.map(
                 (category, index) => (
                   <motion.button
                     key={category}

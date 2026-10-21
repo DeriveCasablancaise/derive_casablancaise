@@ -1,10 +1,13 @@
 import { describe, expect, it } from 'vitest';
 import { getArtistEditions } from '@/lib/artist-editions';
+import { getEdition } from '@/constants/editions';
 import {
+  CATEGORIES_2026,
   dayRange,
   editionsWith,
   legacyToEditions,
   normaliseName,
+  planRecategorize,
   postKey,
   wallClockToDate,
 } from './seed-2026-helpers.mjs';
@@ -80,5 +83,31 @@ describe('postKey', () => {
     expect(postKey({ yearOfEdition: '2026', frenchTitle: 'Ciel', start: '2026-12-02T16:30' })).toBe(
       '2026|Ciel|2026-12-02',
     );
+  });
+});
+
+describe('planRecategorize', () => {
+  const seed = { yearOfEdition: '2026', postCategory: 'exposition' };
+
+  it('updates a post that has another category', () => {
+    const plan = planRecategorize(seed, [{ _id: 'a', postCategory: 'autres' }]);
+    expect(plan).toEqual({ action: 'update', id: 'a', from: 'autres', to: 'exposition' });
+  });
+
+  it('skips a post that is already right, so a second run changes nothing', () => {
+    expect(planRecategorize(seed, [{ _id: 'a', postCategory: 'exposition' }]).action).toBe('skip');
+  });
+
+  it('reports a missing or ambiguous post and a bad seed', () => {
+    expect(planRecategorize(seed, []).action).toBe('missing');
+    expect(planRecategorize(seed, [{ _id: 'a' }, { _id: 'b' }]).action).toBe('error');
+    expect(planRecategorize({ ...seed, postCategory: 'autres' }, []).action).toBe('error');
+    expect(planRecategorize({ ...seed, yearOfEdition: '2024' }, []).action).toBe('error');
+  });
+});
+
+describe('CATEGORIES_2026', () => {
+  it('matches the 2026 registry list', () => {
+    expect(CATEGORIES_2026).toEqual(getEdition('2026').categories);
   });
 });

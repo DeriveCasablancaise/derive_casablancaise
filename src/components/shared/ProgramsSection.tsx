@@ -8,7 +8,6 @@ import { CategoryImageButton } from './Derive2024/CategoryImageBtn';
 import {
   CATEGORIES,
   getEdition,
-  type CategoryKey,
   type EditionYear,
 } from '@/constants/editions';
 
@@ -18,7 +17,7 @@ interface ProgramSectionProps {
 }
 
 const ProgramSection = ({ edition }: ProgramSectionProps) => {
-  const { translationNamespace, categoryImages, programmePdf } =
+  const { translationNamespace, categories, categoryImages, programmePdf } =
     getEdition(edition);
   const sectionRef = useRef(null);
   const isInView = useInView(sectionRef, { once: false, amount: 0.1 });
@@ -61,11 +60,14 @@ const ProgramSection = ({ edition }: ProgramSectionProps) => {
             transition={{ duration: 0.5, delay: 0.5 }}
             className="mb-12"
           >
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
-              {(Object.keys(CATEGORIES) as CategoryKey[]).map(
-                (category, index) => (
+            {/* wraps and centres, so any count leaves no empty cell */}
+            <div className="flex flex-wrap justify-center gap-4 md:gap-6">
+              {categories.map((category, index) => (
+                <div
+                  key={category}
+                  className="w-[calc(50%-0.5rem)] md:w-[calc(50%-0.75rem)] lg:w-[calc(25%-1.125rem)]"
+                >
                   <CategoryImageButton
-                    key={category}
                     categoryKey={category}
                     categoryName={CATEGORIES[category]}
                     imageUrl={categoryImages?.[category]}
@@ -78,8 +80,8 @@ const ProgramSection = ({ edition }: ProgramSectionProps) => {
                     locale={locale}
                     edition={edition}
                   />
-                ),
-              )}
+                </div>
+              ))}
             </div>
           </motion.div>
         </motion.div>

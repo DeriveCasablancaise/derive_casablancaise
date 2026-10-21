@@ -35,6 +35,7 @@ import { getArtistEditions } from '@/lib/artist-editions';
 import SubCategoryDropdown from './SubcategoryDropdown';
 import { ThumbnailUploader } from './ThumbnailUploader';
 import EditionDropdown from './EditionDropdown';
+import { isEditionCategory, isEditionYear } from '@/constants/editions';
 
 const toFloatingUTC = (date?: Date) => {
   if (!date) return undefined;
@@ -307,6 +308,7 @@ const PostForm = ({ type, post, postId }: PostFormProps) => {
               <FormItem className="w-full">
                 <FormControl>
                   <Dropdown
+                    edition={watchedEdition}
                     value={field.value}
                     onChangeHandler={(value) => field.onChange(value)}
                   />
@@ -324,7 +326,18 @@ const PostForm = ({ type, post, postId }: PostFormProps) => {
                 <FormControl>
                   <EditionDropdown
                     value={field.value}
-                    onChangeHandler={(value) => field.onChange(value)}
+                    onChangeHandler={(value) => {
+                      field.onChange(value);
+                      // the chosen category may not exist in the new edition
+                      const current = form.getValues('postCategory');
+                      if (
+                        current &&
+                        isEditionYear(value) &&
+                        !isEditionCategory(value, current)
+                      ) {
+                        form.setValue('postCategory', '' as typeof current);
+                      }
+                    }}
                   />
                 </FormControl>
                 <FormMessage />

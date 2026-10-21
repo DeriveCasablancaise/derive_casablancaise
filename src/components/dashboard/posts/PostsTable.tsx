@@ -8,7 +8,11 @@ import { DeleteConfirmation } from './DeleteConfirmation';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import Image from 'next/image';
-import { EDITION_YEARS, type EditionYear } from '@/constants/editions';
+import {
+  EDITION_YEARS,
+  type CategoryKey,
+  type EditionYear,
+} from '@/constants/editions';
 
 interface Post {
   _id: string;
@@ -19,13 +23,7 @@ interface Post {
   images: string[];
   thumbnailImage?: string;
   videoSource?: string;
-  postCategory:
-    | 'danse'
-    | 'concert'
-    | 'théâtre'
-    | 'lectures'
-    | 'cinéma'
-    | 'ateliers';
+  postCategory: CategoryKey;
   yearOfEdition: EditionYear;
   url?: string;
   createdAt: Date;

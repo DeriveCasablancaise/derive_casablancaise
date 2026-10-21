@@ -1,5 +1,10 @@
 import { Schema, Document, model, models } from 'mongoose';
-import { EDITION_YEARS, type EditionYear } from '@/constants/editions';
+import {
+  CATEGORY_KEYS,
+  EDITION_YEARS,
+  type CategoryKey,
+  type EditionYear,
+} from '@/constants/editions';
 
 // Interface for the Project document
 export interface IPost extends Document {
@@ -13,15 +18,7 @@ export interface IPost extends Document {
   videoSource?: string;
   startDateTime: Date;
   endDateTime?: Date;
-  postCategory:
-    | 'danse'
-    | 'musique'
-    | 'theatre'
-    | 'lectures'
-    | 'cinema'
-    | 'conference'
-    | 'ateliers'
-    | 'autres';
+  postCategory: CategoryKey;
   subCategory?: 'rencontres' | 'expositions' | 'productions';
   yearOfEdition: EditionYear;
   location: string;
@@ -65,16 +62,7 @@ const PostSchema = new Schema({
   endDateTime: { type: Date, required: false },
   postCategory: {
     type: String,
-    enum: [
-      'danse',
-      'musique',
-      'theatre',
-      'lectures',
-      'cinema',
-      'conference',
-      'ateliers',
-      'autres',
-    ],
+    enum: CATEGORY_KEYS,
     required: true,
     default: null,
   },

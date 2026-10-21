@@ -43,7 +43,7 @@ const artists = seed('artists.json');
 const posts = seed('posts.json');
 
 // values copied from post.model.ts
-const CATEGORIES = ['danse', 'musique', 'theatre', 'lectures', 'cinema', 'conference', 'ateliers', 'autres'];
+const CATEGORIES = ['danse', 'musique', 'theatre', 'lectures', 'cinema', 'conference', 'ateliers', 'autres', 'exposition', 'concert'];
 const SUB_CATEGORIES = ['rencontres', 'expositions', 'productions'];
 const LANDING_TEXTS = ['text1Fr', 'text1Ar', 'text2Fr', 'text2Ar', 'text3Fr', 'text3Ar'];
 

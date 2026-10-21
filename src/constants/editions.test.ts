@@ -4,6 +4,7 @@ import {
   categoryHref,
   editionHref,
   getEdition,
+  isEditionCategory,
   isEditionYear,
   postHref,
 } from './editions';
@@ -33,9 +34,45 @@ describe('editions registry', () => {
   it('has an image for every category in 2022 and 2024', () => {
     for (const y of ['2022', '2024'] as const) {
       expect(Object.keys(getEdition(y).categoryImages!)).toEqual(
-        Object.keys(CATEGORIES),
+        getEdition(y).categories,
       );
     }
+  });
+
+  it('keeps the 2022 and 2024 category lists', () => {
+    const original = [
+      'danse',
+      'theatre',
+      'musique',
+      'lectures',
+      'cinema',
+      'conference',
+      'ateliers',
+      'autres',
+    ];
+    expect(getEdition('2022').categories).toEqual(original);
+    expect(getEdition('2024').categories).toEqual(original);
+  });
+
+  it('lists the programme categories for 2026, all known', () => {
+    const list = getEdition('2026').categories;
+    expect(list).toEqual([
+      'danse',
+      'lectures',
+      'cinema',
+      'exposition',
+      'theatre',
+      'concert',
+    ]);
+    for (const k of list) expect(CATEGORIES[k]).toBeDefined();
+  });
+
+  it('isEditionCategory checks the list of the edition', () => {
+    expect(isEditionCategory('2024', 'autres')).toBe(true);
+    expect(isEditionCategory('2024', 'exposition')).toBe(false);
+    expect(isEditionCategory('2026', 'exposition')).toBe(true);
+    expect(isEditionCategory('2026', 'autres')).toBe(false);
+    expect(isEditionCategory('2026', 'toString')).toBe(false);
   });
 
   it('isEditionYear only accepts known years', () => {
