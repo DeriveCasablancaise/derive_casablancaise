@@ -1,3 +1,4 @@
+import { notFound } from 'next/navigation';
 import { getPostById } from '@/lib/actions/post.actions';
 import PostPageBody, {
   getPostArtists,
@@ -10,7 +11,8 @@ type PostProps = {
 };
 
 const page = async ({ params: { postId } }: PostProps) => {
-  const post = await getPostById(postId);
+  const post = await getPostById(postId, '2024');
+  if (!post) notFound();
   const artists = await getPostArtists(post);
 
   return (

@@ -1,4 +1,5 @@
 import { Schema, Document, model, models } from 'mongoose';
+import { EDITION_YEARS, type EditionYear } from '@/constants/editions';
 
 // Interface for the Project document
 export interface IPost extends Document {
@@ -22,8 +23,9 @@ export interface IPost extends Document {
     | 'ateliers'
     | 'autres';
   subCategory?: 'rencontres' | 'expositions' | 'productions';
-  yearOfEdition: '2022';
+  yearOfEdition: EditionYear;
   location: string;
+  locationAr?: string;
   url?: string;
   artists: string[];
   createdAt: Date;
@@ -60,7 +62,7 @@ const PostSchema = new Schema({
     required: false,
   },
   startDateTime: { type: Date, default: Date.now },
-  endDateTime: { type: Date, default: Date.now, required: false },
+  endDateTime: { type: Date, required: false },
   postCategory: {
     type: String,
     enum: [
@@ -83,10 +85,11 @@ const PostSchema = new Schema({
   },
   yearOfEdition: {
     type: String,
-    enum: ['2022', '2024'],
+    enum: EDITION_YEARS,
     required: true,
   },
   location: { type: String },
+  locationAr: { type: String, required: false },
   url: { type: String, required: false },
   artists: {
     type: [String],

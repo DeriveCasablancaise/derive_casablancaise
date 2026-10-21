@@ -29,12 +29,13 @@ export const postFormSchema = z.object({
     },
   ),
   subCategory: z.enum(['rencontres', 'expositions', 'productions']).optional(),
-  yearOfEdition: z.enum(['2022', '2024'], {
+  yearOfEdition: z.custom<EditionYear>(isEditionYear, {
     message: "Veuillez choisir l'année d'édition",
   }),
   startDateTime: z.date().optional(),
   endDateTime: z.date().optional(),
   location: z.string().min(3, "Veuillez rentrer le lieu de l'événement. "),
+  locationAr: z.string().optional(),
   url: z.string().optional(),
   artists: z.array(z.string()).default([]),
 });

@@ -1,6 +1,4 @@
 import { getLocale } from 'next-intl/server';
-import { format, isEqual } from 'date-fns';
-import { fr, arMA } from 'date-fns/locale';
 import { cn } from '@/lib/utils';
 import SafeHtml from '@/components/shared/SafeHtml';
 import Contact from '@/components/shared/contact';
@@ -10,19 +8,7 @@ import ImageGallery from '@/components/shared/Derive2024/PostGallery';
 import Artist from '@/lib/database/models/artist.model';
 import SoundCloudEmbed from '@/components/shared/SoundCloudEmbed';
 import { categoryHref, type EditionYear } from '@/constants/editions';
-
-const getLocalFromUTC = (dateString: Date | string) => {
-  const date = new Date(dateString);
-
-  return new Date(
-    date.getUTCFullYear(),
-    date.getUTCMonth(),
-    date.getUTCDate(),
-    date.getUTCHours(),
-    date.getUTCMinutes(),
-    date.getUTCSeconds(),
-  );
-};
+import { formatPostDates, getPostFields } from '@/lib/post-display';
 
 export const getPostArtists = async (post: any) => {
   let artists: any[] = [];
@@ -59,18 +45,13 @@ const PostPageBody = async ({
   topSpacing = false,
 }: PostPageBodyProps) => {
   const locale = await getLocale();
-  const hasArabicContent = post.arabicTitle && post.arabicText;
-  const isArabic = locale === 'ar' && hasArabicContent;
-
-  const startDate = getLocalFromUTC(post.startDateTime);
-  const endDate = getLocalFromUTC(post.endDateTime);
-  const isSameDateTime = isEqual(startDate, endDate);
-
-  const formatTime = (date: Date) => {
-    return format(date, 'HH:mm', {
-      locale: isArabic ? arMA : fr,
-    });
-  };
+  const isArabic = locale === 'ar';
+  const { title, text, location } = getPostFields(post, locale);
+  const dateText = formatPostDates(
+    post.startDateTime,
+    post.endDateTime,
+    isArabic,
+  );
 
   const galleryImages = [
     ...(post.thumbnailImage ? [post.thumbnailImage] : []),
@@ -92,10 +73,10 @@ const PostPageBody = async ({
           <h1
             className={cn(
               'text-xl lg:text-3xl text-[#ee7103] px-4 font-normal',
-              isArabic ? 'arabic-title-bold text-right' : 'latin-title-light',
+              title.isArabic ? 'arabic-title-bold text-right' : 'latin-title-light',
             )}
           >
-            {isArabic ? post.arabicTitle : post.frenchTitle}
+            {title.value}
           </h1>
 
           {/* Artists */}
@@ -137,7 +118,7 @@ const PostPageBody = async ({
               <div className="w-full">
                 <ImageGallery
                   images={galleryImages}
-                  alt={isArabic ? post.arabicTitle : post.frenchTitle}
+                  alt={title.value}
                 />
               </div>
               {/* Event Details - Responsive Layout */}
@@ -148,19 +129,19 @@ const PostPageBody = async ({
                   <div
                     className={cn(
                       'flex items-center gap-2',
-                      isArabic &&
+                      location.isArabic &&
                         'flex-row-reverse justify-end lg:justify-start',
                     )}
                   >
                     <p
                       className={cn(
                         'font-semibold text-black',
-                        isArabic
+                        location.isArabic
                           ? 'arabic-subtitle-regular'
                           : 'latin-subtitle-regular',
                       )}
                     >
-                      {post.location}
+                      {location.value}
                     </p>
                   </div>
 
@@ -181,24 +162,7 @@ const PostPageBody = async ({
                       )}
                     >
                       <span className="text-black">
-                        {isSameDateTime ? (
-                          <>
-                            {format(new Date(post.startDateTime), 'PPP', {
-                              locale: isArabic ? arMA : fr,
-                            })}{' '}
-                            {formatTime(startDate)}
-                          </>
-                        ) : (
-                          <>
-                            {format(new Date(post.startDateTime), 'PPP', {
-                              locale: isArabic ? arMA : fr,
-                            })}
-                            {' - '}
-                            {format(new Date(post.endDateTime), 'PPP', {
-                              locale: isArabic ? arMA : fr,
-                            })}
-                          </>
-                        )}
+                        {dateText}
                       </span>
                     </p>
                   </div>
@@ -208,10 +172,10 @@ const PostPageBody = async ({
             {/* Right Column - Content */}
             <div className="lg:min-h-screen flex flex-col">
               <SafeHtml
-                html={isArabic ? post.arabicText : post.frenchText}
+                html={text.value}
                 className={cn(
                   'max-w-none flex-1 flex flex-col justify-start gap-6',
-                  isArabic
+                  text.isArabic
                     ? 'text-right arabic-subtitle-regular'
                     : 'latin-subtitle-regular',
                 )}

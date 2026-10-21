@@ -10,7 +10,6 @@ const CategoryPage = ({ params: { categoryId } }: CategoryPageProps) => (
   <EditionCategoryPage
     categoryId={categoryId}
     edition="2024"
-    yearOfEdition="2024"
   />
 );
 

@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Search } from 'lucide-react';
 import { getAllPosts } from '@/lib/actions/post.actions';
@@ -8,6 +8,7 @@ import { DeleteConfirmation } from './DeleteConfirmation';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import Image from 'next/image';
+import { EDITION_YEARS, type EditionYear } from '@/constants/editions';
 
 interface Post {
   _id: string;
@@ -25,6 +26,7 @@ interface Post {
     | 'lectures'
     | 'cinéma'
     | 'ateliers';
+  yearOfEdition: EditionYear;
   url?: string;
   createdAt: Date;
 }
@@ -35,35 +37,37 @@ interface PostsTableProps {
 
 const PostsTable = ({ currentUserIsAdmin }: PostsTableProps) => {
   const [searchTerm, setSearchTerm] = useState<string>('');
-  const [filteredPosts, setFilteredPosts] = useState<Post[]>([]);
+  const [editionFilter, setEditionFilter] = useState<EditionYear | 'all'>(
+    'all',
+  );
   const [posts, setPosts] = useState<Post[]>([]);
 
   useEffect(() => {
     async function fetchPosts() {
       const allPosts = await getAllPosts();
       setPosts(allPosts);
-      setFilteredPosts(allPosts);
     }
 
     fetchPosts();
   }, []);
 
   const handleDelete = (postId: string) => {
-    // Update both posts and filteredPosts states after deletion
     setPosts((prevPosts) => prevPosts.filter((post) => post._id !== postId));
-    setFilteredPosts((prevFiltered) =>
-      prevFiltered.filter((post) => post._id !== postId),
-    );
   };
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const term = e.target.value.toLowerCase();
-    setSearchTerm(term);
-    const filtered = posts.filter((post) =>
-      post.frenchTitle.toLowerCase().includes(term),
-    );
-    setFilteredPosts(filtered);
+    setSearchTerm(e.target.value.toLowerCase());
   };
+
+  const filteredPosts = useMemo(
+    () =>
+      posts.filter(
+        (post) =>
+          post.frenchTitle.toLowerCase().includes(searchTerm) &&
+          (editionFilter === 'all' || post.yearOfEdition === editionFilter),
+      ),
+    [posts, searchTerm, editionFilter],
+  );
 
   return (
     <motion.div
@@ -74,6 +78,22 @@ const PostsTable = ({ currentUserIsAdmin }: PostsTableProps) => {
     >
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-xl font-semibold text-gray-100">Les postes</h2>
+        <div className="flex items-center gap-3">
+          <select
+            aria-label="Filtrer par édition"
+            className="bg-gray-700 text-white rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            value={editionFilter}
+            onChange={(e) =>
+              setEditionFilter(e.target.value as EditionYear | 'all')
+            }
+          >
+            <option value="all">Toutes les éditions</option>
+            {EDITION_YEARS.map((year) => (
+              <option key={year} value={year}>
+                {year}
+              </option>
+            ))}
+          </select>
         <div className="relative hidden sm:block">
           <input
             type="text"
@@ -83,6 +103,7 @@ const PostsTable = ({ currentUserIsAdmin }: PostsTableProps) => {
             onChange={handleSearch}
           />
           <Search className="absolute left-3 top-2.5 text-gray-400" size={18} />
+        </div>
         </div>
       </div>
 
@@ -95,6 +116,9 @@ const PostsTable = ({ currentUserIsAdmin }: PostsTableProps) => {
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
                 Catégorie
+              </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
+                Édition
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
                 Crée le :
@@ -152,6 +176,11 @@ const PostsTable = ({ currentUserIsAdmin }: PostsTableProps) => {
                 <td className="px-6 py-4 whitespace-nowrap">
                   <div className="text-sm text-gray-300 capitalize">
                     {post.postCategory}
+                  </div>
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap">
+                  <div className="text-sm text-gray-300">
+                    {post.yearOfEdition}
                   </div>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">

@@ -3,7 +3,7 @@ import Navbar from '@/components/shared/Navbar';
 import { getPostById } from '@/lib/actions/post.actions';
 import React from 'react';
 import { getAdminOrRedirect } from '@/lib/auth/require-admin';
-import { redirect } from 'next/navigation';
+import { notFound, redirect } from 'next/navigation';
 
 type UpdatePostProps = {
   params: {
@@ -16,6 +16,7 @@ const page = async ({ params: { postId } }: UpdatePostProps) => {
   if (!isAdmin) redirect('/darja-admin');
 
   const post = await getPostById(postId);
+  if (!post) notFound();
 
   return (
     <div className="flex-1 overflow-auto relative z-10">

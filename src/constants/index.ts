@@ -1,5 +1,5 @@
 import { IPartner } from '@/lib/database/models/partner.model';
-import { editionHref } from './editions';
+import { editionHref, type EditionYear } from './editions';
 
 export const navLinks = [
   {
@@ -43,8 +43,9 @@ export const postDefaultValues = {
   endDateTime: new Date(),
   postCategory: '',
   location: '',
+  locationAr: '',
   isInHomepage: false,
-  yearOfEdition: '2024',
+  yearOfEdition: '2024' as EditionYear,
   artists: [],
   url: '',
 };
