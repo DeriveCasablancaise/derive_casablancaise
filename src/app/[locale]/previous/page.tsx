@@ -3,7 +3,7 @@ import Contact from '../../../components/shared/contact';
 import DeriveLanding from '@/components/shared/DeriveLanding';
 import PartnersSlider from '@/components/shared/PartnersSlider';
 import { getDerive2022Data } from '@/lib/actions/derive2022.actions';
-import ProgramSection2022 from '@/components/shared/ProgramSection2022';
+import ProgramSection from '@/components/shared/ProgramsSection';
 
 const DerivePage = async () => {
   const derive2022 = await getDerive2022Data();
@@ -12,7 +12,7 @@ const DerivePage = async () => {
     <div className="overflow-hidden">
       <DeriveLanding derive2024={derive2022} />
       {/* <VideoSection /> */}
-      <ProgramSection2022 />
+      <ProgramSection edition="2022" />
       <PartnersSlider edition="2022" />
       <Contact />
     </div>

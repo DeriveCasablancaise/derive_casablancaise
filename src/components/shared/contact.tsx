@@ -10,6 +10,7 @@ import { cn } from '../../lib/utils';
 import { Input } from '../ui/input';
 import { Button } from '../ui/button';
 import { Instagram } from 'lucide-react';
+import { editionHref } from '@/constants/editions';
 
 const Contact = () => {
   const locale = useLocale();
@@ -38,11 +39,11 @@ const Contact = () => {
   const quickLinks = [
     {
       link: t('programme2024'),
-      path: `/${locale}/derive-2024`,
+      path: `/${locale}${editionHref('2024')}`,
     },
     {
       link: t('previousEditions'),
-      path: `/${locale}/previous`,
+      path: `/${locale}${editionHref('2022')}`,
     },
 
     {

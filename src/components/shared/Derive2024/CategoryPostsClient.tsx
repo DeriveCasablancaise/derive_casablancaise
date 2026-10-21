@@ -4,7 +4,6 @@ import type React from 'react';
 
 import { useEffect, useRef, useState } from 'react';
 import { cn } from '@/lib/utils';
-import { useTranslations } from 'next-intl';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Calendar } from 'lucide-react';
@@ -14,19 +13,15 @@ import { useRouter } from 'next/navigation';
 import ClientWrapper from '../PostWrapper';
 import { ParentLink } from '@/components/shared/ParentLink';
 import SubCategorySelector from './SubcategorySelector';
+import {
+  CATEGORIES,
+  categoryHref,
+  editionHref,
+  postHref,
+  type CategoryKey,
+  type EditionYear,
+} from '@/constants/editions';
 
-const Categories = {
-  danse: { fr: 'Danse', ar: 'رقص' },
-  theatre: { fr: 'Théâtre', ar: 'مسرح' },
-  musique: { fr: 'Musique', ar: 'حفلة موسيقية' },
-  lectures: { fr: 'Lectures', ar: 'قراءات' },
-  cinema: { fr: 'Cinéma', ar: 'سينما' },
-  conference: { fr: 'Conférences', ar: 'مؤتمر' },
-  ateliers: { fr: 'Ateliers', ar: 'ورش عمل' },
-  autres: { fr: 'En Marge...', ar: 'أخرى' },
-} as const;
-
-type CategoryKey = keyof typeof Categories;
 
 const SubCategories = {
   rencontres: { fr: 'Rencontres', ar: 'لقاءات' },
@@ -41,7 +36,7 @@ interface CategoryPostsClientProps {
   initialPosts: IPost[];
   locale: string;
   isArabic: boolean;
-  yearOfEdition: '2022' | '2024';
+  edition: EditionYear;
 }
 
 const CategoryPostsClient: React.FC<CategoryPostsClientProps> = ({
@@ -49,7 +44,7 @@ const CategoryPostsClient: React.FC<CategoryPostsClientProps> = ({
   initialPosts,
   locale,
   isArabic,
-  yearOfEdition,
+  edition,
 }) => {
   const sectionRef = useRef(null);
   const isInView = useInView(sectionRef, { once: false, amount: 0.1 });
@@ -59,7 +54,6 @@ const CategoryPostsClient: React.FC<CategoryPostsClientProps> = ({
   const [selectedSubCategory, setSelectedSubCategory] =
     useState<SubCategoryKey | null>(null);
   const router = useRouter();
-  const t = useTranslations('Derive2024');
 
   useEffect(() => {
     setPosts(initialPosts);
@@ -75,11 +69,11 @@ const CategoryPostsClient: React.FC<CategoryPostsClientProps> = ({
   const handleCategoryChange = (category: CategoryKey) => {
     if (category === selectedCategory) {
       router.push(
-        `/${locale}/${yearOfEdition === '2022' ? 'previous' : 'derive-2024'}#program_section`,
+        `/${locale}${editionHref(edition)}#program_section`,
       );
     } else {
       router.push(
-        `/${locale}/${yearOfEdition === '2022' ? 'previous' : 'derive-2024'}/${category}`,
+        `/${locale}${categoryHref(edition, category)}`,
       );
     }
   };
@@ -94,7 +88,7 @@ const CategoryPostsClient: React.FC<CategoryPostsClientProps> = ({
         <ParentLink
           label={isArabic ? 'العودة' : 'Retour'}
           className="px-4 mb-4"
-          href={`/${locale}/${yearOfEdition === '2022' ? 'previous' : 'derive-2024'}#program_section`}
+          href={`/${locale}${editionHref(edition)}#program_section`}
         />
 
         <motion.div
@@ -110,8 +104,8 @@ const CategoryPostsClient: React.FC<CategoryPostsClientProps> = ({
             )}
           >
             {isArabic
-              ? Categories[selectedCategory].ar
-              : Categories[selectedCategory].fr}
+              ? CATEGORIES[selectedCategory].ar
+              : CATEGORIES[selectedCategory].fr}
           </h1>
 
           <motion.div
@@ -121,7 +115,7 @@ const CategoryPostsClient: React.FC<CategoryPostsClientProps> = ({
             className="mb-12"
           >
             <div className="flex flex-wrap gap-6 md:gap-8 justify-center">
-              {(Object.keys(Categories) as CategoryKey[]).map(
+              {(Object.keys(CATEGORIES) as CategoryKey[]).map(
                 (category, index) => (
                   <motion.button
                     key={category}
@@ -142,8 +136,8 @@ const CategoryPostsClient: React.FC<CategoryPostsClientProps> = ({
                     )}
                   >
                     {isArabic
-                      ? Categories[category].ar
-                      : Categories[category].fr}
+                      ? CATEGORIES[category].ar
+                      : CATEGORIES[category].fr}
                   </motion.button>
                 ),
               )}
@@ -174,7 +168,7 @@ const CategoryPostsClient: React.FC<CategoryPostsClientProps> = ({
                   className="shadow-lg overflow-hidden"
                 >
                   <Link
-                    href={`/${locale}/${yearOfEdition === '2022' ? 'previous' : 'derive-2024'}/post/${post._id}`}
+                    href={`/${locale}${postHref(edition, post._id)}`}
                     className="block aspect-[16/9] md:aspect-[3/4] lg:aspect-[1/1] relative group overflow-hidden"
                   >
                     {post.images && (
