@@ -56,7 +56,7 @@ export const artistDefaultValues = {
   arabicText: '',
   images: [],
   videoSource: '',
-  artistCategory: '',
+  editions: [],
   isInHomepage: false,
   url: '',
 };

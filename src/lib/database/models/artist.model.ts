@@ -1,4 +1,6 @@
 import { Schema, Document, model, models } from 'mongoose';
+import type { EditionYear } from '@/constants/editions';
+import { EDITION_YEARS } from '@/lib/artist-editions';
 
 // Interface for the Artist document
 export interface IArtist extends Document {
@@ -9,7 +11,9 @@ export interface IArtist extends Document {
   arabicText: string;
   images: string[];
   videoSource?: string;
-  artistCategory: '2022' | '2024' | '2026' | 'all';
+  editions: EditionYear[];
+  /** @deprecated use getArtistEditions */
+  artistCategory?: '2022' | '2024' | '2026' | 'all';
   url?: string;
   isInHomepage: boolean;
   createdAt: Date;
@@ -40,11 +44,17 @@ const ArtistSchema = new Schema({
   videoSource: {
     type: String,
   },
+  editions: {
+    type: [{ type: String, enum: EDITION_YEARS }],
+    validate: {
+      validator: (v: string[]) => v.length > 0,
+      message: 'At least one edition is required',
+    },
+  },
+  // Deprecated, kept so documents not migrated yet still load.
   artistCategory: {
     type: String,
     enum: ['2022', '2024', '2026', 'all'],
-    required: true,
-    default: null,
   },
   url: { type: String },
   isInHomepage: { type: Boolean, default: false },

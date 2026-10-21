@@ -31,6 +31,7 @@ import Dropdown from './DropDown';
 import { IArtist } from '@/lib/database/models/artist.model';
 import ArtistMultiSelect from './ArtistMultiSelect';
 import { getAllArtists } from '@/lib/actions/artists.actions';
+import { getArtistEditions } from '@/lib/artist-editions';
 import SubCategoryDropdown from './SubcategoryDropdown';
 import { ThumbnailUploader } from './ThumbnailUploader';
 import EditionDropdown from './EditionDropdown';
@@ -103,6 +104,15 @@ const PostForm = ({ type, post, postId }: PostFormProps) => {
     resolver: zodResolver(postFormSchema),
     defaultValues: initialValues as z.infer<typeof postFormSchema>,
   });
+
+  // picker follows the post's edition, but selected artists stay visible
+  const watchedEdition = form.watch('yearOfEdition');
+  const selectedArtistIds = form.watch('artists') ?? [];
+  const pickerArtists = artists.filter(
+    (artist) =>
+      selectedArtistIds.includes(artist._id) ||
+      getArtistEditions(artist).includes(watchedEdition)
+  );
 
   async function onSubmit(values: z.infer<typeof postFormSchema>) {
     setIsLoading(true);
@@ -367,7 +377,7 @@ const PostForm = ({ type, post, postId }: PostFormProps) => {
                 <ArtistMultiSelect
                   value={field.value}
                   onChangeHandler={field.onChange}
-                  artists={artists}
+                  artists={pickerArtists}
                 />
               </FormControl>
               <FormMessage />

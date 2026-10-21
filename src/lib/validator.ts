@@ -1,4 +1,5 @@
 import * as z from 'zod';
+import { isEditionYear, type EditionYear } from '@/constants/editions';
 
 export const postFormSchema = z.object({
   frenchTitle: z
@@ -53,9 +54,9 @@ export const artistFormSchema = z.object({
     .min(3, 'Le texte doit consister de 3 caractères ou plus.'),
   images: z.array(z.string()).default([]),
   videoSource: z.string().optional(),
-  artistCategory: z.enum(['2022', '2024', '2026', 'all'], {
-    message: 'Veuillez Choisir Une Catégorie',
-  }),
+  editions: z
+    .array(z.custom<EditionYear>(isEditionYear))
+    .min(1, 'Veuillez choisir au moins une édition'),
   isInHomepage: z.boolean(),
   url: z.string().optional(),
 });

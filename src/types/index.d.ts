@@ -1,4 +1,5 @@
 /* eslint-disable no-unused-vars */
+import type { EditionYear } from '@/constants/editions';
 
 // ====== URL QUERY PARAMS
 export type UrlQueryParams = {
@@ -109,7 +110,7 @@ export type CreateArtistParams = {
   arabicText: string;
   images: string[];
   videoSource?: string;
-  artistCategory: '2022' | '2024' | '2026' | 'all';
+  editions: EditionYear[];
   isInHomepage: boolean;
   url?: string;
 };
@@ -123,7 +124,7 @@ export type UpdateArtistParams = {
     arabicText: string;
     images: string[];
     videoSource?: string;
-    artistCategory: '2022' | '2024' | '2026' | 'all';
+    editions: EditionYear[];
     isInHomepage: boolean;
     url?: string;
   };
