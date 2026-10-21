@@ -1,5 +1,6 @@
 'use server';
 
+import { requireAdmin } from '@/lib/auth/require-admin';
 import { connectToDatabase } from '../database';
 import Partner from '../database/models/partner.model';
 import { handleError } from '../utils';
@@ -27,6 +28,8 @@ const populatePartner = async (query: any) => {
 
 // Create Partner
 export async function createPartner(partner: CreatePartnerParams) {
+  await requireAdmin();
+
   try {
     await connectToDatabase();
 
@@ -44,6 +47,8 @@ export async function createPartner(partner: CreatePartnerParams) {
 
 // Update Partner
 export async function updatePartner({ partner }: UpdatePartnerParams) {
+  await requireAdmin();
+
   try {
     await connectToDatabase();
 
@@ -76,6 +81,8 @@ export async function updatePartnerOrder(
   orderedIds: string[],
   year: '2022' | '2024',
 ) {
+  await requireAdmin();
+
   try {
     await connectToDatabase();
     await Order.findOneAndUpdate({ year }, { orderedIds }, { upsert: true });
@@ -93,6 +100,8 @@ export async function deletePartner({
   partnerId: string;
   path: string;
 }) {
+  await requireAdmin();
+
   try {
     await connectToDatabase();
 
@@ -175,6 +184,8 @@ export async function getPartnersByYear(year: '2022' | '2024') {
 
 // Get Partner Counts
 export async function getPartnerCounts() {
+  await requireAdmin();
+
   try {
     await connectToDatabase();
 

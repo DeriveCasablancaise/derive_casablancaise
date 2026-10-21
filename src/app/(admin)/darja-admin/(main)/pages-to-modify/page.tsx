@@ -1,25 +1,12 @@
 import PagesToModify from '@/components/dashboard/PagesToModify';
-import { getUserById } from '@/lib/actions/user.actions';
-import { currentUser } from '@clerk/nextjs/server';
+import { getAdminOrRedirect } from '@/lib/auth/require-admin';
 import { redirect } from 'next/navigation';
 
 const PagesToModifyPage = async () => {
-  const activeUser = await currentUser();
+  const { isAdmin } = await getAdminOrRedirect();
+  if (!isAdmin) redirect('/darja-admin');
 
-  if (!activeUser) {
-    redirect('/darja-admin/sign-in');
-    return null;
-  }
-
-  // Fetch additional user details from your database using Clerk's user ID
-  const currentUserFromDb = await getUserById(activeUser.id);
-
-  if (!currentUserFromDb) {
-    redirect('/darja-admin/sign-in');
-    return null;
-  }
-
-  return <PagesToModify isAdmin={currentUserFromDb.isAdmin} />;
+  return <PagesToModify isAdmin={isAdmin} />;
 };
 
 export default PagesToModifyPage;

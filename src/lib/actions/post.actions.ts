@@ -1,5 +1,6 @@
 'use server';
 
+import { requireAdmin } from '@/lib/auth/require-admin';
 import { CreatePostParams, SubCategoryKey, UpdatePostParams } from '@/types';
 import { connectToDatabase } from '../database';
 import Post, { IPost } from '../database/models/post.model';
@@ -24,6 +25,8 @@ const populatePost = async (query: any) => {
 
 // Create Post
 export async function createPost(post: CreatePostParams) {
+  await requireAdmin();
+
   try {
     await connectToDatabase();
 
@@ -41,6 +44,8 @@ export async function createPost(post: CreatePostParams) {
 
 // Update Post
 export async function updatePost({ post }: UpdatePostParams) {
+  await requireAdmin();
+
   try {
     await connectToDatabase();
 
@@ -76,6 +81,8 @@ export async function deletePost({
   postId: string;
   path: string;
 }) {
+  await requireAdmin();
+
   try {
     await connectToDatabase();
 
@@ -181,6 +188,8 @@ export async function getRelatedPosts({
 }
 
 export async function getPostCounts() {
+  await requireAdmin();
+
   try {
     // Connect to the database
     await connectToDatabase();

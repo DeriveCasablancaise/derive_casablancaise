@@ -1,7 +1,7 @@
 import { Webhook } from 'svix';
 import { headers } from 'next/headers';
 import { clerkClient, WebhookEvent } from '@clerk/nextjs/server';
-import { createUser, deleteUser, updateUser } from '@/lib/actions/user.actions';
+import { createUser, deleteUser, updateUser } from '@/lib/database/user-sync';
 import { NextResponse } from 'next/server';
 
 export async function POST(req: Request) {
@@ -81,14 +81,16 @@ export async function POST(req: Request) {
   }
 
   if (eventType === 'user.updated') {
-    const { id, image_url, first_name, last_name, username } = evt.data;
+    const { id, email_addresses, image_url, first_name, last_name, username } =
+      evt.data;
 
+    // No isAdmin here: admin rights are only set by hand in the database.
     const user = {
+      email: email_addresses[0].email_address,
       firstName: first_name!,
       lastName: last_name!,
       username: username!,
       photo: image_url,
-      isAdmin: false,
     };
 
     const updatedUser = await updateUser(id, user);

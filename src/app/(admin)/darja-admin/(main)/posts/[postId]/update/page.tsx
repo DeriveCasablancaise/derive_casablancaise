@@ -2,6 +2,8 @@ import PostForm from '@/components/dashboard/posts/PostForm';
 import Navbar from '@/components/shared/Navbar';
 import { getPostById } from '@/lib/actions/post.actions';
 import React from 'react';
+import { getAdminOrRedirect } from '@/lib/auth/require-admin';
+import { redirect } from 'next/navigation';
 
 type UpdatePostProps = {
   params: {
@@ -10,6 +12,9 @@ type UpdatePostProps = {
 };
 
 const page = async ({ params: { postId } }: UpdatePostProps) => {
+  const { isAdmin } = await getAdminOrRedirect();
+  if (!isAdmin) redirect('/darja-admin');
+
   const post = await getPostById(postId);
 
   return (

@@ -1,5 +1,6 @@
 'use server';
 
+import { requireAdmin } from '@/lib/auth/require-admin';
 import { CreateArtistParams, UpdateArtistParams } from '@/types';
 import { connectToDatabase } from '../database';
 import { handleError } from '../utils';
@@ -18,6 +19,8 @@ const populatePost = async (query: any) => {
 
 // Create Post
 export async function createArtist(artist: CreateArtistParams) {
+  await requireAdmin();
+
   try {
     await connectToDatabase();
 
@@ -35,6 +38,8 @@ export async function createArtist(artist: CreateArtistParams) {
 
 // Update Post
 export async function updateArtist({ artist }: UpdateArtistParams) {
+  await requireAdmin();
+
   try {
     await connectToDatabase();
 
@@ -64,6 +69,8 @@ export async function updateArtist({ artist }: UpdateArtistParams) {
 
 // Delete post
 export async function deleteArtist(artistId: string) {
+  await requireAdmin();
+
   try {
     await connectToDatabase();
 
@@ -142,6 +149,8 @@ export async function getRelatedArtists({
 }
 
 export async function getArtistsCounts() {
+  await requireAdmin();
+
   try {
     // Connect to the database
     await connectToDatabase();

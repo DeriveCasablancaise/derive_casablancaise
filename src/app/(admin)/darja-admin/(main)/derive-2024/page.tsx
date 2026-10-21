@@ -3,8 +3,13 @@ import Navbar from '@/components/shared/Navbar';
 import { getDerive2024Data } from '@/lib/actions/derive2024.actions';
 
 import React from 'react';
+import { getAdminOrRedirect } from '@/lib/auth/require-admin';
+import { redirect } from 'next/navigation';
 
 const page = async () => {
+  const { isAdmin } = await getAdminOrRedirect();
+  if (!isAdmin) redirect('/darja-admin');
+
   const derive2024 = await getDerive2024Data();
 
   return (

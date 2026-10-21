@@ -2,6 +2,8 @@ import ArtistForm from '@/components/dashboard/artists/ArtistForm';
 import Navbar from '@/components/shared/Navbar';
 import { getArtistById } from '@/lib/actions/artists.actions';
 import React from 'react';
+import { getAdminOrRedirect } from '@/lib/auth/require-admin';
+import { redirect } from 'next/navigation';
 
 type UpdateArtistProps = {
   params: {
@@ -10,6 +12,9 @@ type UpdateArtistProps = {
 };
 
 const page = async ({ params: { artistId } }: UpdateArtistProps) => {
+  const { isAdmin } = await getAdminOrRedirect();
+  if (!isAdmin) redirect('/darja-admin');
+
   const artist = await getArtistById(artistId);
 
   return (
