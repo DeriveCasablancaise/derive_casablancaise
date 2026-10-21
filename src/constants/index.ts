@@ -1,4 +1,5 @@
 import { IPartner } from '@/lib/database/models/partner.model';
+import { editionHref } from './editions';
 
 export const navLinks = [
   {
@@ -11,11 +12,11 @@ export const navLinks = [
   },
   {
     title: 'Dérive 2024',
-    href: '/derive-2024',
+    href: editionHref('2024'),
   },
   {
     title: 'Editions précédentes',
-    href: '/previous',
+    href: editionHref('2022'),
   },
   {
     title: 'Espace Darja',

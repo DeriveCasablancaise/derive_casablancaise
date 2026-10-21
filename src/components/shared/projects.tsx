@@ -5,6 +5,7 @@ import { cn } from '../../lib/utils';
 import { useLocale, useTranslations } from 'next-intl';
 import Link from 'next/link';
 import Image from 'next/image';
+import { editionHref } from '@/constants/editions';
 
 const Categories = {
   danse: { fr: 'Danse', ar: 'رقص' },
@@ -34,7 +35,7 @@ export default function Projects() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {(Object.keys(Categories) as CategoryKey[]).map((category) => (
               <Link
-                href={`/${locale}/derive-2024?category=${category}#program_section`}
+                href={`/${locale}${editionHref('2024')}?category=${category}#program_section`}
                 key={category}
                 className="group relative overflow-hidden bg-[#1b7172] transition-all duration-700 group"
               >

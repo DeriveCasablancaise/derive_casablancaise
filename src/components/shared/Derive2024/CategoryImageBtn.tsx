@@ -5,19 +5,12 @@ import { motion } from 'framer-motion';
 import Image from 'next/image';
 import { useLocale } from 'next-intl';
 import { cn } from '@/lib/utils';
+import {
+  categoryHref,
+  type CategoryKey,
+  type EditionYear,
+} from '@/constants/editions';
 
-const Categories = {
-  danse: { fr: 'Danse', ar: 'رقص' },
-  theatre: { fr: 'Théâtre', ar: 'مسرح' },
-  musique: { fr: 'Musique', ar: 'حفلة موسيقية' },
-  lectures: { fr: 'Lectures', ar: 'قراءات' },
-  cinema: { fr: 'Cinéma', ar: 'سينما' },
-  conference: { fr: 'Conférences', ar: 'مؤتمر' },
-  ateliers: { fr: 'Ateliers', ar: 'ورش عمل' },
-  autres: { fr: 'En Marge...', ar: 'أخرى' },
-} as const;
-
-type CategoryKey = keyof typeof Categories;
 
 interface CategoryImageButtonProps {
   categoryKey: CategoryKey;
@@ -30,7 +23,7 @@ interface CategoryImageButtonProps {
   isInView: boolean;
   isNavigationMode?: boolean;
   locale?: string;
-  year: '2022' | '2024';
+  edition: EditionYear;
 }
 
 export const CategoryImageButton: React.FC<CategoryImageButtonProps> = ({
@@ -43,7 +36,7 @@ export const CategoryImageButton: React.FC<CategoryImageButtonProps> = ({
   index,
   isInView,
   isNavigationMode = false,
-  year,
+  edition,
 }) => {
   const locale = useLocale();
 
@@ -85,9 +78,7 @@ export const CategoryImageButton: React.FC<CategoryImageButtonProps> = ({
 
   if (isNavigationMode) {
     return (
-      <Link
-        href={`/${locale}/${year === '2022' ? 'previous' : 'derive-2024'}/${categoryKey}`}
-      >
+      <Link href={`/${locale}${categoryHref(edition, categoryKey)}`}>
         {buttonContent}
       </Link>
     );

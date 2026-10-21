@@ -5,37 +5,26 @@ import { cn, landingSlideUp } from '@/lib/utils';
 import { useLocale, useTranslations } from 'next-intl';
 import { motion, useInView } from 'framer-motion';
 import { CategoryImageButton } from './Derive2024/CategoryImageBtn';
+import {
+  CATEGORIES,
+  getEdition,
+  type CategoryKey,
+  type EditionYear,
+} from '@/constants/editions';
 
-const Categories = {
-  danse: { fr: 'Danse', ar: 'رقص' },
-  theatre: { fr: 'Théâtre', ar: 'مسرح' },
-  musique: { fr: 'Musique', ar: 'حفلة موسيقية' },
-  lectures: { fr: 'Lectures', ar: 'قراءات' },
-  cinema: { fr: 'Cinéma', ar: 'سينما' },
-  conference: { fr: 'Conférences', ar: 'مؤتمر' },
-  ateliers: { fr: 'Ateliers', ar: 'ورش عمل' },
-  autres: { fr: 'En Marge...', ar: 'أخرى' },
-} as const;
 
-type CategoryKey = keyof typeof Categories;
+interface ProgramSectionProps {
+  edition: EditionYear;
+}
 
-const categoryImageMap: Record<CategoryKey, string> = {
-  danse: '/assets/categories/danse.jpg',
-  theatre: '/assets/categories/theatre.jpg',
-  musique: '/assets/categories/musique.jpg',
-  lectures: '/assets/categories/lectures.jpeg',
-  cinema: '/assets/categories/cinema.jpg',
-  conference: '/assets/categories/conférences.jpg',
-  ateliers: '/assets/categories/ateliers.jpg',
-  autres: '/assets/categories/en-marge.jpeg',
-};
-
-const ProgramSection = () => {
+const ProgramSection = ({ edition }: ProgramSectionProps) => {
+  const { translationNamespace, categoryImages, programmePdf } =
+    getEdition(edition);
   const sectionRef = useRef(null);
   const isInView = useInView(sectionRef, { once: false, amount: 0.1 });
   const locale = useLocale();
   const isArabic = locale === 'ar';
-  const t = useTranslations('Derive2024');
+  const t = useTranslations(translationNamespace!);
   const t2 = useTranslations('Layout');
 
   return (
@@ -70,13 +59,13 @@ const ProgramSection = () => {
             className="mb-12"
           >
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
-              {(Object.keys(Categories) as CategoryKey[]).map(
+              {(Object.keys(CATEGORIES) as CategoryKey[]).map(
                 (category, index) => (
                   <CategoryImageButton
                     key={category}
                     categoryKey={category}
-                    categoryName={Categories[category]}
-                    imageUrl={categoryImageMap[category]}
+                    categoryName={CATEGORIES[category]}
+                    imageUrl={categoryImages![category]}
                     isSelected={false}
                     isArabic={isArabic}
                     onClick={() => {}} // Not used in navigation mode
@@ -84,7 +73,7 @@ const ProgramSection = () => {
                     isInView={isInView}
                     isNavigationMode={true}
                     locale={locale}
-                    year="2024"
+                    edition={edition}
                   />
                 ),
               )}
@@ -99,7 +88,7 @@ const ProgramSection = () => {
             isArabic ? 'arabic-title-light' : 'latin-title-light',
           )}
         >
-          <a href="/programme.pdf" download target="_blank">
+          <a href={programmePdf} download target="_blank">
             {t2('Download')}
           </a>
         </div>
