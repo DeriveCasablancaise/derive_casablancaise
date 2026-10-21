@@ -108,7 +108,11 @@ const BannerForm = ({ banner }: BannerFormProps) => {
         />
 
         <div className="border-t-2 pt-4">
-          <h3 className="text-lg font-semibold mb-4">Texte (200 caractères max)</h3>
+          <h3 className="text-lg font-semibold mb-1">Texte (200 caractères max)</h3>
+          <p className="text-sm opacity-70 mb-4">
+            Le texte défile sous le titre de la page d'accueil (200 caractères
+            max).
+          </p>
           <div className="flex flex-col gap-5 md:flex-row">
             <FormField
               control={form.control}

@@ -13,6 +13,7 @@ import { fadeIn } from '@/variants';
 import TeaserModal from './TeaserModal';
 import { IHomepage } from '@/lib/database/models/homepage.model';
 import AfterMovieModal from './AfterMovieModal';
+import type { BannerView } from '@/lib/banner';
 
 const jakarta = Plus_Jakarta_Sans({
   weight: ['600', '700', '800'],
@@ -21,9 +22,10 @@ const jakarta = Plus_Jakarta_Sans({
 
 interface ProgramLandingProps {
   homepage: IHomepage;
+  banner?: BannerView | null;
 }
 
-const ProgramLanding = ({ homepage }: ProgramLandingProps) => {
+const ProgramLanding = ({ homepage, banner = null }: ProgramLandingProps) => {
   const sectionRef = useRef(null);
   const imageContainerRef = useRef(null);
   const isInView = useInView(imageContainerRef);
@@ -64,7 +66,7 @@ const ProgramLanding = ({ homepage }: ProgramLandingProps) => {
     <>
       <section ref={sectionRef} data-scroll-section="" className="">
         <div className="relative flex h-full w-full">
-          <SubHeader />
+          <SubHeader banner={banner} />
         </div>
         <motion.div
           ref={imageContainerRef}
