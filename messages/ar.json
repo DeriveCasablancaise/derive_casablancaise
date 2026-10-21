@@ -29,7 +29,14 @@
         "title": "خاطبونا",
         "href": "/contact"
       },
-      "derivecasa": "منعطف بيضاوي"
+      "derivecasa": "منعطف بيضاوي",
+      "derive2026": {
+        "title": "إصدار 2026",
+        "href": "/derive-2026"
+      }
+    },
+    "Landing": {
+      "videosHeading": "الفيلم الختامي لفعالية المنعطف البيضاوي"
     },
 
     "Menu": {
@@ -186,6 +193,7 @@
   "Footer": {
     "quicklinks": "روابط سريعة",
     "programme2024": "برنامج 2024",
+    "edition2026": "إصدار 2026",
     "previousEditions": "الاصدارات السابقة",
     "community": "مجتمع",
     "associationAR2D": "AR2D جمعية  ",

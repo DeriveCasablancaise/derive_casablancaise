@@ -10,9 +10,10 @@ import { cn } from '../../lib/utils';
 import { Input } from '../ui/input';
 import { Button } from '../ui/button';
 import { Instagram } from 'lucide-react';
-import { editionHref } from '@/constants/editions';
+import { editionHref, type EditionYear } from '@/constants/editions';
 
-const Contact = () => {
+// the copyright year follows the edition page, other pages keep 2024
+const Contact = ({ edition = '2024' }: { edition?: EditionYear }) => {
   const locale = useLocale();
   const isArabic = locale === 'ar';
   const t = useTranslations('Footer');
@@ -37,6 +38,10 @@ const Contact = () => {
   }, []);
 
   const quickLinks = [
+    {
+      link: t('edition2026'),
+      path: `/${locale}${editionHref('2026')}`,
+    },
     {
       link: t('programme2024'),
       path: `/${locale}${editionHref('2024')}`,
@@ -152,7 +157,7 @@ const Contact = () => {
         {/* Copyright */}
         <div className="mt-12 text-center pb-6">
           <p className=" latin-subtitle-regular text-lg xl:text-2xl">
-            Dérive Casablancaise 2024 ©
+            Dérive Casablancaise {edition} ©
           </p>
         </div>
       </div>

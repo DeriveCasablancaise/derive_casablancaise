@@ -11,6 +11,10 @@ export const navLinks = [
     href: '/about',
   },
   {
+    title: 'Édition 2026',
+    href: editionHref('2026'),
+  },
+  {
     title: 'Dérive 2024',
     href: editionHref('2024'),
   },
