@@ -65,8 +65,9 @@ export type CreatePostParams = {
     | 'ateliers'
     | 'autres';
   subCategory?: 'rencontres' | 'expositions' | 'productions';
-  yearOfEdition: '2022' | '2024';
+  yearOfEdition: EditionYear;
   location: string;
+  locationAr?: string;
   url?: string;
 };
 
@@ -92,8 +93,9 @@ export type UpdatePostParams = {
       | 'ateliers'
       | 'autres';
     subCategory?: 'rencontres' | 'expositions' | 'productions';
-    yearOfEdition: '2022' | '2024';
+    yearOfEdition: EditionYear;
     location: string;
+    locationAr?: string;
     url?: string;
   };
 };

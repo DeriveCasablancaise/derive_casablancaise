@@ -333,22 +333,42 @@ const PostForm = ({ type, post, postId }: PostFormProps) => {
           />
         </div>
 
-        <FormField
-          control={form.control}
-          name="location"
-          render={({ field }) => (
-            <FormItem className="w-full">
-              <FormControl>
-                <Input
-                  placeholder="Lieu de l'événement"
-                  className="input-field"
-                  {...field}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+        <div className="flex flex-col gap-5 md:flex-row">
+          <FormField
+            control={form.control}
+            name="location"
+            render={({ field }) => (
+              <FormItem className="w-full">
+                <FormControl>
+                  <Input
+                    placeholder="Lieu de l'événement"
+                    className="input-field"
+                    {...field}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="locationAr"
+            render={({ field }) => (
+              <FormItem className="w-full">
+                <FormControl>
+                  <Input
+                    placeholder="مكان الحدث باللغة العربية"
+                    className="input-field"
+                    {...field}
+                    value={field.value ?? ''}
+                    dir="rtl"
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
 
         {form.watch('postCategory') === 'autres' && (
           <FormField

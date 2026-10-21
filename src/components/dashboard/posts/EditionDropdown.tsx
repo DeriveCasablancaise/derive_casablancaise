@@ -8,16 +8,17 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { useEffect, useState } from 'react';
+import { EDITION_YEARS } from '@/constants/editions';
 
 type EditionDropdownProps = {
   value?: string | null;
   onChangeHandler: (value: string) => void;
 };
 
-const editions = [
-  { id: '2022', name: 'Édition 2022' },
-  { id: '2024', name: 'Édition 2024' },
-];
+const editions = EDITION_YEARS.map((year) => ({
+  id: year,
+  name: `Édition ${year}`,
+}));
 
 const EditionDropdown = ({ value, onChangeHandler }: EditionDropdownProps) => {
   const [selectedValue, setSelectedValue] = useState(value?.toString() || '');

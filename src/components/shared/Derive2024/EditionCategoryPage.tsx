@@ -8,13 +8,11 @@ import { isCategoryKey, type EditionYear } from '@/constants/editions';
 interface EditionCategoryPageProps {
   categoryId: string;
   edition: EditionYear;
-  yearOfEdition: '2022' | '2024';
 }
 
 const EditionCategoryPage = async ({
   categoryId,
   edition,
-  yearOfEdition,
 }: EditionCategoryPageProps) => {
   const locale = await getLocale();
   const isArabic = locale === 'ar';
@@ -40,7 +38,7 @@ const EditionCategoryPage = async ({
   const filteredPosts = await getPostsByCategory(
     categoryId,
     undefined,
-    yearOfEdition,
+    edition,
   );
 
   return (

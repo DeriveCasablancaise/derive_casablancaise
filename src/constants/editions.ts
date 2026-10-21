@@ -67,7 +67,9 @@ export const EDITIONS: Record<EditionYear, Edition> = {
   },
 };
 
-export const isEditionYear = (x: unknown): x is EditionYear =>
+export const EDITION_YEARS = Object.keys(EDITIONS) as EditionYear[];
+
+export const isEditionYear =(x: unknown): x is EditionYear =>
   typeof x === 'string' && Object.prototype.hasOwnProperty.call(EDITIONS, x);
 
 export const getEdition = (year: EditionYear): Edition => EDITIONS[year];

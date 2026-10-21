@@ -10,16 +10,30 @@ import { Types } from 'mongoose';
 import { parseInput } from '../parse-input';
 import { sanitizeFields } from '../sanitize';
 import { postFormSchema } from '../validator';
+import { defaultEndDate } from '../post-display';
+import { locales } from '@/config';
+import {
+  categoryHref,
+  postHref,
+  type EditionYear,
+} from '@/constants/editions';
 
-const validCategories = [
-  'mercredi 04.12',
-  'jeudi 05.12',
-  'vendredi 06.12',
-  'samedi 07.12',
-  'dimanche 08.12',
-] as const;
-
-type ValidCategory = (typeof validCategories)[number];
+// category and post pages of one edition, in both locales, plus the admin list
+const revalidatePostPaths = (post: {
+  _id: unknown;
+  yearOfEdition: EditionYear;
+  postCategory: string;
+}) => {
+  for (const locale of locales) {
+    revalidatePath(
+      `/${locale}${categoryHref(post.yearOfEdition, post.postCategory)}`,
+    );
+    revalidatePath(
+      `/${locale}${postHref(post.yearOfEdition, String(post._id))}`,
+    );
+  }
+  revalidatePath('/darja-admin/posts');
+};
 
 // Populate post (remains unchanged)
 const populatePost = async (query: any) => {
@@ -38,8 +52,12 @@ export async function createPost(post: CreatePostParams) {
   try {
     await connectToDatabase();
 
-    const newPost = await Post.create(data);
+    const newPost = await Post.create({
+      ...data,
+      endDateTime: defaultEndDate(data.startDateTime, data.endDateTime),
+    });
 
+    revalidatePostPaths(newPost);
     return JSON.parse(JSON.stringify(newPost));
   } catch (error) {
     handleError(error);
@@ -66,12 +84,18 @@ export async function updatePost({ post }: UpdatePostParams) {
       throw new Error('Post Not Found!');
     }
 
-    const updatedPost = await Post.findByIdAndUpdate(_id, data, {
-      new: true,
-      runValidators: true,
-    });
+    const updatedPost = await Post.findByIdAndUpdate(
+      _id,
+      {
+        ...data,
+        endDateTime: defaultEndDate(data.startDateTime, data.endDateTime),
+      },
+      { new: true, runValidators: true },
+    );
 
-    revalidatePath('/darja-admin/posts');
+    // the old edition or category may have changed, so refresh both
+    revalidatePostPaths(postToUpdate);
+    revalidatePostPaths(updatedPost);
     return JSON.parse(JSON.stringify(updatedPost));
   } catch (error) {
     console.error('Error updating the post', error);
@@ -85,7 +109,7 @@ export async function deletePost({
   path,
 }: {
   postId: string;
-  path: string;
+  path?: string;
 }) {
   await requireAdmin();
 
@@ -94,21 +118,27 @@ export async function deletePost({
 
     const deletedPost = await Post.findByIdAndDelete(postId);
 
-    if (deletedPost) revalidatePath(path);
+    if (deletedPost) {
+      revalidatePostPaths(deletedPost);
+      if (path) revalidatePath(path);
+    }
   } catch (error) {
     console.error('Error deleting post', error);
     handleError(error);
   }
 }
 
-// Get Post By Id
-export async function getPostById(postId: string) {
+// Get Post By Id, null when missing, malformed or from another edition
+export async function getPostById(postId: string, year?: EditionYear) {
+  if (!/^[0-9a-fA-F]{24}$/.test(postId)) return null;
+
   try {
     await connectToDatabase();
 
-    const post = await Post.findById(new Types.ObjectId(postId));
+    const post = await Post.findById(postId);
 
-    if (!post) throw new Error('Error getting post by its Id');
+    if (!post) return null;
+    if (year && post.yearOfEdition !== year) return null;
 
     return JSON.parse(JSON.stringify(post));
   } catch (error) {
@@ -119,7 +149,7 @@ export async function getPostById(postId: string) {
 
 // Get All Posts
 export async function getAllPosts(
-  category?: ValidCategory,
+  category?: string,
   subCategory?: SubCategoryKey,
 ) {
   try {
@@ -235,7 +265,7 @@ export async function getHomepagePosts() {
 export async function getPostsByCategory(
   category: string,
   subCategory?: string,
-  yearOfEdition?: '2022' | '2024',
+  yearOfEdition?: EditionYear,
 ) {
   try {
     await connectToDatabase();
