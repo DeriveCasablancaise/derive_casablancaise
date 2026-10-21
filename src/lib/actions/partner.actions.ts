@@ -9,13 +9,18 @@ import { Types } from 'mongoose';
 import Order from '../database/models/order.model';
 import { parseInput } from '../parse-input';
 import { partnerFormSchema } from '../validator';
+import {
+  buildPartnerEditionsFilter,
+  getPartnerEditions,
+} from '../partner-editions';
+import { isEditionYear, type EditionYear } from '@/constants/editions';
 
 // Type definitions for partner operations
 export type CreatePartnerParams = {
   frenchName: string;
   arabicName?: string;
   hrefLink?: string;
-  yearOfPartnership: '2022' | '2024' | 'both';
+  editions: EditionYear[];
   logoImage: string;
 };
 
@@ -76,11 +81,20 @@ export async function updatePartner({ partner }: UpdatePartnerParams) {
 }
 
 // Update Order
+// One list per edition, so a partner in several editions has its own
+// position in each. Partners missing from a list go last, nothing breaks.
 export async function updatePartnerOrder(
   orderedIds: string[],
-  year: '2022' | '2024',
+  year: EditionYear,
 ) {
   await requireAdmin();
+
+  if (
+    !isEditionYear(year) ||
+    !orderedIds.every((id) => Types.ObjectId.isValid(id))
+  ) {
+    throw new Error('Invalid data');
+  }
 
   try {
     await connectToDatabase();
@@ -130,7 +144,7 @@ export async function getPartnerById(partnerId: string) {
 }
 
 // Get All Partners
-export async function getAllPartners(year: '2022' | '2024') {
+export async function getAllPartners(year: EditionYear) {
   await connectToDatabase();
 
   // 1. Get the order array - Explicitly type 'id' as any or mongoose.Types.ObjectId
@@ -139,9 +153,7 @@ export async function getAllPartners(year: '2022' | '2024') {
     orderDoc?.orderedIds.map((id: any) => id.toString()) || [];
 
   // 2. Get the partners
-  const partners = await Partner.find({
-    $or: [{ yearOfPartnership: year }, { yearOfPartnership: 'both' }],
-  });
+  const partners = await Partner.find(buildPartnerEditionsFilter([year]));
 
   // 3. Sort partners based on the orderedIds array
   // We type 'a' and 'b' as 'any' here because JSON.stringify makes them plain objects,
@@ -163,11 +175,11 @@ export async function getAllPartners(year: '2022' | '2024') {
   return sortedPartners;
 }
 // Get Partners By Year
-export async function getPartnersByYear(year: '2022' | '2024') {
+export async function getPartnersByYear(year: EditionYear) {
   try {
     await connectToDatabase();
 
-    const partnersQuery = Partner.find({ yearOfPartnership: year }).sort({
+    const partnersQuery = Partner.find(buildPartnerEditionsFilter([year])).sort({
       createdAt: 'desc',
     });
 
@@ -190,18 +202,15 @@ export async function getPartnerCounts() {
 
     const partners = await Partner.find();
 
-    // Count partners by year
-    const partners2022 = partners.filter(
-      (p) => p.yearOfPartnership === '2022',
-    ).length;
-    const partners2024 = partners.filter(
-      (p) => p.yearOfPartnership === '2024',
-    ).length;
+    // a partner in several editions counts once in each
+    const countFor = (year: EditionYear) =>
+      partners.filter((p) => getPartnerEditions(p).includes(year)).length;
 
     return {
       totalPartners: partners.length,
-      partners2022,
-      partners2024,
+      partners2022: countFor('2022'),
+      partners2024: countFor('2024'),
+      partners2026: countFor('2026'),
     };
   } catch (error) {
     console.error('Failed to fetch partner statistics:', error);

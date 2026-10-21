@@ -1,7 +1,8 @@
 import { Schema, model, models } from 'mongoose';
+import { EDITION_YEARS } from '@/constants/editions';
 
 const OrderSchema = new Schema({
-  year: { type: String, enum: ['2022', '2024'], required: true, unique: true },
+  year: { type: String, enum: EDITION_YEARS, required: true, unique: true },
   orderedIds: [{ type: Schema.Types.ObjectId, ref: 'Partner' }],
 });
 

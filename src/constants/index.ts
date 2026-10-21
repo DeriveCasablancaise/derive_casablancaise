@@ -109,12 +109,6 @@ export const partnerDefaultValues: Partial<IPartner> = {
   frenchName: '',
   arabicName: '',
   hrefLink: '',
-  yearOfPartnership: '2024' as '2022' | '2024',
+  editions: [],
   logoImage: '',
 };
-
-export const partnerYearOptions = [
-  { value: '2022', label: '2022' },
-  { value: '2024', label: '2024' },
-  { value: 'both', label: 'Les deux (2022 & 2024)' },
-];
