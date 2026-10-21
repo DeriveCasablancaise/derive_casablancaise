@@ -51,3 +51,19 @@ export function dayRange(start) {
 }
 
 export const postKey = (post) => `${post.yearOfEdition}|${post.frenchTitle}|${post.start.slice(0, 10)}`;
+
+// postCategory values of the 2026 edition, copied from EDITIONS['2026'].categories (a test keeps them in sync)
+export const CATEGORIES_2026 = ['danse', 'lectures', 'cinema', 'exposition', 'theatre', 'concert'];
+
+// what recategorize-2026-posts.mjs does with one seed post, given the database posts found for its seed key
+export function planRecategorize(seedPost, found) {
+  if (seedPost.yearOfEdition !== '2026') return { action: 'error', reason: 'yearOfEdition is not 2026' };
+  if (!CATEGORIES_2026.includes(seedPost.postCategory)) {
+    return { action: 'error', reason: `unknown 2026 category ${seedPost.postCategory}` };
+  }
+  if (found.length === 0) return { action: 'missing' };
+  if (found.length > 1) return { action: 'error', reason: `${found.length} posts share this seed key` };
+  const [doc] = found;
+  if (doc.postCategory === seedPost.postCategory) return { action: 'skip', id: doc._id };
+  return { action: 'update', id: doc._id, from: doc.postCategory, to: seedPost.postCategory };
+}

@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-import type { EditionYear } from '@/constants/editions';
+import type { CategoryKey, EditionYear } from '@/constants/editions';
 
 // ====== URL QUERY PARAMS
 export type UrlQueryParams = {
@@ -55,15 +55,7 @@ export type CreatePostParams = {
   videoSource?: string;
   startDateTime?: Date;
   endDateTime?: Date;
-  postCategory:
-    | 'danse'
-    | 'musique'
-    | 'theatre'
-    | 'lectures'
-    | 'cinema'
-    | 'conference'
-    | 'ateliers'
-    | 'autres';
+  postCategory: CategoryKey;
   subCategory?: 'rencontres' | 'expositions' | 'productions';
   yearOfEdition: EditionYear;
   location: string;
@@ -83,15 +75,7 @@ export type UpdatePostParams = {
     videoSource?: string;
     startDateTime?: Date;
     endDateTime?: Date;
-    postCategory:
-      | 'danse'
-      | 'musique'
-      | 'theatre'
-      | 'lectures'
-      | 'cinema'
-      | 'conference'
-      | 'ateliers'
-      | 'autres';
+    postCategory: CategoryKey;
     subCategory?: 'rencontres' | 'expositions' | 'productions';
     yearOfEdition: EditionYear;
     location: string;

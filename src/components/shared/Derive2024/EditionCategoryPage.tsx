@@ -3,7 +3,7 @@ import { getPostsByCategory } from '@/lib/actions/post.actions';
 import { getLocale } from 'next-intl/server';
 import CategoryPostsClient from '@/components/shared/Derive2024/CategoryPostsClient';
 import Contact from '@/components/shared/contact';
-import { isCategoryKey, type EditionYear } from '@/constants/editions';
+import { isEditionCategory, type EditionYear } from '@/constants/editions';
 
 interface EditionCategoryPageProps {
   categoryId: string;
@@ -17,8 +17,8 @@ const EditionCategoryPage = async ({
   const locale = await getLocale();
   const isArabic = locale === 'ar';
 
-  // Validate category
-  if (!isCategoryKey(categoryId)) {
+  // Validate category against the edition's own list
+  if (!isEditionCategory(edition, categoryId)) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">

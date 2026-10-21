@@ -1,45 +1,49 @@
 import * as z from 'zod';
-import { isEditionYear, type EditionYear } from '@/constants/editions';
+import {
+  CATEGORY_KEYS,
+  isEditionCategory,
+  isEditionYear,
+  type EditionYear,
+} from '@/constants/editions';
 import { isSafeBannerUrl } from '@/lib/banner';
 
-export const postFormSchema = z.object({
-  frenchTitle: z
-    .string()
-    .min(3, 'Le titre doit consister de 3 caractères ou plus.'),
-  arabicTitle: z.string().optional(),
-  frenchText: z
-    .string()
-    .min(3, 'Le texte doit consister de 3 caractères ou plus.'),
-  arabicText: z.string().optional(),
-  images: z.array(z.string()).default([]),
-  thumbnailImage: z.string().optional(),
-  videoSource: z.string().optional(),
-  postCategory: z.enum(
-    [
-      'danse',
-      'musique',
-      'theatre',
-      'lectures',
-      'cinema',
-      'conference',
-      'ateliers',
-      'autres',
-    ],
-    {
+export const postFormSchema = z
+  .object({
+    frenchTitle: z
+      .string()
+      .min(3, 'Le titre doit consister de 3 caractères ou plus.'),
+    arabicTitle: z.string().optional(),
+    frenchText: z
+      .string()
+      .min(3, 'Le texte doit consister de 3 caractères ou plus.'),
+    arabicText: z.string().optional(),
+    images: z.array(z.string()).default([]),
+    thumbnailImage: z.string().optional(),
+    videoSource: z.string().optional(),
+    postCategory: z.enum(CATEGORY_KEYS, {
       message: 'Veuillez Choisir Une Catégorie',
-    },
-  ),
-  subCategory: z.enum(['rencontres', 'expositions', 'productions']).optional(),
-  yearOfEdition: z.custom<EditionYear>(isEditionYear, {
-    message: "Veuillez choisir l'année d'édition",
-  }),
-  startDateTime: z.date().optional(),
-  endDateTime: z.date().optional(),
-  location: z.string().min(3, "Veuillez rentrer le lieu de l'événement. "),
-  locationAr: z.string().optional(),
-  url: z.string().optional(),
-  artists: z.array(z.string()).default([]),
-});
+    }),
+    subCategory: z.enum(['rencontres', 'expositions', 'productions']).optional(),
+    yearOfEdition: z.custom<EditionYear>(isEditionYear, {
+      message: "Veuillez choisir l'année d'édition",
+    }),
+    startDateTime: z.date().optional(),
+    endDateTime: z.date().optional(),
+    location: z.string().min(3, "Veuillez rentrer le lieu de l'événement. "),
+    locationAr: z.string().optional(),
+    url: z.string().optional(),
+    artists: z.array(z.string()).default([]),
+  })
+  .superRefine((data, ctx) => {
+    // a post stays in a category of its own edition
+    if (!isEditionCategory(data.yearOfEdition, data.postCategory)) {
+      ctx.addIssue({
+        code: 'custom',
+        path: ['postCategory'],
+        message: "Cette catégorie n'existe pas pour cette édition",
+      });
+    }
+  });
 
 export const artistFormSchema = z.object({
   frenchName: z

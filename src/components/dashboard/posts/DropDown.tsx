@@ -8,23 +8,23 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { useEffect, useState } from 'react';
+import {
+  CATEGORIES,
+  getEdition,
+  type EditionYear,
+} from '@/constants/editions';
 
 type DropdownProps = {
   value?: string | null;
   onChangeHandler: (value: string) => void;
+  edition: EditionYear;
 };
-const categories = [
-  { id: 'danse', name: 'Danse' },
-  { id: 'musique', name: 'Musique' },
-  { id: 'theatre', name: 'Théâtre' },
-  { id: 'lectures', name: 'Lectures' },
-  { id: 'cinema', name: 'Cinéma' },
-  { id: 'conference', name: 'Conférence' },
-  { id: 'ateliers', name: 'Ateliers' },
-  { id: 'autres', name: 'En Marge' },
-];
 
-const Dropdown = ({ value, onChangeHandler }: DropdownProps) => {
+const Dropdown = ({ value, onChangeHandler, edition }: DropdownProps) => {
+  const categories = getEdition(edition).categories.map((id) => ({
+    id,
+    name: CATEGORIES[id].fr,
+  }));
   const [selectedValue, setSelectedValue] = useState(value?.toString() || '');
 
   useEffect(() => {
