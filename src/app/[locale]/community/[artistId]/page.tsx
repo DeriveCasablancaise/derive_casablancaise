@@ -56,7 +56,7 @@ const page = async ({ params: { artistId } }: ArtistProps) => {
             />
             <p
               className={cn(
-                'max-w-none flex flex-col items-center gap-8 px-4',
+                'max-w-none flex flex-col items-center gap-8 px-4 whitespace-pre-line',
                 isArabic
                   ? 'text-right arabic-subtitle-regular'
                   : 'latin-subtitle-regular'
