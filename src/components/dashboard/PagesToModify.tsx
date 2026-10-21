@@ -23,7 +23,7 @@ const PagesToModify = ({ isAdmin }: { isAdmin: boolean }) => {
           <StatCard
             name="Pages à modifier"
             icon={LayersIcon}
-            value={5}
+            value={6}
             color="#6366F1"
           />
         </motion.div>
@@ -72,6 +72,15 @@ const PagesToModify = ({ isAdmin }: { isAdmin: boolean }) => {
               variant="outline"
             >
               <Link href="/darja-admin/ar2d">Modifier la page AR2D</Link>
+            </Button>
+            <Button
+              asChild
+              className="w-full p-4 bg-gray-800 bg-opacity-50 backdrop-blur-md shadow-lg rounded-xl  border border-gray-700 my-4"
+              variant="outline"
+            >
+              <Link href="/darja-admin/banner">
+                Modifier la bannière de l'accueil
+              </Link>
             </Button>
           </div>
         )}

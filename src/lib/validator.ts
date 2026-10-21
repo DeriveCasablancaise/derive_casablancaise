@@ -1,5 +1,6 @@
 import * as z from 'zod';
 import { isEditionYear, type EditionYear } from '@/constants/editions';
+import { isSafeBannerUrl } from '@/lib/banner';
 
 export const postFormSchema = z.object({
   frenchTitle: z
@@ -138,6 +139,50 @@ export const derive2026FormSchema = z
           message: `Video ${n} needs both a link and a thumbnail`,
         });
       }
+    }
+  });
+
+// plain text only: markup is rejected, React escapes it on render anyway
+const bannerText = (max: number) =>
+  z
+    .string()
+    .trim()
+    .max(max, `Maximum ${max} caractères`)
+    .refine((v) => !/[<>]/.test(v), 'Texte simple uniquement, sans HTML');
+
+// https://, http:// or a site path, "//host" would leave the site so it is out
+const bannerUrl = z
+  .string()
+  .trim()
+  .max(500, 'Maximum 500 caractères')
+  .refine(
+    (v) => v === '' || isSafeBannerUrl(v),
+    'Lien invalide : https://, http:// ou un chemin commençant par /',
+  );
+
+export const bannerFormSchema = z
+  .object({
+    isActive: z.boolean(),
+    textFr: bannerText(200),
+    textAr: bannerText(200).optional(),
+    linkUrl: bannerUrl.optional(),
+    linkLabelFr: bannerText(60).optional(),
+    linkLabelAr: bannerText(60).optional(),
+  })
+  .superRefine((data, ctx) => {
+    if (data.linkUrl && !data.linkLabelFr) {
+      ctx.addIssue({
+        code: 'custom',
+        path: ['linkLabelFr'],
+        message: 'Le texte du lien est requis quand un lien est renseigné',
+      });
+    }
+    if (data.isActive && !data.textFr) {
+      ctx.addIssue({
+        code: 'custom',
+        path: ['textFr'],
+        message: 'Le texte français est requis pour afficher la bannière',
+      });
     }
   });
 
