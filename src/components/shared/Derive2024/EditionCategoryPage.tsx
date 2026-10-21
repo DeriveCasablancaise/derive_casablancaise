@@ -50,7 +50,8 @@ const EditionCategoryPage = async ({
         isArabic={isArabic}
         edition={edition}
       />
-      <Contact />
+      {/* 2022 keeps the default footer year */}
+      <Contact edition={edition === '2026' ? edition : undefined} />
     </div>
   );
 };

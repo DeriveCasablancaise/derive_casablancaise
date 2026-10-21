@@ -24,7 +24,8 @@ const ProgramSection = ({ edition }: ProgramSectionProps) => {
   const isInView = useInView(sectionRef, { once: false, amount: 0.1 });
   const locale = useLocale();
   const isArabic = locale === 'ar';
-  const t = useTranslations(translationNamespace!);
+  // editions without a namespace (2026) have no heading yet
+  const t = useTranslations(translationNamespace ?? 'Layout');
   const t2 = useTranslations('Layout');
 
   return (
@@ -42,14 +43,16 @@ const ProgramSection = ({ edition }: ProgramSectionProps) => {
           transition={{ duration: 0.5, delay: 0.1 }}
           className="mb-16"
         >
-          <h2
-            className={cn(
-              'text-2xl xl:text-4xl text-[#FF5C00] mb-12 text-center',
-              isArabic ? 'arabic-title-bold' : 'latin-title-bold',
-            )}
-          >
-            {t('heading')}
-          </h2>
+          {translationNamespace && (
+            <h2
+              className={cn(
+                'text-2xl xl:text-4xl text-[#FF5C00] mb-12 text-center',
+                isArabic ? 'arabic-title-bold' : 'latin-title-bold',
+              )}
+            >
+              {t('heading')}
+            </h2>
+          )}
 
           {/* Category Image Grid */}
           <motion.div
@@ -65,7 +68,7 @@ const ProgramSection = ({ edition }: ProgramSectionProps) => {
                     key={category}
                     categoryKey={category}
                     categoryName={CATEGORIES[category]}
-                    imageUrl={categoryImages![category]}
+                    imageUrl={categoryImages?.[category]}
                     isSelected={false}
                     isArabic={isArabic}
                     onClick={() => {}} // Not used in navigation mode
@@ -82,16 +85,18 @@ const ProgramSection = ({ edition }: ProgramSectionProps) => {
         </motion.div>
 
         {/* Download Button */}
-        <div
-          className={cn(
-            'flex justify-center mt-16 text-[#094142] text-base lg:text-2xl',
-            isArabic ? 'arabic-title-light' : 'latin-title-light',
-          )}
-        >
-          <a href={programmePdf} download target="_blank">
-            {t2('Download')}
-          </a>
-        </div>
+        {programmePdf && (
+          <div
+            className={cn(
+              'flex justify-center mt-16 text-[#094142] text-base lg:text-2xl',
+              isArabic ? 'arabic-title-light' : 'latin-title-light',
+            )}
+          >
+            <a href={programmePdf} download target="_blank">
+              {t2('Download')}
+            </a>
+          </div>
+        )}
       </motion.div>
     </section>
   );

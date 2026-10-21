@@ -10,7 +10,7 @@ const DerivePage = async () => {
 
   return (
     <div className="overflow-hidden">
-      <DeriveLanding derive2024={derive2022} />
+      <DeriveLanding data={derive2022} />
       {/* <VideoSection /> */}
       <ProgramSection edition="2022" />
       <PartnersSlider edition="2022" />

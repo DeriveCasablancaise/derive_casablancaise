@@ -23,7 +23,7 @@ const PagesToModify = ({ isAdmin }: { isAdmin: boolean }) => {
           <StatCard
             name="Pages à modifier"
             icon={LayersIcon}
-            value={4}
+            value={5}
             color="#6366F1"
           />
         </motion.div>
@@ -46,6 +46,15 @@ const PagesToModify = ({ isAdmin }: { isAdmin: boolean }) => {
             >
               <Link href="/darja-admin/derive-2024">
                 Modifier la page derive 2024
+              </Link>
+            </Button>
+            <Button
+              asChild
+              className="w-full p-4 bg-gray-800 bg-opacity-50 backdrop-blur-md shadow-lg rounded-xl  border border-gray-700 my-4"
+              variant="outline"
+            >
+              <Link href="/darja-admin/derive-2026">
+                Modifier la page derive 2026
               </Link>
             </Button>
             <Button

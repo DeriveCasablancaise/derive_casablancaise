@@ -104,6 +104,43 @@ export const derive2024FormSchema = z.object({
   backgroundImage: z.string().min(1, 'Background image is required'),
 });
 
+// same fields as 2024 but nothing is required, an empty page is valid
+export const derive2026FormSchema = z
+  .object({
+    text1Fr: z.string().optional(),
+    text1Ar: z.string().optional(),
+    text2Fr: z.string().optional(),
+    text2Ar: z.string().optional(),
+    text3Fr: z.string().optional(),
+    text3Ar: z.string().optional(),
+
+    video1Thumbnail: z.string().optional(),
+    video1IframeLink: z.string().optional(),
+    video1TitleFr: z.string().optional(),
+    video1TitleAr: z.string().optional(),
+
+    video2Thumbnail: z.string().optional(),
+    video2IframeLink: z.string().optional(),
+    video2TitleFr: z.string().optional(),
+    video2TitleAr: z.string().optional(),
+
+    backgroundImage: z.string().optional(),
+  })
+  .superRefine((data, ctx) => {
+    // a video needs its link and its thumbnail together
+    for (const n of [1, 2] as const) {
+      const link = data[`video${n}IframeLink`];
+      const thumb = data[`video${n}Thumbnail`];
+      if (!link !== !thumb) {
+        ctx.addIssue({
+          code: 'custom',
+          path: [link ? `video${n}Thumbnail` : `video${n}IframeLink`],
+          message: `Video ${n} needs both a link and a thumbnail`,
+        });
+      }
+    }
+  });
+
 export const ar2dFormSchema = z.object({
   text1Fr: z.string().min(1, 'French subtitle is required'),
   text1Ar: z.string().optional(),

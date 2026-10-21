@@ -13,7 +13,7 @@ interface NavProps {
 
 const Nav = ({ setIsActive }: NavProps) => {
   const t = useTranslations('Layout');
-  const navKeys = ['home', 'derive', 'previous', 'darja', 'contact'];
+  const navKeys = ['home', 'derive2026', 'derive', 'previous', 'darja', 'contact'];
   const locale = useLocale();
   const isArabic = locale === 'ar';
 

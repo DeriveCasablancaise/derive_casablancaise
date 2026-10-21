@@ -15,7 +15,8 @@ import {
 interface CategoryImageButtonProps {
   categoryKey: CategoryKey;
   categoryName: { fr: string; ar: string };
-  imageUrl: string;
+  // undefined renders a plain tile, same size
+  imageUrl?: string;
   isSelected: boolean;
   isArabic: boolean;
   onClick: (category: CategoryKey) => void;
@@ -53,13 +54,17 @@ export const CategoryImageButton: React.FC<CategoryImageButtonProps> = ({
           : '',
       )}
     >
-      <Image
-        src={imageUrl}
-        alt={isArabic ? categoryName.ar : categoryName.fr}
-        fill
-        className="object-cover transition-transform duration-300 group-hover:scale-110"
-        sizes="(max-width: 768px) 50vw, (max-width: 1024px) 25vw, 20vw"
-      />
+      {imageUrl ? (
+        <Image
+          src={imageUrl}
+          alt={isArabic ? categoryName.ar : categoryName.fr}
+          fill
+          className="object-cover transition-transform duration-300 group-hover:scale-110"
+          sizes="(max-width: 768px) 50vw, (max-width: 1024px) 25vw, 20vw"
+        />
+      ) : (
+        <div className="absolute inset-0 bg-[#094142]" />
+      )}
       <div className="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-all duration-300" />
       <div className="absolute inset-0 flex items-center justify-center">
         <h3

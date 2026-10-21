@@ -1,0 +1,18 @@
+// neutral in-memory default, nothing from another edition
+export const DERIVE_2026_DEFAULTS = {
+  text1Fr: '',
+  text1Ar: '',
+  text2Fr: '',
+  text2Ar: '',
+  text3Fr: '',
+  text3Ar: '',
+  video1Thumbnail: '',
+  video1IframeLink: '',
+  video1TitleFr: '',
+  video1TitleAr: '',
+  video2Thumbnail: '',
+  video2IframeLink: '',
+  video2TitleFr: '',
+  video2TitleAr: '',
+  backgroundImage: '',
+};

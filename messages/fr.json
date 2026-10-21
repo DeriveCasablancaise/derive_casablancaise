@@ -29,7 +29,14 @@
         "title": "Contact",
         "href": "/contact"
       },
-      "derivecasa": "Editions"
+      "derivecasa": "Editions",
+      "derive2026": {
+        "title": "Édition 2026",
+        "href": "/derive-2026"
+      }
+    },
+    "Landing": {
+      "videosHeading": "Actualités"
     },
     "Menu": {
       "menu": "menu",
@@ -212,6 +219,7 @@
   "Footer": {
     "quicklinks": "Quicklinks",
     "programme2024": "Programme 2024",
+    "edition2026": "Édition 2026",
     "previousEditions": "Éditions précédentes",
     "community": "Communauté",
     "associationAR2D": "L'association AR2D",
