@@ -27,7 +27,13 @@ interface DeriveLandingProps {
   data: LandingData;
   // anchored: absolute blocks at fixed anchors (2022, 2024). flow: blocks in normal flow (2026)
   layout?: 'anchored' | 'flow';
+  // flow only. pan: a tall collage scrolls through the frame instead of being cropped to its middle
+  backgroundFit?: BackgroundFit;
+  // data: the editable heading of the landing (2026). translation: the fixed one (2022, 2024)
+  headingSource?: 'data' | 'translation';
 }
+
+export type BackgroundFit = 'cover' | 'pan';
 
 const BLOCK_CLASS: Record<number, string> = {
   1: 'lg:absolute lg:left-0 lg:top-0 lg:h-auto lg:bg-[#E9EAEB] lg:w-[60%] bg-white/70 h-fit lg:flex flex-col justify-start py-4 lg:py-6 items-start gap-4 2xl:gap-8 text-[#00b0db] md:text-black/90 px-4 lg:px-6',
@@ -122,12 +128,18 @@ interface LandingFlowProps {
   texts: { n: number; html: string; rtl: boolean }[];
   backgroundImage: string;
   isArabic: boolean;
+  fit?: BackgroundFit;
 }
 
 // The image is a sticky full-screen layer, not absolute inset-0: the section can
 // be several screens tall, and a cover image stretched over all of it would be
 // cropped to a thin strip. Sticky keeps the whole picture in view between blocks.
-const LandingFlow = ({ texts, backgroundImage, isArabic }: LandingFlowProps) => {
+export const LandingFlow = ({
+  texts,
+  backgroundImage,
+  isArabic,
+  fit = 'cover',
+}: LandingFlowProps) => {
   const sectionRef = useRef<HTMLElement>(null);
   const reduceMotion = useReducedMotion();
   const [isDesktop, setIsDesktop] = useState(false);
@@ -147,15 +159,27 @@ const LandingFlow = ({ texts, backgroundImage, isArabic }: LandingFlowProps) => 
 
   // transform only. Small screens and reduced motion keep a fixed scale,
   // and the translate stays inside what the scale leaves as margin
+  const pan = fit === 'pan';
   const scale = useTransform(
     scrollYProgress,
     [0, 1],
-    reduceMotion ? [1, 1] : isDesktop ? [1, 1.15] : [1.08, 1.08]
+    pan || reduceMotion ? [1, 1] : isDesktop ? [1, 1.15] : [1.08, 1.08]
   );
   const y = useTransform(
     scrollYProgress,
     [0, 1],
-    reduceMotion ? ['0%', '0%'] : isDesktop ? ['0%', '-5%'] : ['0%', '-3%']
+    pan || reduceMotion
+      ? ['0%', '0%']
+      : isDesktop
+        ? ['0%', '-5%']
+        : ['0%', '-3%']
+  );
+  // pan: the visible part of the image moves from its top to its bottom,
+  // nothing is scaled so no edge shows. Reduced motion stays on the top
+  const panY = useTransform(
+    scrollYProgress,
+    [0, 1],
+    reduceMotion ? ['0%', '0%'] : ['0%', '100%']
   );
 
   const hasImage = Boolean(backgroundImage);
@@ -167,35 +191,45 @@ const LandingFlow = ({ texts, backgroundImage, isArabic }: LandingFlowProps) => 
       data-scroll-section=""
       dir={dir}
       className={cn(
-        'relative bg-[#E9EAEB] border-b-2',
-        hasImage && 'min-h-screen'
+        // own stacking context and clipped: nothing of the image paints outside
+        // (overflow clip, not hidden, so the sticky layer still works)
+        'relative isolate overflow-clip bg-[#E9EAEB] border-b-2 lg:mt-[10vh]',
+        hasImage ? 'pb-16 lg:pb-[10vh]' : 'pb-0'
       )}
     >
       {hasImage && (
-        <div
-          aria-hidden
-          className="sticky top-0 z-0 h-screen -mb-[100vh] overflow-hidden"
-        >
-          <motion.div
-            style={{ scale, y }}
-            className="relative h-full w-full will-change-transform"
-          >
-            <Image
-              src={backgroundImage}
-              alt=""
-              fill
-              sizes="100vw"
-              priority={false}
-              className="object-cover"
-            />
-          </motion.div>
+        // the track is as tall as the wrapper and the sticky layer lives inside it,
+        // so the layer cannot move past the last block
+        <div aria-hidden className="absolute inset-0 z-0">
+          <div className="sticky top-0 h-full max-h-screen overflow-hidden">
+            <motion.div
+              style={
+                pan
+                  ? ({ '--pan-y': panY } as React.CSSProperties)
+                  : { scale, y }
+              }
+              className="relative h-full w-full will-change-transform"
+            >
+              <Image
+                src={backgroundImage}
+                alt=""
+                fill
+                sizes="100vw"
+                priority={false}
+                className={cn(
+                  'object-cover',
+                  pan && '[object-position:50%_var(--pan-y)]'
+                )}
+              />
+            </motion.div>
+          </div>
         </div>
       )}
       <div
         className={cn(
           'relative z-10 flex flex-col',
           hasImage
-            ? 'gap-16 py-16 lg:gap-[20vh] lg:py-[20vh]'
+            ? 'gap-16 pt-16 lg:gap-[20vh] lg:pt-[20vh]'
             : 'gap-8 py-8 lg:gap-12 lg:py-16'
         )}
       >
@@ -234,7 +268,12 @@ const LandingFlow = ({ texts, backgroundImage, isArabic }: LandingFlowProps) => 
   );
 };
 
-const DeriveLanding = ({ data, layout = 'anchored' }: DeriveLandingProps) => {
+const DeriveLanding = ({
+  data,
+  layout = 'anchored',
+  backgroundFit = 'cover',
+  headingSource = 'data',
+}: DeriveLandingProps) => {
   const locale = useLocale();
   const isArabic = locale === 'ar';
   const t = useTranslations('Layout.Landing');
@@ -247,7 +286,7 @@ const DeriveLanding = ({ data, layout = 'anchored' }: DeriveLandingProps) => {
 
   const isFlow = layout === 'flow';
   // the 2026 heading is editable and can be empty, the others keep the fixed one
-  const heading = isFlow
+  const heading = headingSource === 'data' && isFlow
     ? videosHeading && {
         text: videosHeading.text,
         arabic: videosHeading.rtl,
@@ -262,6 +301,7 @@ const DeriveLanding = ({ data, layout = 'anchored' }: DeriveLandingProps) => {
             texts={texts}
             backgroundImage={backgroundImage}
             isArabic={isArabic}
+            fit={backgroundFit}
           />
         ) : (
           <LandingBackground

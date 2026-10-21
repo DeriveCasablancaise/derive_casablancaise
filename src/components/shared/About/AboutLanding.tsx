@@ -16,6 +16,8 @@ import AfterMovieModal from '../AfterMovieModal';
 import GalleryCarousel from '../GalleryCarousel';
 import VideoModal from '../VideoModal';
 import Link from 'next/link';
+import { LandingFlow, type BackgroundFit } from '../DeriveLanding';
+import { getLandingView, type LandingData } from '@/lib/landing';
 
 const jakarta = Plus_Jakarta_Sans({
   weight: ['600', '700', '800'],
@@ -41,24 +43,18 @@ const descOpacity = {
   },
 };
 
-interface AboutLandingProps {
+// own component so the scroll hooks only run for the anchored layout
+const AnchoredBackground = ({
+  ar2d,
+  isArabic,
+}: {
   ar2d: IAr2d;
-}
-
-const AboutLanding = ({ ar2d }: AboutLandingProps) => {
+  isArabic: boolean;
+}) => {
   const sectionRef = useRef(null);
   const imageContainerRef = useRef(null);
   const isInView = useInView(imageContainerRef);
   const [isMobile, setIsMobile] = useState(false);
-  const [activeVideo, setActiveVideo] = useState<string | null>(null);
-
-  const video1EmbedLink = convertYouTubeToEmbed(ar2d.video1IframeLink);
-  const video2EmbedLink = convertYouTubeToEmbed(ar2d.video2IframeLink);
-  const video3EmbedLink = convertYouTubeToEmbed(ar2d.video3IframeLink);
-
-  const locale = useLocale();
-  const isArabic = locale === 'ar';
-
   // Detect if the user is on a smaller screen (e.g., mobile)
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth < 768);
@@ -80,6 +76,115 @@ const AboutLanding = ({ ar2d }: AboutLandingProps) => {
     [0.4, 1],
     isMobile ? ['cover', 'cover'] : ['100%', '200%'],
   );
+
+  return (
+    <section ref={sectionRef} className="">
+      <motion.div
+        ref={imageContainerRef}
+        className="bg-gradient-to-bl from-orange-400 via-red-500 to-pink-600 w-full min-h-[200vh] relative py-24 lg:py-0 lg:mt-[10vh] flex flex-col lg:flex-row lg:items-center border-b-2 z-20"
+        style={{
+          backgroundSize,
+          backgroundImage: `url(${ar2d.backgroundImage})`, // Use dynamic image
+          backgroundPosition: 'top',
+          backgroundRepeat: 'no-repeat',
+        }}
+      >
+        {/* First text box - Les Rencontres de la Danse */}
+        <motion.div
+          className={cn(
+            'lg:absolute lg:left-0 lg:top-0 lg:h-auto lg:bg-[#E9EAEB]/95 lg:w-[45%] bg-white/80 backdrop-blur-sm h-fit lg:flex flex-col justify-start py-6 lg:py-8 items-start gap-6 2xl:gap-8 text-[#00b0db] md:text-black/90 px-6 lg:px-8 shadow-xl',
+            jakarta.className,
+          )}
+          variants={descOpacity}
+          animate={isInView ? 'open' : 'closed'}
+        >
+          <motion.div
+            variants={descOpacity}
+            animate={isInView ? 'open' : 'closed'}
+            className={cn(
+              'w-full font-bold text-[#094142] m-0 tiptap-content',
+              jakarta.className,
+            )}
+            dangerouslySetInnerHTML={{
+              __html: sanitizeHtml(
+                isArabic ? ar2d.text1Ar || ar2d.text1Fr : ar2d.text1Fr,
+              ),
+            }}
+          />
+        </motion.div>
+
+        {/* Second text box - L'Espace DARJA */}
+        <motion.div
+          className={cn(
+            'lg:absolute lg:right-0 lg:top-64 lg:h-auto lg:bg-[#E9EAEB]/95 lg:w-[45%] bg-white/80 backdrop-blur-sm h-fit lg:flex flex-col justify-start py-6 lg:py-8 items-start gap-6 2xl:gap-8 text-[#00b0db] md:text-black/90 px-6 lg:px-8 shadow-xl',
+            jakarta.className,
+          )}
+          variants={descOpacity}
+          animate={isInView ? 'open' : 'closed'}
+        >
+          <motion.div
+            variants={descOpacity}
+            animate={isInView ? 'open' : 'closed'}
+            className={cn(
+              'w-full font-bold text-[#094142] m-0 tiptap-content',
+              jakarta.className,
+            )}
+            dangerouslySetInnerHTML={{
+              __html: sanitizeHtml(
+                isArabic ? ar2d.text2Ar || ar2d.text2Fr : ar2d.text2Fr,
+              ),
+            }}
+          />
+        </motion.div>
+
+        {/* Third text box - Dérive Casablancaise */}
+        <motion.div
+          className={cn(
+            'lg:absolute lg:left-0 lg:bottom-16 lg:h-auto lg:bg-[#E9EAEB]/95 lg:w-[45%] bg-white/80 backdrop-blur-sm h-fit lg:my-16 lg:flex flex-col justify-start py-6 lg:py-8 items-start gap-6 2xl:gap-8 text-[#00b0db] md:text-black/90 px-6 lg:px-8 order-2 shadow-xl',
+            jakarta.className,
+          )}
+          variants={descOpacity}
+          animate={isInView ? 'open' : 'closed'}
+        >
+          <motion.div
+            variants={descOpacity}
+            animate={isInView ? 'open' : 'closed'}
+            className={cn(
+              'w-full font-bold text-[#094142] m-0 tiptap-content',
+              jakarta.className,
+            )}
+            dangerouslySetInnerHTML={{
+              __html: sanitizeHtml(
+                isArabic ? ar2d.text3Ar || ar2d.text3Fr : ar2d.text3Fr,
+              ),
+            }}
+          />
+        </motion.div>
+      </motion.div>
+    </section>
+  );
+};
+
+interface AboutLandingProps {
+  ar2d: IAr2d;
+  // flow: same layout as 2026. anchored: the previous one
+  layout?: 'anchored' | 'flow';
+  backgroundFit?: BackgroundFit;
+}
+
+const AboutLanding = ({
+  ar2d,
+  layout = 'anchored',
+  backgroundFit = 'cover',
+}: AboutLandingProps) => {
+  const [activeVideo, setActiveVideo] = useState<string | null>(null);
+
+  const video1EmbedLink = convertYouTubeToEmbed(ar2d.video1IframeLink);
+  const video2EmbedLink = convertYouTubeToEmbed(ar2d.video2IframeLink);
+  const video3EmbedLink = convertYouTubeToEmbed(ar2d.video3IframeLink);
+
+  const locale = useLocale();
+  const isArabic = locale === 'ar';
 
   const renderVideoCard = (
     thumbnail: string,
@@ -131,90 +236,16 @@ const AboutLanding = ({ ar2d }: AboutLandingProps) => {
 
   return (
     <>
-      <section ref={sectionRef} className="">
-        <motion.div
-          ref={imageContainerRef}
-          className="bg-gradient-to-bl from-orange-400 via-red-500 to-pink-600 w-full min-h-[200vh] relative py-24 lg:py-0 lg:mt-[10vh] flex flex-col lg:flex-row lg:items-center border-b-2 z-20"
-          style={{
-            backgroundSize,
-            backgroundImage: `url(${ar2d.backgroundImage})`, // Use dynamic image
-            backgroundPosition: 'top',
-            backgroundRepeat: 'no-repeat',
-          }}
-        >
-          {/* First text box - Les Rencontres de la Danse */}
-          <motion.div
-            className={cn(
-              'lg:absolute lg:left-0 lg:top-0 lg:h-auto lg:bg-[#E9EAEB]/95 lg:w-[45%] bg-white/80 backdrop-blur-sm h-fit lg:flex flex-col justify-start py-6 lg:py-8 items-start gap-6 2xl:gap-8 text-[#00b0db] md:text-black/90 px-6 lg:px-8 shadow-xl',
-              jakarta.className,
-            )}
-            variants={descOpacity}
-            animate={isInView ? 'open' : 'closed'}
-          >
-            <motion.div
-              variants={descOpacity}
-              animate={isInView ? 'open' : 'closed'}
-              className={cn(
-                'w-full font-bold text-[#094142] m-0 tiptap-content',
-                jakarta.className,
-              )}
-              dangerouslySetInnerHTML={{
-                __html: sanitizeHtml(
-                  isArabic ? ar2d.text1Ar || ar2d.text1Fr : ar2d.text1Fr,
-                ),
-              }}
-            />
-          </motion.div>
-
-          {/* Second text box - L'Espace DARJA */}
-          <motion.div
-            className={cn(
-              'lg:absolute lg:right-0 lg:top-64 lg:h-auto lg:bg-[#E9EAEB]/95 lg:w-[45%] bg-white/80 backdrop-blur-sm h-fit lg:flex flex-col justify-start py-6 lg:py-8 items-start gap-6 2xl:gap-8 text-[#00b0db] md:text-black/90 px-6 lg:px-8 shadow-xl',
-              jakarta.className,
-            )}
-            variants={descOpacity}
-            animate={isInView ? 'open' : 'closed'}
-          >
-            <motion.div
-              variants={descOpacity}
-              animate={isInView ? 'open' : 'closed'}
-              className={cn(
-                'w-full font-bold text-[#094142] m-0 tiptap-content',
-                jakarta.className,
-              )}
-              dangerouslySetInnerHTML={{
-                __html: sanitizeHtml(
-                  isArabic ? ar2d.text2Ar || ar2d.text2Fr : ar2d.text2Fr,
-                ),
-              }}
-            />
-          </motion.div>
-
-          {/* Third text box - Dérive Casablancaise */}
-          <motion.div
-            className={cn(
-              'lg:absolute lg:left-0 lg:bottom-16 lg:h-auto lg:bg-[#E9EAEB]/95 lg:w-[45%] bg-white/80 backdrop-blur-sm h-fit lg:my-16 lg:flex flex-col justify-start py-6 lg:py-8 items-start gap-6 2xl:gap-8 text-[#00b0db] md:text-black/90 px-6 lg:px-8 order-2 shadow-xl',
-              jakarta.className,
-            )}
-            variants={descOpacity}
-            animate={isInView ? 'open' : 'closed'}
-          >
-            <motion.div
-              variants={descOpacity}
-              animate={isInView ? 'open' : 'closed'}
-              className={cn(
-                'w-full font-bold text-[#094142] m-0 tiptap-content',
-                jakarta.className,
-              )}
-              dangerouslySetInnerHTML={{
-                __html: sanitizeHtml(
-                  isArabic ? ar2d.text3Ar || ar2d.text3Fr : ar2d.text3Fr,
-                ),
-              }}
-            />
-          </motion.div>
-        </motion.div>
-      </section>
+      {layout === 'flow' ? (
+        <LandingFlow
+          texts={getLandingView(ar2d as LandingData, isArabic).texts}
+          backgroundImage={ar2d.backgroundImage || ''}
+          isArabic={isArabic}
+          fit={backgroundFit}
+        />
+      ) : (
+        <AnchoredBackground ar2d={ar2d} isArabic={isArabic} />
+      )}
 
       {ar2d.carouselImages?.length === 0 ? (
         <ClientWrapper>

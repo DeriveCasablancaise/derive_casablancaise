@@ -7,8 +7,9 @@ const EspaceDarja = async () => {
   const ar2d = await getAr2dData();
 
   return (
-    <div className="overflow-hidden">
-      <AboutLanding ar2d={ar2d} />
+    // overflow-x-clip, not hidden: hidden would break the sticky background
+    <div className="overflow-x-clip">
+      <AboutLanding ar2d={ar2d} layout="flow" backgroundFit="pan" />
       <Contact />
     </div>
   );
