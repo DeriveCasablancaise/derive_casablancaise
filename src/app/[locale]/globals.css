@@ -1445,3 +1445,34 @@
   border-left: 0;
   border-right: 4px solid currentColor;
 }
+
+/* scrolling line under the home title */
+@keyframes marquee-scroll {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(-100%);
+  }
+}
+
+.marquee-track {
+  animation: marquee-scroll 15s linear infinite;
+}
+
+.marquee-track[data-rtl='true'] {
+  animation-direction: reverse;
+}
+
+.marquee:hover .marquee-track,
+.marquee:focus-within .marquee-track {
+  animation-play-state: paused;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .marquee-track {
+    animation: none;
+    white-space: normal;
+    text-align: center;
+  }
+}
