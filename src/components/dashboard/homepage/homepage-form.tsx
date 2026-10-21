@@ -15,8 +15,9 @@ import { IHomepage } from '@/lib/database/models/homepage.model';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useUploadThing } from '@/lib/uploadthing';
+import { toast } from '@/components/hooks/use-toast';
+import { containsBlobUrl, uploadFilesOrThrow } from '@/lib/upload-helpers';
 import { updateHomepage } from '@/lib/actions/homepage.actions';
-import { handleError } from '@/lib/utils';
 import SubmitButton from '../SubmitButton';
 import TiptapEditor from '../TiptapEditor';
 import { VideoFileUploader } from './VideoFileUploader';
@@ -79,36 +80,34 @@ const HomepageForm = ({ homepage }: HomepageFormProps) => {
   async function onSubmit(values: z.infer<typeof homepageFormSchema>) {
     setIsLoading(true);
 
-    let updatedValues = { ...values };
-
-    if (video1File && video1File.length > 0) {
-      const uploadedImage = await startUpload(video1File);
-      if (uploadedImage) {
-        updatedValues.video1Thumbnail = uploadedImage[0].url;
-      }
-    } else if (!updatedValues.video1Thumbnail) {
-      updatedValues.video1Thumbnail = '';
-    }
-
-    if (video2File && video2File.length > 0) {
-      const uploadedImage = await startUpload(video2File);
-      if (uploadedImage) {
-        updatedValues.video2Thumbnail = uploadedImage[0].url;
-      }
-    } else if (!updatedValues.video2Thumbnail) {
-      updatedValues.video2Thumbnail = '';
-    }
-
-    if (bgImageFile && bgImageFile.length > 0) {
-      const uploadedImage = await startUpload(bgImageFile);
-      if (uploadedImage) {
-        updatedValues.backgroundImage = uploadedImage[0].url;
-      }
-    } else if (!updatedValues.backgroundImage) {
-      updatedValues.backgroundImage = '';
-    }
-
     try {
+      const updatedValues = { ...values };
+
+      if (video1File && video1File.length > 0) {
+        [updatedValues.video1Thumbnail] = await uploadFilesOrThrow(
+          startUpload,
+          video1File,
+        );
+      }
+
+      if (video2File && video2File.length > 0) {
+        [updatedValues.video2Thumbnail] = await uploadFilesOrThrow(
+          startUpload,
+          video2File,
+        );
+      }
+
+      if (bgImageFile && bgImageFile.length > 0) {
+        [updatedValues.backgroundImage] = await uploadFilesOrThrow(
+          startUpload,
+          bgImageFile,
+        );
+      }
+
+      if (containsBlobUrl(updatedValues)) {
+        throw new Error('Image invalide, veuillez la téléverser à nouveau');
+      }
+
       const result = await updateHomepage({
         homepage: {
           ...updatedValues,
@@ -121,10 +120,14 @@ const HomepageForm = ({ homepage }: HomepageFormProps) => {
       }
     } catch (error) {
       console.error('Error updating homepage:', error);
-      handleError(error);
+      toast({
+        variant: 'destructive',
+        title: "L'enregistrement a échoué",
+        description: error instanceof Error ? error.message : undefined,
+      });
+    } finally {
+      setIsLoading(false);
     }
-
-    setIsLoading(false);
   }
 
   return (

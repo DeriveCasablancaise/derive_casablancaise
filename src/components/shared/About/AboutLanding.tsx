@@ -3,6 +3,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useInView, motion, useTransform, useScroll } from 'framer-motion';
 import { Plus_Jakarta_Sans } from 'next/font/google';
+import { sanitizeHtml } from '@/lib/sanitize';
 import { cn, convertYouTubeToEmbed } from '@/lib/utils';
 import { IAr2d } from '@/lib/database/models/ar2d.model';
 import { useLocale } from 'next-intl';
@@ -158,7 +159,9 @@ const AboutLanding = ({ ar2d }: AboutLandingProps) => {
                 jakarta.className,
               )}
               dangerouslySetInnerHTML={{
-                __html: isArabic ? ar2d.text1Ar || ar2d.text1Fr : ar2d.text1Fr,
+                __html: sanitizeHtml(
+                  isArabic ? ar2d.text1Ar || ar2d.text1Fr : ar2d.text1Fr,
+                ),
               }}
             />
           </motion.div>
@@ -180,7 +183,9 @@ const AboutLanding = ({ ar2d }: AboutLandingProps) => {
                 jakarta.className,
               )}
               dangerouslySetInnerHTML={{
-                __html: isArabic ? ar2d.text2Ar || ar2d.text2Fr : ar2d.text2Fr,
+                __html: sanitizeHtml(
+                  isArabic ? ar2d.text2Ar || ar2d.text2Fr : ar2d.text2Fr,
+                ),
               }}
             />
           </motion.div>
@@ -202,7 +207,9 @@ const AboutLanding = ({ ar2d }: AboutLandingProps) => {
                 jakarta.className,
               )}
               dangerouslySetInnerHTML={{
-                __html: isArabic ? ar2d.text3Ar || ar2d.text3Fr : ar2d.text3Fr,
+                __html: sanitizeHtml(
+                  isArabic ? ar2d.text3Ar || ar2d.text3Fr : ar2d.text3Fr,
+                ),
               }}
             />
           </motion.div>

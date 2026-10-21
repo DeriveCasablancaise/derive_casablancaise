@@ -45,7 +45,13 @@ const TiptapEditor = ({
       },
     },
     onUpdate: ({ editor }) => {
-      onChange(editor.getHTML());
+      // an empty editor is stored as '', not '<p></p>'
+      const isEmpty =
+        !editor.getText().trim() &&
+        !editor.getJSON().content?.some((node) =>
+          ['image', 'horizontalRule'].includes(node.type ?? ''),
+        );
+      onChange(isEmpty ? '' : editor.getHTML());
     },
   });
 

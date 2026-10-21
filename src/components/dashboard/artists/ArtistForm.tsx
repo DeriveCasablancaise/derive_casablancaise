@@ -15,8 +15,9 @@ import { useState } from 'react';
 import { artistDefaultValues } from '@/constants';
 import { useRouter } from 'next/navigation';
 import { useUploadThing } from '@/lib/uploadthing';
+import { toast } from '@/components/hooks/use-toast';
+import { containsBlobUrl, uploadFilesOrThrow } from '@/lib/upload-helpers';
 import { artistFormSchema } from '@/lib/validator';
-import { handleError } from '@/lib/utils';
 import Dropdown from './DropDown';
 import { Textarea } from '@/components/ui/textarea';
 import { FileUploader } from '../FileUploader';
@@ -49,20 +50,18 @@ const ArtistForm = ({ type, artist, artistId }: ArtistFormProps) => {
   async function onSubmit(values: z.infer<typeof artistFormSchema>) {
     setIsLoading(true);
 
-    let uploadedImageUrls = values.images;
+    try {
+      let uploadedImageUrls = values.images;
 
-    if (files.length > 0) {
-      const uploadedImages = await startUpload(files);
-
-      if (!uploadedImages) {
-        return;
+      if (files.length > 0) {
+        uploadedImageUrls = await uploadFilesOrThrow(startUpload, files);
       }
 
-      uploadedImageUrls = uploadedImages.map((img) => img.url);
-    }
+      if (containsBlobUrl(uploadedImageUrls)) {
+        throw new Error('Image invalide, veuillez la téléverser à nouveau');
+      }
 
-    if (type === 'Create') {
-      try {
+      if (type === 'Create') {
         const newArtist = await createArtist({
           ...values,
           images: uploadedImageUrls,
@@ -72,18 +71,14 @@ const ArtistForm = ({ type, artist, artistId }: ArtistFormProps) => {
           form.reset();
           router.push(`/darja-admin/artists`);
         }
-      } catch (error) {
-        console.log('Error creating a new artist:', error);
-      }
-    }
-
-    if (type === 'Update' && artistId) {
-      if (!artistId) {
-        router.back();
-        return;
       }
 
-      try {
+      if (type === 'Update') {
+        if (!artistId) {
+          router.back();
+          return;
+        }
+
         const updatedArtist = await updateArtist({
           artist: { ...values, images: uploadedImageUrls, _id: artistId },
         });
@@ -92,13 +87,17 @@ const ArtistForm = ({ type, artist, artistId }: ArtistFormProps) => {
           form.reset();
           router.push(`/darja-admin/artists`);
         }
-      } catch (error) {
-        console.error('Error updating the artist', error);
-        handleError(error);
       }
+    } catch (error) {
+      console.error('Error saving the artist', error);
+      toast({
+        variant: 'destructive',
+        title: "L'enregistrement a échoué",
+        description: error instanceof Error ? error.message : undefined,
+      });
+    } finally {
+      setIsLoading(false);
     }
-
-    setIsLoading(false);
   }
 
   return (

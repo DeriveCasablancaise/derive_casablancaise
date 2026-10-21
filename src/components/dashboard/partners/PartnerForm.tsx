@@ -15,9 +15,10 @@ import type { IPartner } from '@/lib/database/models/partner.model';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useUploadThing } from '@/lib/uploadthing';
+import { toast } from '@/components/hooks/use-toast';
+import { containsBlobUrl, uploadFilesOrThrow } from '@/lib/upload-helpers';
 import { partnerFormSchema } from '@/lib/validator';
 import { createPartner, updatePartner } from '@/lib/actions/partner.actions';
-import { handleError } from '@/lib/utils';
 import SubmitButton from '../SubmitButton';
 import { PartnerLogoUploader } from './PartnerLogoUploader';
 import {
@@ -61,22 +62,19 @@ const PartnerForm = ({ type, partner, partnerId }: PartnerFormProps) => {
   async function onSubmit(values: z.infer<typeof partnerFormSchema>) {
     setIsLoading(true);
 
-    let uploadedLogoUrl = values.logoImage;
+    try {
+      let uploadedLogoUrl = values.logoImage;
 
-    // Upload logo if a new file is provided
-    if (file && file.length > 0) {
-      const uploadedImages = await startUpload(file);
-
-      if (!uploadedImages) {
-        setIsLoading(false);
-        return;
+      // Upload logo if a new file is provided
+      if (file && file.length > 0) {
+        [uploadedLogoUrl] = await uploadFilesOrThrow(startUpload, file);
       }
 
-      uploadedLogoUrl = uploadedImages[0].url;
-    }
+      if (containsBlobUrl(uploadedLogoUrl)) {
+        throw new Error('Image invalide, veuillez la téléverser à nouveau');
+      }
 
-    if (type === 'Create') {
-      try {
+      if (type === 'Create') {
         const newPartner = await createPartner({
           ...values,
           yearOfPartnership: values.yearOfPartnership as
@@ -90,19 +88,14 @@ const PartnerForm = ({ type, partner, partnerId }: PartnerFormProps) => {
           form.reset();
           router.push(`/darja-admin/partners`);
         }
-      } catch (error) {
-        console.error('Error creating a new partner:', error);
-        handleError(error);
-      }
-    }
-
-    if (type === 'Update' && partnerId) {
-      if (!partnerId) {
-        router.back();
-        return;
       }
 
-      try {
+      if (type === 'Update') {
+        if (!partnerId) {
+          router.back();
+          return;
+        }
+
         const updatedPartner = await updatePartner({
           partner: {
             ...values,
@@ -116,13 +109,17 @@ const PartnerForm = ({ type, partner, partnerId }: PartnerFormProps) => {
           form.reset();
           router.push(`/darja-admin/partners`);
         }
-      } catch (error) {
-        console.error('Error updating the partner', error);
-        handleError(error);
       }
+    } catch (error) {
+      console.error('Error saving the partner', error);
+      toast({
+        variant: 'destructive',
+        title: "L'enregistrement a échoué",
+        description: error instanceof Error ? error.message : undefined,
+      });
+    } finally {
+      setIsLoading(false);
     }
-
-    setIsLoading(false);
   }
 
   return (

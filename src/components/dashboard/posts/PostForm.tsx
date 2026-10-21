@@ -16,9 +16,10 @@ import { useEffect, useState } from 'react';
 import { postDefaultValues } from '@/constants';
 import { useRouter } from 'next/navigation';
 import { useUploadThing } from '@/lib/uploadthing';
+import { toast } from '@/components/hooks/use-toast';
+import { containsBlobUrl, uploadFilesOrThrow } from '@/lib/upload-helpers';
 import { postFormSchema } from '@/lib/validator';
 import { createPost, updatePost } from '@/lib/actions/post.actions';
-import { handleError } from '@/lib/utils';
 import { FileUploader } from '../FileUploader';
 import SubmitButton from '../SubmitButton';
 import TiptapEditor from '../TiptapEditor';
@@ -106,83 +107,78 @@ const PostForm = ({ type, post, postId }: PostFormProps) => {
   async function onSubmit(values: z.infer<typeof postFormSchema>) {
     setIsLoading(true);
 
-    let uploadedImageUrls = values.images.filter(
-      (url) => !url.startsWith('blob:'),
-    );
+    try {
+      let uploadedImageUrls = values.images.filter(
+        (url) => !url.startsWith('blob:'),
+      );
 
-    let uploadedThumbnailUrl = values.thumbnailImage;
+      let uploadedThumbnailUrl = values.thumbnailImage;
 
-    // 2. Upload NEW files
-    if (files.length > 0) {
-      const uploadedImages = await startUpload(files);
-
-      if (!uploadedImages) {
-        return;
+      // 2. Upload NEW files
+      if (files.length > 0) {
+        const newImageUrls = await uploadFilesOrThrow(startUpload, files);
+        uploadedImageUrls = [...uploadedImageUrls, ...newImageUrls];
       }
 
-      const newImageUrls = uploadedImages.map((img) => img.url);
-      uploadedImageUrls = [...uploadedImageUrls, ...newImageUrls];
-    }
-
-    if (thumbnailFile) {
-      const uploadedThumbnails = await startUpload([thumbnailFile]);
-      if (!uploadedThumbnails) {
-        return;
+      if (thumbnailFile) {
+        [uploadedThumbnailUrl] = await uploadFilesOrThrow(startUpload, [
+          thumbnailFile,
+        ]);
       }
-      uploadedThumbnailUrl = uploadedThumbnails[0].url;
-    }
 
-    const finalStart = toFloatingUTC(values.startDateTime);
-    const finalEnd = toFloatingUTC(values.endDateTime);
+      if (uploadedThumbnailUrl?.startsWith('blob:')) {
+        throw new Error('Image invalide, veuillez la téléverser à nouveau');
+      }
 
-    if (type === 'Create') {
-      try {
-        const newPost = await createPost({
-          ...values,
-          startDateTime: finalStart,
-          endDateTime: finalEnd,
-          images: uploadedImageUrls,
-          thumbnailImage: uploadedThumbnailUrl,
-        });
+      const finalStart = toFloatingUTC(values.startDateTime);
+      const finalEnd = toFloatingUTC(values.endDateTime);
+
+      const payload = {
+        ...values,
+        startDateTime: finalStart,
+        endDateTime: finalEnd,
+        images: uploadedImageUrls,
+        thumbnailImage: uploadedThumbnailUrl,
+      };
+
+      if (containsBlobUrl(payload)) {
+        throw new Error('Image invalide, veuillez la téléverser à nouveau');
+      }
+
+      if (type === 'Create') {
+        const newPost = await createPost(payload);
 
         if (newPost) {
           form.reset();
           router.push(`/darja-admin/posts`);
         }
-      } catch (error) {
-        console.log('Error creating a new post:', error);
-      }
-    }
-
-    if (type === 'Update' && postId) {
-      if (!postId) {
-        router.back();
-        return;
       }
 
-      try {
+      if (type === 'Update') {
+        if (!postId) {
+          router.back();
+          return;
+        }
+
         const updatedPost = await updatePost({
-          post: {
-            ...values,
-            startDateTime: finalStart,
-            endDateTime: finalEnd,
-            images: uploadedImageUrls,
-            thumbnailImage: uploadedThumbnailUrl,
-            _id: postId,
-          },
+          post: { ...payload, _id: postId },
         });
 
         if (updatedPost) {
           form.reset();
           router.push(`/darja-admin/posts`);
         }
-      } catch (error) {
-        console.error('Error updating the post', error);
-        handleError(error);
       }
+    } catch (error) {
+      console.error('Error saving the post', error);
+      toast({
+        variant: 'destructive',
+        title: "L'enregistrement a échoué",
+        description: error instanceof Error ? error.message : undefined,
+      });
+    } finally {
+      setIsLoading(false);
     }
-
-    setIsLoading(false);
   }
 
   return (
