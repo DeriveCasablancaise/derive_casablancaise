@@ -8,11 +8,10 @@ interface PartnersSliderProps {
 }
 
 const PartnersSlider = async ({ edition }: PartnersSliderProps) => {
-  // partners have no 2026 year yet, and getAllPartners also returns 'both'
-  // partners (2022 & 2024), so 2026 renders nothing until the year is added
-  if (edition === '2026') return null;
-
   const partners = await getAllPartners(edition);
+  // no partners for this edition, so no empty section with a title
+  if (partners.length === 0) return null;
+
   return <PartnersImagesSlider partners={partners} />;
 };
 

@@ -183,6 +183,8 @@ export const partnerFormSchema = z.object({
       message: 'Arabic name must be at least 2 characters if provided',
     }),
   hrefLink: z.string().url('Must be a valid URL').optional().or(z.literal('')),
-  yearOfPartnership: z.enum(['2022', '2024', 'both']),
+  editions: z
+    .array(z.custom<EditionYear>(isEditionYear))
+    .min(1, 'Veuillez choisir au moins une édition'),
   logoImage: z.string().min(1, 'Logo image is required'),
 });

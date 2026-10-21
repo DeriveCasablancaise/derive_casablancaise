@@ -21,14 +21,10 @@ import { partnerFormSchema } from '@/lib/validator';
 import { createPartner, updatePartner } from '@/lib/actions/partner.actions';
 import SubmitButton from '../SubmitButton';
 import { PartnerLogoUploader } from './PartnerLogoUploader';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
-import { partnerDefaultValues, partnerYearOptions } from '@/constants';
+import { Checkbox } from '@/components/ui/checkbox';
+import { EDITION_YEARS } from '@/constants/editions';
+import { getPartnerEditions } from '@/lib/partner-editions';
+import { partnerDefaultValues } from '@/constants';
 
 type PartnerFormProps = {
   type: 'Create' | 'Update';
@@ -46,7 +42,8 @@ const PartnerForm = ({ type, partner, partnerId }: PartnerFormProps) => {
           frenchName: partner.frenchName,
           arabicName: partner.arabicName || '',
           hrefLink: partner.hrefLink || '',
-          yearOfPartnership: String(partner.yearOfPartnership),
+          // an unmigrated partner still has to show its old edition ticked
+          editions: getPartnerEditions(partner),
           logoImage: partner.logoImage,
         }
       : partnerDefaultValues;
@@ -77,10 +74,6 @@ const PartnerForm = ({ type, partner, partnerId }: PartnerFormProps) => {
       if (type === 'Create') {
         const newPartner = await createPartner({
           ...values,
-          yearOfPartnership: values.yearOfPartnership as
-            | '2022'
-            | '2024'
-            | 'both',
           logoImage: uploadedLogoUrl,
         });
 
@@ -99,7 +92,6 @@ const PartnerForm = ({ type, partner, partnerId }: PartnerFormProps) => {
         const updatedPartner = await updatePartner({
           partner: {
             ...values,
-            yearOfPartnership: values.yearOfPartnership as '2022' | '2024',
             logoImage: uploadedLogoUrl,
             _id: partnerId,
           },
@@ -185,23 +177,32 @@ const PartnerForm = ({ type, partner, partnerId }: PartnerFormProps) => {
           />
           <FormField
             control={form.control}
-            name="yearOfPartnership"
+            name="editions"
             render={({ field }) => (
               <FormItem className="w-full">
-                <FormControl>
-                  <Select value={field.value} onValueChange={field.onChange}>
-                    <SelectTrigger className="input-field">
-                      <SelectValue placeholder="Sélectionner l'année" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {partnerYearOptions.map((option) => (
-                        <SelectItem key={option.value} value={option.value}>
-                          {option.label}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </FormControl>
+                <div className="flex flex-wrap items-center gap-6 py-2">
+                  {EDITION_YEARS.map((year) => (
+                    <div key={year} className="flex items-center gap-2">
+                      <Checkbox
+                        id={`edition-${year}`}
+                        checked={field.value.includes(year)}
+                        onCheckedChange={(checked) =>
+                          field.onChange(
+                            checked
+                              ? [...field.value, year]
+                              : field.value.filter((y) => y !== year),
+                          )
+                        }
+                      />
+                      <label
+                        htmlFor={`edition-${year}`}
+                        className="checkbox-label"
+                      >
+                        {year}
+                      </label>
+                    </div>
+                  ))}
+                </div>
                 <FormMessage />
               </FormItem>
             )}

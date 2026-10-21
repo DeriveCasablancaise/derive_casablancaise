@@ -13,6 +13,8 @@ import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import Image from 'next/image';
 import { cn } from '@/lib/utils';
+import { EDITION_YEARS, type EditionYear } from '@/constants/editions';
+import { getPartnerEditions } from '@/lib/partner-editions';
 
 // DND Kit Imports
 import {
@@ -37,7 +39,9 @@ interface Partner {
   _id: string;
   frenchName: string;
   arabicName: string;
-  yearOfPartnership: string;
+  editions?: string[];
+  // Deprecated, only passed on to getPartnerEditions.
+  yearOfPartnership?: string;
   logoImage?: string;
   hrefLink?: string;
   createdAt: Date;
@@ -126,7 +130,9 @@ const SortablePartnerRow = ({
       </td>
 
       <td className="px-6 py-4 whitespace-nowrap">
-        <div className="text-sm text-gray-300">{partner.yearOfPartnership}</div>
+        <div className="text-sm text-gray-300">
+          {getPartnerEditions(partner).join(', ')}
+        </div>
       </td>
 
       {currentUserIsAdmin && (
@@ -149,7 +155,7 @@ const SortablePartnerRow = ({
 
 // --- Main Table Component ---
 const PartnersTable = ({ currentUserIsAdmin }: PartnersTableProps) => {
-  const [selectedYear, setSelectedYear] = useState<'2024' | '2022'>('2024');
+  const [selectedYear, setSelectedYear] = useState<EditionYear>('2026');
   const [searchTerm, setSearchTerm] = useState<string>('');
   const [partners, setPartners] = useState<Partner[]>([]);
   const [filteredPartners, setFilteredPartners] = useState<Partner[]>([]);
@@ -168,6 +174,7 @@ const PartnersTable = ({ currentUserIsAdmin }: PartnersTableProps) => {
       const data = await getAllPartners(selectedYear);
       setPartners(data);
       setFilteredPartners(data);
+      setSearchTerm('');
     }
     fetchPartners();
   }, [selectedYear]);
@@ -222,28 +229,20 @@ const PartnersTable = ({ currentUserIsAdmin }: PartnersTableProps) => {
     <div className="flex flex-col gap-6">
       {/* Year Selection Tabs */}
       <div className="flex items-center gap-2 p-1 bg-gray-900/50 border border-gray-700 w-fit rounded-lg">
-        <button
-          onClick={() => setSelectedYear('2024')}
-          className={cn(
-            'px-4 py-2 rounded-md text-sm font-medium transition-all',
-            selectedYear === '2024'
-              ? 'bg-blue-600 text-white shadow-lg'
-              : 'text-gray-400 hover:text-gray-200',
-          )}
-        >
-          Édition 2024
-        </button>
-        <button
-          onClick={() => setSelectedYear('2022')}
-          className={cn(
-            'px-4 py-2 rounded-md text-sm font-medium transition-all',
-            selectedYear === '2022'
-              ? 'bg-blue-600 text-white shadow-lg'
-              : 'text-gray-400 hover:text-gray-200',
-          )}
-        >
-          Édition 2022
-        </button>
+        {EDITION_YEARS.map((year) => (
+          <button
+            key={year}
+            onClick={() => setSelectedYear(year)}
+            className={cn(
+              'px-4 py-2 rounded-md text-sm font-medium transition-all',
+              selectedYear === year
+                ? 'bg-blue-600 text-white shadow-lg'
+                : 'text-gray-400 hover:text-gray-200',
+            )}
+          >
+            Édition {year}
+          </button>
+        ))}
       </div>
 
       <motion.div
