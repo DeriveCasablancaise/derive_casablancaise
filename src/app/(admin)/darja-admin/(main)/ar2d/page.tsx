@@ -2,8 +2,13 @@ import Ar2dForm from '@/components/dashboard/ar2d/ar2d-form';
 import Navbar from '@/components/shared/Navbar';
 import { getAr2dData } from '@/lib/actions/ar2d.actions';
 import React from 'react';
+import { getAdminOrRedirect } from '@/lib/auth/require-admin';
+import { redirect } from 'next/navigation';
 
 const page = async () => {
+  const { isAdmin } = await getAdminOrRedirect();
+  if (!isAdmin) redirect('/darja-admin');
+
   const ar2d = await getAr2dData();
 
   return (

@@ -1,5 +1,6 @@
 'use server';
 
+import { requireAdmin } from '@/lib/auth/require-admin';
 import { connectToDatabase } from '../database';
 import Derive2024, { IDerive2024 } from '../database/models/derive2024.model';
 import { handleError } from '../utils';
@@ -48,6 +49,8 @@ export async function getDerive2024Data() {
 
 // Update Homepage
 export async function updateDerive2024({ derive2024 }: UpdateDerive2024Params) {
+  await requireAdmin();
+
   try {
     await connectToDatabase();
 

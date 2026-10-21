@@ -1,6 +1,4 @@
-import { getUserById } from '@/lib/actions/user.actions';
-import { currentUser } from '@clerk/nextjs/server';
-import { redirect } from 'next/navigation';
+import { getAdminOrRedirect } from '@/lib/auth/require-admin';
 import React from 'react';
 import { LogIn, ShieldX } from 'lucide-react';
 import {
@@ -16,20 +14,7 @@ import Navbar from '../shared/Navbar';
 import MainPage from './MainPage';
 
 const AdminPage = async () => {
-  const activeUser = await currentUser();
-
-  if (!activeUser) {
-    redirect('/sign-in');
-    return null; // Ensure no component renders if redirecting
-  }
-
-  const currentUserFromDb = await getUserById(activeUser.id);
-  const isAdmin = currentUserFromDb.isAdmin;
-
-  if (!currentUserFromDb) {
-    redirect('/sign-in');
-    return null;
-  }
+  const { isAdmin } = await getAdminOrRedirect();
 
   return (
     <>

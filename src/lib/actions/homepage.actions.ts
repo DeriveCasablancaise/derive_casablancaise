@@ -1,5 +1,6 @@
 'use server';
 
+import { requireAdmin } from '@/lib/auth/require-admin';
 import { connectToDatabase } from '../database';
 import Homepage, { IHomepage } from '../database/models/homepage.model';
 import { handleError } from '../utils';
@@ -46,6 +47,8 @@ export async function getHomepageData() {
 
 // Update Homepage
 export async function updateHomepage({ homepage }: UpdateHomepageParams) {
+  await requireAdmin();
+
   try {
     await connectToDatabase();
 

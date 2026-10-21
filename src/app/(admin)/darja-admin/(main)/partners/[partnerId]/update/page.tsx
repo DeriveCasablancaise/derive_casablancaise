@@ -1,6 +1,8 @@
 import PartnerForm from '@/components/dashboard/partners/PartnerForm';
 import Navbar from '@/components/shared/Navbar';
 import { getPartnerById } from '@/lib/actions/partner.actions';
+import { getAdminOrRedirect } from '@/lib/auth/require-admin';
+import { redirect } from 'next/navigation';
 
 type UpdatePartnerProps = {
   params: Promise<{
@@ -9,6 +11,9 @@ type UpdatePartnerProps = {
 };
 
 const UpdatePartner = async ({ params }: UpdatePartnerProps) => {
+  const { isAdmin } = await getAdminOrRedirect();
+  if (!isAdmin) redirect('/darja-admin');
+
   const { partnerId } = await params;
   const partner = await getPartnerById(partnerId);
 

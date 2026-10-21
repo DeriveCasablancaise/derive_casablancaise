@@ -2,25 +2,17 @@
 
 import { revalidatePath } from 'next/cache';
 
+import { requireAdmin } from '@/lib/auth/require-admin';
 import { connectToDatabase } from '@/lib/database';
 import User from '@/lib/database/models/user.model';
+import { deleteUser as deleteUserByClerkId } from '@/lib/database/user-sync';
 import { handleError } from '@/lib/utils';
 
-import { CreateUserParams, UpdateUserParams } from '@/types';
-
-export async function createUser(user: CreateUserParams) {
-  try {
-    await connectToDatabase();
-
-    const newUser = await User.create(user);
-
-    return JSON.parse(JSON.stringify(newUser));
-  } catch (error) {
-    handleError(error);
-  }
-}
+// createUser / updateUser live in lib/database/user-sync.ts (webhook only).
 
 export async function getUserById(clerkId: string) {
+  await requireAdmin();
+
   try {
     await connectToDatabase();
 
@@ -34,44 +26,18 @@ export async function getUserById(clerkId: string) {
   }
 }
 
-export async function updateUser(clerkId: string, user: UpdateUserParams) {
-  try {
-    await connectToDatabase();
-
-    // Use `findOneAndUpdate` with `clerkId`
-    const updatedUser = await User.findOneAndUpdate({ clerkId }, user, {
-      new: true,
-    });
-
-    if (!updatedUser) throw new Error('User update failed');
-    return JSON.parse(JSON.stringify(updatedUser));
-  } catch (error) {
-    handleError(error);
-  }
-}
-
 export async function deleteUser(clerkId: string) {
-  try {
-    await connectToDatabase();
+  await requireAdmin();
 
-    // Find user to delete
-    const userToDelete = await User.findOne({ clerkId });
+  const deletedUser = await deleteUserByClerkId(clerkId);
+  revalidatePath('/darja-admin/users');
 
-    if (!userToDelete) {
-      throw new Error('User not found');
-    }
-
-    // Delete user
-    const deletedUser = await User.findByIdAndDelete(userToDelete._id);
-    revalidatePath('/darja-admin/users');
-
-    return deletedUser ? JSON.parse(JSON.stringify(deletedUser)) : null;
-  } catch (error) {
-    handleError(error);
-  }
+  return deletedUser ?? null;
 }
 
 export async function getAllUsers() {
+  await requireAdmin();
+
   try {
     await connectToDatabase();
 
@@ -84,6 +50,8 @@ export async function getAllUsers() {
 }
 
 export async function getUserCounts() {
+  await requireAdmin();
+
   try {
     // Connect to the database
     await connectToDatabase();

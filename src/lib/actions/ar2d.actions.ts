@@ -1,5 +1,6 @@
 'use server';
 
+import { requireAdmin } from '@/lib/auth/require-admin';
 import { connectToDatabase } from '../database';
 import Ar2d, { IAr2d } from '../database/models/ar2d.model';
 import { handleError } from '../utils';
@@ -52,6 +53,8 @@ export async function getAr2dData() {
 
 // Update Homepage
 export async function updateAr2d({ ar2d }: UpdateAr2dParams) {
+  await requireAdmin();
+
   try {
     await connectToDatabase();
 
