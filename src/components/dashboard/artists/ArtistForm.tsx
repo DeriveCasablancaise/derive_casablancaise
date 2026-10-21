@@ -18,7 +18,7 @@ import { useUploadThing } from '@/lib/uploadthing';
 import { toast } from '@/components/hooks/use-toast';
 import { containsBlobUrl, uploadFilesOrThrow } from '@/lib/upload-helpers';
 import { artistFormSchema } from '@/lib/validator';
-import Dropdown from './DropDown';
+import { EDITION_YEARS, getArtistEditions } from '@/lib/artist-editions';
 import { Textarea } from '@/components/ui/textarea';
 import { FileUploader } from '../FileUploader';
 import SubmitButton from '../SubmitButton';
@@ -36,8 +36,11 @@ const ArtistForm = ({ type, artist, artistId }: ArtistFormProps) => {
   const [files, setFiles] = useState<File[]>([]);
   const [isLoading, setIsLoading] = useState(false);
 
+  // an unmigrated artist still has to show its old edition ticked
   const initialValues =
-    artist && type === 'Update' ? artist : artistDefaultValues;
+    artist && type === 'Update'
+      ? { ...artist, editions: getArtistEditions(artist) }
+      : artistDefaultValues;
   const router = useRouter();
 
   const { startUpload } = useUploadThing('imageUploader');
@@ -144,15 +147,32 @@ const ArtistForm = ({ type, artist, artistId }: ArtistFormProps) => {
         <div className="flex flex-col gap-5 md:flex-row">
           <FormField
             control={form.control}
-            name="artistCategory"
+            name="editions"
             render={({ field }) => (
               <FormItem className="w-full">
-                <FormControl>
-                  <Dropdown
-                    value={field.value}
-                    onChangeHandler={(value) => field.onChange(value)}
-                  />
-                </FormControl>
+                <div className="flex flex-wrap items-center gap-6 py-2">
+                  {EDITION_YEARS.map((year) => (
+                    <div key={year} className="flex items-center gap-2">
+                      <Checkbox
+                        id={`edition-${year}`}
+                        checked={field.value.includes(year)}
+                        onCheckedChange={(checked) =>
+                          field.onChange(
+                            checked
+                              ? [...field.value, year]
+                              : field.value.filter((y) => y !== year)
+                          )
+                        }
+                      />
+                      <label
+                        htmlFor={`edition-${year}`}
+                        className="checkbox-label"
+                      >
+                        {year}
+                      </label>
+                    </div>
+                  ))}
+                </div>
                 <FormMessage />
               </FormItem>
             )}

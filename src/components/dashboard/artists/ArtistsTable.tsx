@@ -9,8 +9,13 @@ import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { getAllArtists } from '@/lib/actions/artists.actions';
 import Image from 'next/image';
+import {
+  EDITION_YEARS,
+  getArtistEditions,
+  type ArtistEditionSource,
+} from '@/lib/artist-editions';
 
-interface Artist {
+interface Artist extends ArtistEditionSource {
   _id: string;
   frenchName: string;
   arabicName: string;
@@ -18,7 +23,6 @@ interface Artist {
   arabicText: string;
   images: string[];
   videoSource?: string;
-  artistCategory: '2022' | '2024';
   url?: string;
   createdAt: Date;
 }
@@ -29,14 +33,20 @@ interface ArtistsTableProps {
 
 const ArtistsTable = ({ currentUserIsAdmin }: ArtistsTableProps) => {
   const [searchTerm, setSearchTerm] = useState<string>('');
-  const [filteredArtists, setFilteredArtists] = useState<Artist[]>([]);
+  const [editionFilter, setEditionFilter] = useState<string>('');
   const [artists, setArtists] = useState<Artist[]>([]);
+
+  const filteredArtists = artists.filter(
+    (artist) =>
+      artist.frenchName.toLowerCase().includes(searchTerm) &&
+      (!editionFilter ||
+        getArtistEditions(artist).some((year) => year === editionFilter)),
+  );
 
   useEffect(() => {
     async function fetchArtists() {
       const allArtists = await getAllArtists();
       setArtists(allArtists);
-      setFilteredArtists(allArtists);
     }
 
     fetchArtists();
@@ -46,18 +56,10 @@ const ArtistsTable = ({ currentUserIsAdmin }: ArtistsTableProps) => {
     setArtists((prevArtists) =>
       prevArtists.filter((artist) => artist._id !== artistId)
     );
-    setFilteredArtists((prevFiltered) =>
-      prevFiltered.filter((artist) => artist._id !== artistId)
-    );
   };
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const term = e.target.value.toLowerCase();
-    setSearchTerm(term);
-    const filtered = artists.filter(
-      (artist) => artist.frenchName.toLowerCase().includes(term) // Fixed typo from 'title' to 'frenchTitle'
-    );
-    setFilteredArtists(filtered);
+    setSearchTerm(e.target.value.toLowerCase());
   };
 
   return (
@@ -69,15 +71,29 @@ const ArtistsTable = ({ currentUserIsAdmin }: ArtistsTableProps) => {
     >
       <div className="flex justify-between items-center mb-6">
         <h2 className="text-xl font-semibold text-gray-100">Les Artistes</h2>
-        <div className="relative hidden sm:block">
-          <input
-            type="text"
-            placeholder="Rechercher..."
-            className="bg-gray-700 text-white placeholder-gray-400 rounded-lg pl-10 pr-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-            value={searchTerm}
-            onChange={handleSearch}
-          />
-          <Search className="absolute left-3 top-2.5 text-gray-400" size={18} />
+        <div className="flex items-center gap-3">
+          <select
+            className="bg-gray-700 text-white rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            value={editionFilter}
+            onChange={(e) => setEditionFilter(e.target.value)}
+          >
+            <option value="">Toutes les éditions</option>
+            {EDITION_YEARS.map((year) => (
+              <option key={year} value={year}>
+                {year}
+              </option>
+            ))}
+          </select>
+          <div className="relative hidden sm:block">
+            <input
+              type="text"
+              placeholder="Rechercher..."
+              className="bg-gray-700 text-white placeholder-gray-400 rounded-lg pl-10 pr-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              value={searchTerm}
+              onChange={handleSearch}
+            />
+            <Search className="absolute left-3 top-2.5 text-gray-400" size={18} />
+          </div>
         </div>
       </div>
 
@@ -89,7 +105,7 @@ const ArtistsTable = ({ currentUserIsAdmin }: ArtistsTableProps) => {
                 Nom
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
-                Catégorie
+                Éditions
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">
                 Crée le :
@@ -139,7 +155,7 @@ const ArtistsTable = ({ currentUserIsAdmin }: ArtistsTableProps) => {
 
                 <td className="px-6 py-4 whitespace-nowrap">
                   <div className="text-sm text-gray-300">
-                    {artist.artistCategory}
+                    {getArtistEditions(artist).join(', ')}
                   </div>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">

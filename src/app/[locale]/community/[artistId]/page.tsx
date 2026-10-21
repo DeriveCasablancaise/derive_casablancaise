@@ -7,6 +7,7 @@ import {
   getArtistById,
   getRelatedArtists,
 } from '@/lib/actions/artists.actions';
+import { getArtistEditions } from '@/lib/artist-editions';
 import { cn } from '@/lib/utils';
 import { getLocale } from 'next-intl/server';
 import React from 'react';
@@ -22,9 +23,9 @@ const page = async ({ params: { artistId } }: ArtistProps) => {
   const locale = await getLocale();
   const isArabic = locale === 'ar';
 
-  // Fetch related artists from the same category
+  // Fetch related artists sharing an edition
   const relatedArtists = await getRelatedArtists({
-    artistCategory: artist.artistCategory,
+    editions: getArtistEditions(artist),
     artistId: artist._id,
   });
 

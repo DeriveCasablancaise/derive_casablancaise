@@ -52,23 +52,15 @@ const ArtistsSection = () => {
   };
 
   useEffect(() => {
+    let cancelled = false;
     const fetchArtists = async () => {
       try {
-        let fetchedArtists: IArtist[] = [];
+        // an empty selection means every artist
+        const fetchedArtists = await getAllArtists(
+          Array.from(selectedCategories)
+        );
 
-        if (selectedCategories.size === 0) {
-          // If no categories selected, fetch all artists
-          fetchedArtists = await getAllArtists();
-        } else {
-          // Fetch artists for each selected category and combine them
-          const categoryPromises = Array.from(selectedCategories).map(
-            (category) => getAllArtists(category as '2022' | '2024' | '2026')
-          );
-          const categoryResults = await Promise.all(categoryPromises);
-          fetchedArtists = categoryResults.flat();
-        }
-
-        if (fetchedArtists) {
+        if (fetchedArtists && !cancelled) {
           setArtists(fetchedArtists);
         }
       } catch (error) {
@@ -77,6 +69,9 @@ const ArtistsSection = () => {
     };
 
     fetchArtists();
+    return () => {
+      cancelled = true;
+    };
   }, [selectedCategories]);
 
   return (

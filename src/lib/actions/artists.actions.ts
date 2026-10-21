@@ -9,10 +9,8 @@ import { Types } from 'mongoose';
 import Artist from '../database/models/artist.model';
 import { parseInput } from '../parse-input';
 import { artistFormSchema } from '../validator';
-
-const validCategories = ['2022', '2024', '2026', 'all'] as const;
-
-type ValidCategory = (typeof validCategories)[number];
+import { buildArtistEditionsFilter } from '../artist-editions';
+import type { EditionYear } from '@/constants/editions';
 
 // Populate post
 const populatePost = async (query: any) => {
@@ -100,13 +98,14 @@ export async function getArtistById(artistId: string) {
 }
 
 // Get All Artists
-export async function getAllArtists(category?: ValidCategory) {
+// No years means every artist. One query, so an artist in two years shows once.
+export async function getAllArtists(years?: EditionYear[]) {
   try {
     await connectToDatabase();
 
-    const condition = category ? { artistCategory: category } : {};
-
-    const artistsQuery = Artist.find(condition).sort({ createdAt: 'desc' });
+    const artistsQuery = Artist.find(buildArtistEditionsFilter(years)).sort({
+      createdAt: 'desc',
+    });
 
     const artists = await populatePost(artistsQuery);
 
@@ -117,20 +116,23 @@ export async function getAllArtists(category?: ValidCategory) {
   }
 }
 
-// Get Related Posts
+// Artists sharing at least one edition with the given ones
 export async function getRelatedArtists({
-  artistCategory,
+  editions,
   artistId,
 }: {
-  artistCategory: string;
+  editions: EditionYear[];
   artistId: string;
 }) {
+  // no editions would otherwise mean "every artist"
+  if (editions.length === 0) return [];
+
   try {
     await connectToDatabase();
 
     const conditions = {
       $and: [
-        { artistCategory },
+        buildArtistEditionsFilter(editions),
         { _id: { $ne: new Types.ObjectId(artistId) } },
       ],
     };
