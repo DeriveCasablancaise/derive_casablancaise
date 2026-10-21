@@ -1,5 +1,6 @@
 'use client';
 
+import { sanitizeHtml } from '@/lib/sanitize';
 import { cn, convertYouTubeToEmbed, descOpacity } from '@/lib/utils';
 import { useInView, motion, useTransform, useScroll } from 'framer-motion';
 import React, { useEffect, useRef, useState } from 'react';
@@ -85,9 +86,9 @@ const ProgramLanding = ({ homepage }: ProgramLandingProps) => {
                 jakarta.className,
               )}
               dangerouslySetInnerHTML={{
-                __html: isArabic
-                  ? homepage.textAr || homepage.textFr
-                  : homepage.textFr,
+                __html: sanitizeHtml(
+                  isArabic ? homepage.textAr || homepage.textFr : homepage.textFr,
+                ),
               }}
             />
           </div>

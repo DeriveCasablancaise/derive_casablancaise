@@ -7,6 +7,8 @@ import { handleError } from '../utils';
 import { revalidatePath } from 'next/cache';
 import { Types } from 'mongoose';
 import Order from '../database/models/order.model';
+import { parseInput } from '../parse-input';
+import { partnerFormSchema } from '../validator';
 
 // Type definitions for partner operations
 export type CreatePartnerParams = {
@@ -30,14 +32,12 @@ const populatePartner = async (query: any) => {
 export async function createPartner(partner: CreatePartnerParams) {
   await requireAdmin();
 
+  const data = parseInput(partnerFormSchema, partner);
+
   try {
     await connectToDatabase();
 
-    const newPartner = await Partner.create({
-      ...partner,
-      logoImage: partner.logoImage,
-      yearOfPartnership: partner.yearOfPartnership,
-    });
+    const newPartner = await Partner.create(data);
 
     return JSON.parse(JSON.stringify(newPartner));
   } catch (error) {
@@ -49,24 +49,23 @@ export async function createPartner(partner: CreatePartnerParams) {
 export async function updatePartner({ partner }: UpdatePartnerParams) {
   await requireAdmin();
 
+  const { _id, ...input } = partner;
+  if (!Types.ObjectId.isValid(_id)) throw new Error('Invalid data');
+  const data = parseInput(partnerFormSchema, input);
+
   try {
     await connectToDatabase();
 
-    const partnerToUpdate = await Partner.findById(partner._id);
+    const partnerToUpdate = await Partner.findById(_id);
 
     if (!partnerToUpdate) {
       throw new Error('Partner Not Found!');
     }
 
-    const updatedPartner = await Partner.findByIdAndUpdate(
-      partner._id,
-      {
-        ...partner,
-        logoImage: partner.logoImage,
-        yearOfPartnership: partner.yearOfPartnership,
-      },
-      { new: true },
-    );
+    const updatedPartner = await Partner.findByIdAndUpdate(_id, data, {
+      new: true,
+      runValidators: true,
+    });
 
     revalidatePath('/darja-admin/partners');
     return JSON.parse(JSON.stringify(updatedPartner));

@@ -7,6 +7,8 @@ import { handleError } from '../utils';
 import { revalidatePath } from 'next/cache';
 import { Types } from 'mongoose';
 import Artist from '../database/models/artist.model';
+import { parseInput } from '../parse-input';
+import { artistFormSchema } from '../validator';
 
 const validCategories = ['2022', '2024', '2026', 'all'] as const;
 
@@ -21,14 +23,13 @@ const populatePost = async (query: any) => {
 export async function createArtist(artist: CreateArtistParams) {
   await requireAdmin();
 
+  // texts are plain text (Textarea) and rendered escaped, so no sanitizeHtml
+  const data = parseInput(artistFormSchema, artist);
+
   try {
     await connectToDatabase();
 
-    const newArtist = await Artist.create({
-      ...artist,
-      artistCategory: artist.artistCategory,
-      images: artist.images,
-    });
+    const newArtist = await Artist.create(data);
 
     return JSON.parse(JSON.stringify(newArtist));
   } catch (error) {
@@ -40,24 +41,23 @@ export async function createArtist(artist: CreateArtistParams) {
 export async function updateArtist({ artist }: UpdateArtistParams) {
   await requireAdmin();
 
+  const { _id, ...input } = artist;
+  if (!Types.ObjectId.isValid(_id)) throw new Error('Invalid data');
+  const data = parseInput(artistFormSchema, input);
+
   try {
     await connectToDatabase();
 
-    const artistToUpdate = await Artist.findById(artist._id);
+    const artistToUpdate = await Artist.findById(_id);
 
     if (!artistToUpdate) {
       throw new Error('Artist Not Found!');
     }
 
-    const updatedArtist = await Artist.findByIdAndUpdate(
-      artist._id,
-      {
-        ...artist,
-        artistCategory: artist.artistCategory,
-        images: artist.images,
-      },
-      { new: true },
-    );
+    const updatedArtist = await Artist.findByIdAndUpdate(_id, data, {
+      new: true,
+      runValidators: true,
+    });
 
     revalidatePath('/darja-admin/posts');
     return JSON.parse(JSON.stringify(updatedArtist));

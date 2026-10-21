@@ -1,18 +1,16 @@
 import React from 'react';
-import DOMPurify from 'isomorphic-dompurify';
+import { sanitizeHtml } from '@/lib/sanitize';
 
 interface SafeHtmlProps {
-  html: string;
+  html?: string | null;
   className?: string;
 }
 
 const SafeHtml: React.FC<SafeHtmlProps> = ({ html, className }) => {
-  const sanitizedHtml = DOMPurify.sanitize(html);
-
   return (
     <div
       className={className}
-      dangerouslySetInnerHTML={{ __html: sanitizedHtml }}
+      dangerouslySetInnerHTML={{ __html: sanitizeHtml(html) }}
     />
   );
 };

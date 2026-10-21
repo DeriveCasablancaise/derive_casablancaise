@@ -14,7 +14,8 @@ import * as z from 'zod';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useUploadThing } from '@/lib/uploadthing';
-import { handleError } from '@/lib/utils';
+import { toast } from '@/components/hooks/use-toast';
+import { containsBlobUrl, uploadFilesOrThrow } from '@/lib/upload-helpers';
 import SubmitButton from '../SubmitButton';
 import TiptapEditor from '../TiptapEditor';
 import { VideoFileUploader } from './VideoFileUploader';
@@ -102,61 +103,52 @@ const Ar2dForm = ({ ar2d }: Ar2dFormProps) => {
   async function onSubmit(values: z.infer<typeof ar2dFormSchema>) {
     setIsLoading(true);
 
-    let updatedValues = { ...values };
-    let uploadedImageUrls = values.carouselImages;
-
-    if (files.length > 0) {
-      const uploadedImages = await startUpload(files);
-
-      if (!uploadedImages) {
-        return;
-      }
-
-      uploadedImageUrls = uploadedImages.map((img) => img.url);
-    }
-
-    if (video1File && video1File.length > 0) {
-      const uploadedImage = await startUpload(video1File);
-      if (uploadedImage) {
-        updatedValues.video1Thumbnail = uploadedImage[0].url;
-      }
-    } else if (!updatedValues.video1Thumbnail) {
-      updatedValues.video1Thumbnail = '';
-    }
-
-    if (video2File && video2File.length > 0) {
-      const uploadedImage = await startUpload(video2File);
-      if (uploadedImage) {
-        updatedValues.video2Thumbnail = uploadedImage[0].url;
-      }
-    } else if (!updatedValues.video2Thumbnail) {
-      updatedValues.video2Thumbnail = '';
-    }
-
-    if (video3File && video3File.length > 0) {
-      const uploadedImage = await startUpload(video3File);
-      if (uploadedImage) {
-        updatedValues.video3Thumbnail = uploadedImage[0].url;
-      }
-    } else if (!updatedValues.video3Thumbnail) {
-      updatedValues.video3Thumbnail = '';
-    }
-
-    if (bgImageFile && bgImageFile.length > 0) {
-      const uploadedImage = await startUpload(bgImageFile);
-      if (uploadedImage) {
-        updatedValues.backgroundImage = uploadedImage[0].url;
-      }
-    } else if (!updatedValues.backgroundImage) {
-      updatedValues.backgroundImage = '';
-    }
-
     try {
+      const updatedValues = { ...values };
+
+      if (files.length > 0) {
+        updatedValues.carouselImages = await uploadFilesOrThrow(
+          startUpload,
+          files,
+        );
+      }
+
+      if (video1File && video1File.length > 0) {
+        [updatedValues.video1Thumbnail] = await uploadFilesOrThrow(
+          startUpload,
+          video1File,
+        );
+      }
+
+      if (video2File && video2File.length > 0) {
+        [updatedValues.video2Thumbnail] = await uploadFilesOrThrow(
+          startUpload,
+          video2File,
+        );
+      }
+
+      if (video3File && video3File.length > 0) {
+        [updatedValues.video3Thumbnail] = await uploadFilesOrThrow(
+          startUpload,
+          video3File,
+        );
+      }
+
+      if (bgImageFile && bgImageFile.length > 0) {
+        [updatedValues.backgroundImage] = await uploadFilesOrThrow(
+          startUpload,
+          bgImageFile,
+        );
+      }
+
+      if (containsBlobUrl(updatedValues)) {
+        throw new Error('Image invalide, veuillez la téléverser à nouveau');
+      }
+
       const result = await updateAr2d({
         ar2d: {
           ...updatedValues,
           _id: ar2d?._id,
-          carouselImages: uploadedImageUrls,
         },
       });
 
@@ -165,10 +157,14 @@ const Ar2dForm = ({ ar2d }: Ar2dFormProps) => {
       }
     } catch (error) {
       console.error('Error updating ar2d:', error);
-      handleError(error);
+      toast({
+        variant: 'destructive',
+        title: "L'enregistrement a échoué",
+        description: error instanceof Error ? error.message : undefined,
+      });
+    } finally {
+      setIsLoading(false);
     }
-
-    setIsLoading(false);
   }
 
   return (

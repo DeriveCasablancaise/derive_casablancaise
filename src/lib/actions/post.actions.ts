@@ -7,6 +7,9 @@ import Post, { IPost } from '../database/models/post.model';
 import { handleError } from '../utils';
 import { revalidatePath } from 'next/cache';
 import { Types } from 'mongoose';
+import { parseInput } from '../parse-input';
+import { sanitizeFields } from '../sanitize';
+import { postFormSchema } from '../validator';
 
 const validCategories = [
   'mercredi 04.12',
@@ -27,14 +30,15 @@ const populatePost = async (query: any) => {
 export async function createPost(post: CreatePostParams) {
   await requireAdmin();
 
+  const data = parseInput(
+    postFormSchema,
+    sanitizeFields(post, ['frenchText', 'arabicText']),
+  );
+
   try {
     await connectToDatabase();
 
-    const newPost = await Post.create({
-      ...post,
-      images: post.images,
-      postCategory: post.postCategory,
-    });
+    const newPost = await Post.create(data);
 
     return JSON.parse(JSON.stringify(newPost));
   } catch (error) {
@@ -46,24 +50,26 @@ export async function createPost(post: CreatePostParams) {
 export async function updatePost({ post }: UpdatePostParams) {
   await requireAdmin();
 
+  const { _id, ...input } = post;
+  if (!Types.ObjectId.isValid(_id)) throw new Error('Invalid data');
+  const data = parseInput(
+    postFormSchema,
+    sanitizeFields(input, ['frenchText', 'arabicText']),
+  );
+
   try {
     await connectToDatabase();
 
-    const postToUpdate = await Post.findById(post._id);
+    const postToUpdate = await Post.findById(_id);
 
     if (!postToUpdate) {
       throw new Error('Post Not Found!');
     }
 
-    const updatedPost = await Post.findByIdAndUpdate(
-      post._id,
-      {
-        ...post,
-        images: post.images,
-        postCategory: post.postCategory,
-      },
-      { new: true },
-    );
+    const updatedPost = await Post.findByIdAndUpdate(_id, data, {
+      new: true,
+      runValidators: true,
+    });
 
     revalidatePath('/darja-admin/posts');
     return JSON.parse(JSON.stringify(updatedPost));

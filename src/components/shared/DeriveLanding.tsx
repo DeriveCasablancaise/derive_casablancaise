@@ -1,5 +1,6 @@
 'use client';
 
+import { sanitizeHtml } from '@/lib/sanitize';
 import { cn, convertYouTubeToEmbed, descOpacity } from '@/lib/utils';
 import { useInView, motion, useTransform, useScroll } from 'framer-motion';
 import React, { useEffect, useRef, useState } from 'react';
@@ -87,9 +88,9 @@ const DeriveLanding = ({ derive2024 }: DeriveLandingProps) => {
                 jakarta.className
               )}
               dangerouslySetInnerHTML={{
-                __html: isArabic
-                  ? derive2024.text1Ar || derive2024.text1Fr
-                  : derive2024.text1Fr,
+                __html: sanitizeHtml(
+                  isArabic ? derive2024.text1Ar || derive2024.text1Fr : derive2024.text1Fr,
+                ),
               }}
             />
           </motion.div>
@@ -109,9 +110,9 @@ const DeriveLanding = ({ derive2024 }: DeriveLandingProps) => {
                 jakarta.className
               )}
               dangerouslySetInnerHTML={{
-                __html: isArabic
-                  ? derive2024.text2Ar || derive2024.text2Fr
-                  : derive2024.text2Fr,
+                __html: sanitizeHtml(
+                  isArabic ? derive2024.text2Ar || derive2024.text2Fr : derive2024.text2Fr,
+                ),
               }}
             />
           </motion.div>
@@ -128,9 +129,9 @@ const DeriveLanding = ({ derive2024 }: DeriveLandingProps) => {
                 jakarta.className
               )}
               dangerouslySetInnerHTML={{
-                __html: isArabic
-                  ? derive2024.text3Ar || derive2024.text3Fr
-                  : derive2024.text3Fr,
+                __html: sanitizeHtml(
+                  isArabic ? derive2024.text3Ar || derive2024.text3Fr : derive2024.text3Fr,
+                ),
               }}
             />
           </motion.div>
