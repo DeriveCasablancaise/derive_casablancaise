@@ -1426,3 +1426,22 @@
   color: inherit;
   text-decoration: underline;
 }
+
+/* Arabic blocks of the 2026 flow layout only */
+.landing-flow-block[dir='rtl'] .tiptap-content p,
+.landing-flow-block[dir='rtl'] .tiptap-content li {
+  line-height: 1.9;
+}
+
+.landing-flow-block[dir='rtl'] .tiptap-content ul,
+.landing-flow-block[dir='rtl'] .tiptap-content ol {
+  padding-left: 0;
+  padding-right: 2rem;
+}
+
+.landing-flow-block[dir='rtl'] .tiptap-content blockquote {
+  padding-left: 0;
+  padding-right: 1rem;
+  border-left: 0;
+  border-right: 4px solid currentColor;
+}

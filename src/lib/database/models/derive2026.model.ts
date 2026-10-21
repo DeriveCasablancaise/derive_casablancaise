@@ -24,6 +24,9 @@ export interface IDerive2026 extends Document {
 
   backgroundImage: string;
 
+  videosHeadingFr?: string;
+  videosHeadingAr?: string;
+
   createdAt: Date;
   updatedAt: Date;
   __v?: number;
@@ -48,6 +51,8 @@ const Derive2026Schema = new Schema(
     video2TitleFr: text,
     video2TitleAr: text,
     backgroundImage: text,
+    videosHeadingFr: text,
+    videosHeadingAr: text,
   },
   {
     timestamps: true,

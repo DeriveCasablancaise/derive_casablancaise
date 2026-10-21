@@ -189,6 +189,50 @@ const Derive2026Form = ({ derive2026 }: Derive2026FormProps) => {
           />
         </div>
 
+        <div className="border-t-2 pt-4">
+          <h3 className="text-lg font-semibold mb-1">Titre de la section vidéos</h3>
+          <p className="text-sm text-gray-500 mb-4">
+            Optionnel, affiché seulement si au moins une vidéo est publiée.
+          </p>
+          <div className="flex flex-col gap-5 md:flex-row">
+            <FormField
+              control={form.control}
+              name="videosHeadingFr"
+              render={({ field }) => (
+                <FormItem className="w-full">
+                  <FormControl>
+                    <Input
+                      placeholder="Titre de la section (Français)"
+                      className="input-field"
+                      maxLength={80}
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="videosHeadingAr"
+              render={({ field }) => (
+                <FormItem className="w-full">
+                  <FormControl>
+                    <Input
+                      placeholder="عنوان القسم (اختياري)"
+                      className="input-field"
+                      maxLength={80}
+                      {...field}
+                      dir="rtl"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+        </div>
+
         {VIDEOS.map((n) => (
           <div key={n} className="border-t-2 pt-4">
             <h3 className="text-lg font-semibold mb-4">Video {n}</h3>

@@ -105,6 +105,14 @@ export const derive2024FormSchema = z.object({
   backgroundImage: z.string().min(1, 'Background image is required'),
 });
 
+// plain text only: markup is rejected, React escapes it on render anyway
+const plainText = (max: number) =>
+  z
+    .string()
+    .trim()
+    .max(max, `Maximum ${max} caractères`)
+    .refine((v) => !/[<>]/.test(v), 'Texte simple uniquement, sans HTML');
+
 // same fields as 2024 but nothing is required, an empty page is valid
 export const derive2026FormSchema = z
   .object({
@@ -126,6 +134,9 @@ export const derive2026FormSchema = z
     video2TitleAr: z.string().optional(),
 
     backgroundImage: z.string().optional(),
+
+    videosHeadingFr: plainText(80).optional(),
+    videosHeadingAr: plainText(80).optional(),
   })
   .superRefine((data, ctx) => {
     // a video needs its link and its thumbnail together
@@ -142,14 +153,6 @@ export const derive2026FormSchema = z
     }
   });
 
-// plain text only: markup is rejected, React escapes it on render anyway
-const bannerText = (max: number) =>
-  z
-    .string()
-    .trim()
-    .max(max, `Maximum ${max} caractères`)
-    .refine((v) => !/[<>]/.test(v), 'Texte simple uniquement, sans HTML');
-
 // https://, http:// or a site path, "//host" would leave the site so it is out
 const bannerUrl = z
   .string()
@@ -163,11 +166,11 @@ const bannerUrl = z
 export const bannerFormSchema = z
   .object({
     isActive: z.boolean(),
-    textFr: bannerText(200),
-    textAr: bannerText(200).optional(),
+    textFr: plainText(200),
+    textAr: plainText(200).optional(),
     linkUrl: bannerUrl.optional(),
-    linkLabelFr: bannerText(60).optional(),
-    linkLabelAr: bannerText(60).optional(),
+    linkLabelFr: plainText(60).optional(),
+    linkLabelAr: plainText(60).optional(),
   })
   .superRefine((data, ctx) => {
     if (data.linkUrl && !data.linkLabelFr) {
