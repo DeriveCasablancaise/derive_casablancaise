@@ -16,7 +16,7 @@ const DesktopHeader = () => {
   return (
     <div
       className={cn(
-        'w-screen hidden lg:flex fixed top-0 z-50 transition-all duration-300 bg-[#094142] lg:h-[10vh] shadow-xl'
+        'w-screen hidden lg:flex fixed top-0 z-50 transition-all duration-300 bg-brand-red lg:h-[10vh] shadow-xl'
       )}
     >
       <DesktopNav />

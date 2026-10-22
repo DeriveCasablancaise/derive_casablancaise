@@ -31,7 +31,7 @@ const Header = () => {
         )}
       >
         <motion.div
-          className="md:w-[480px] w-full h-full bg-[#094142] relative rounded-3xl"
+          className="md:w-[480px] w-full h-full bg-brand-red relative rounded-3xl"
           variants={menu(isMobile)}
           animate={isActive ? 'open' : 'closed'}
           initial="closed"
@@ -80,7 +80,7 @@ function Button({
           }}
         >
           <motion.div
-            className="bg-[#094142] h-full w-full grid place-items-center text-gray-50"
+            className="bg-brand-red h-full w-full grid place-items-center text-gray-50"
             onClick={() => {
               toggleMenu();
             }}

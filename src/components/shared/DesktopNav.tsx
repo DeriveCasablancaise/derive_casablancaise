@@ -40,7 +40,7 @@ const DesktopNav = () => {
         {/* First navKey */}
         <NavigationMenuItem
           className={cn(
-            'w-full h-full flex justify-center items-center border-white hover:bg-[#00b0db] hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none disabled:pointer-events-none disabled:opacity-50 data-[active]:bg-[#00b0db] text-white data-[state=open]:bg-[#00b0db] bg-[#094142] ',
+            'w-full h-full flex justify-center items-center border-white hover:bg-[#00b0db] hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none disabled:pointer-events-none disabled:opacity-50 data-[active]:bg-[#00b0db] text-white data-[state=open]:bg-[#00b0db] bg-brand-red ',
             isArabic ? 'border-l-2' : 'border-r-2'
           )}
         >
@@ -69,7 +69,7 @@ const DesktopNav = () => {
           </NavigationMenuTrigger>
           <NavigationMenuContent
             className={cn(
-              'bg-[#094142] left-0 border-white',
+              'bg-brand-red left-0 border-white',
               isArabic && 'right-0'
             )}
             style={{ width: `${triggerWidth + 2}px` }}
@@ -98,7 +98,7 @@ const DesktopNav = () => {
             <NavigationMenuItem
               key={`nav_${i + 1}`}
               className={cn(
-                'w-full h-full flex justify-center items-center border-white hover:bg-[#00b0db] hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none disabled:pointer-events-none disabled:opacity-50 data-[active]:bg-[#00b0db] text-white data-[state=open]:bg-[#00b0db] bg-[#094142] ',
+                'w-full h-full flex justify-center items-center border-white hover:bg-[#00b0db] hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none disabled:pointer-events-none disabled:opacity-50 data-[active]:bg-[#00b0db] text-white data-[state=open]:bg-[#00b0db] bg-brand-red ',
                 isArabic ? 'border-r-2' : 'border-l-2'
               )}
             >
@@ -118,7 +118,7 @@ const DesktopNav = () => {
         })}
         <NavigationMenuItem
           className={cn(
-            'w-full h-full flex justify-center items-center border-white hover:bg-[#00b0db] hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none disabled:pointer-events-none disabled:opacity-50 data-[active]:bg-[#00b0db] text-white data-[state=open]:bg-[#00b0db] bg-[#094142] ',
+            'w-full h-full flex justify-center items-center border-white hover:bg-[#00b0db] hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none disabled:pointer-events-none disabled:opacity-50 data-[active]:bg-[#00b0db] text-white data-[state=open]:bg-[#00b0db] bg-brand-red ',
             isArabic ? 'border-r-2' : 'border-l-2'
           )}
         >

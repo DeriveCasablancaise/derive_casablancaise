@@ -19,6 +19,11 @@ const config = {
     },
     extend: {
       colors: {
+        brand: {
+          red: 'var(--brand-red)',
+          teal: 'var(--brand-teal)',
+          orange: 'var(--brand-orange)',
+        },
         border: 'hsl(var(--border))',
         input: 'hsl(var(--input))',
         ring: 'hsl(var(--ring))',

@@ -14,6 +14,7 @@ import TeaserModal from './TeaserModal';
 import { IHomepage } from '@/lib/database/models/homepage.model';
 import AfterMovieModal from './AfterMovieModal';
 import type { BannerView } from '@/lib/banner';
+import PosterSection from './PosterSection';
 
 const jakarta = Plus_Jakarta_Sans({
   weight: ['600', '700', '800'],
@@ -96,6 +97,7 @@ const ProgramLanding = ({ homepage, banner = null }: ProgramLandingProps) => {
           </div>
         </motion.div>
       </section>
+      <PosterSection />
       <motion.div
         variants={fadeIn('up', 0.2)}
         initial="hidden"
