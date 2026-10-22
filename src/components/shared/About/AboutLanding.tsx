@@ -16,7 +16,7 @@ import AfterMovieModal from '../AfterMovieModal';
 import GalleryCarousel from '../GalleryCarousel';
 import VideoModal from '../VideoModal';
 import Link from 'next/link';
-import { LandingFlow, type BackgroundFit } from '../DeriveLanding';
+import { LandingFlow, type BackgroundFit } from '../LandingFlow';
 import { getLandingView, type LandingData } from '@/lib/landing';
 
 const jakarta = Plus_Jakarta_Sans({

@@ -21,6 +21,7 @@ const config = {
       colors: {
         brand: {
           red: 'var(--brand-red)',
+          'red-banner': 'var(--brand-red-banner)',
           teal: 'var(--brand-teal)',
           orange: 'var(--brand-orange)',
         },

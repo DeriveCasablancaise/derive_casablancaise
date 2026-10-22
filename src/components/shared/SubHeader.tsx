@@ -3,7 +3,12 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
+import { motion, useReducedMotion } from 'framer-motion';
+import { useTranslations } from 'next-intl';
 import type { BannerView } from '@/lib/banner';
+
+const BANNER_WIDTH = 2000;
+const BANNER_HEIGHT = 761;
 
 interface SubHeaderProps {
   banner?: BannerView | null;
@@ -13,6 +18,8 @@ const DEFAULT_TEXT =
   'Biennale pluridisciplinaire : Danse/Théâtre/Musique/Cinéma/Lectures/Ateliers/Conférences/Rencontres';
 
 export default function Component({ banner = null }: SubHeaderProps) {
+  const t = useTranslations('HomeBanner');
+  const reduceMotion = useReducedMotion();
   const text = banner?.text ?? DEFAULT_TEXT;
   const isArabic = banner?.isArabic ?? false;
   const link = banner?.link;
@@ -24,32 +31,39 @@ export default function Component({ banner = null }: SubHeaderProps) {
   );
 
   return (
-    <div className="w-full flex flex-col py-6 px-2 mt-16 lg:mt-0 relative lg:absolute lg:top-[15vh]">
-      {/* First Line */}
-      <div className="flex flex-col justify-center items-center text-center font-semibold text-xl lg:text-3xl">
-        <span className="text-[#ee7103] latin-title-bold flex w-full flex-row mx-auto justify-center items-center gap-4">
-          Dérive Casablancaise
+    <div className="w-full flex flex-col">
+      <h1 className="sr-only">
+        <span lang="fr">{t('titleFr')}</span>{' '}
+        <span lang="ar" dir="rtl">
+          {t('titleAr')}
         </span>
-        <span className="text-[#ee7103] latin-title-bold flex w-full flex-row mx-auto justify-center items-center gap-4">
-          Rencontres des arts de la scène
-        </span>
-        <span>
-          {' '}
+      </h1>
+      {/* The padding clears the fixed navbar and has the banner's own red,
+          so the image and the section read as one surface */}
+      <motion.section
+        initial={reduceMotion ? false : { opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.6, ease: 'easeOut' }}
+        className="w-full bg-brand-red-banner pt-16 lg:pt-[10vh]"
+      >
+        {/* Phones and tablets only crop the red sides, the blob is 29% of the
+            image width and the visible part is 38% (square), 51% (4/3), 68% (16/9).
+            From lg the whole image shows, the height is capped at 70vh */}
+        <div className="relative mx-auto aspect-square w-full sm:aspect-[4/3] md:aspect-video lg:aspect-auto lg:h-[min(70vh,38.05vw)]">
           <Image
-            src="/images/spiralTrans.png"
-            className="rounded-full object-cover"
-            alt="spirals"
-            width={40}
-            height={40}
+            src="/images/home-banner-2026.jpg"
+            alt={t('alt')}
+            width={BANNER_WIDTH}
+            height={BANNER_HEIGHT}
+            priority
+            sizes="100vw"
+            className="h-full w-full object-cover object-center lg:object-contain"
           />
-        </span>{' '}
-        <span className="text-[#ee7103] mt-2 lg:mt-0 lg:ml-4 arabic-title-bold flex w-full flex-row mx-auto justify-center items-center gap-4">
-          ملتقى فنون الأداء
-        </span>
-      </div>
+        </div>
+      </motion.section>
 
       {/* Moving text, pauses on hover and focus */}
-      <div className="marquee mt-6 2xl:mb-24 w-full overflow-hidden">
+      <div className="marquee mt-4 md:mt-6 w-full overflow-hidden">
         <div
           className="marquee-track flex justify-center items-center text-center font-normal text-base md:text-lg whitespace-nowrap"
           data-rtl={isArabic}
