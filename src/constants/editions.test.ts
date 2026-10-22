@@ -22,11 +22,12 @@ describe('editions registry', () => {
     expect(postHref('2024', 'abc')).toBe('/derive-2024/post/abc');
   });
 
-  it('returns /derive-2026 paths for 2026 with no programme PDF', () => {
+  it('returns /derive-2026 paths for 2026 and a programme PDF', () => {
     expect(categoryHref('2026', 'danse')).toBe('/derive-2026/danse');
     expect(postHref('2026', 'abc')).toBe('/derive-2026/post/abc');
     const e = getEdition('2026');
-    expect(e.programmePdf).toBeUndefined();
+    // still the 2024 file until the 2026 programme exists
+    expect(e.programmePdf).toBe('/programme.pdf');
     expect(e.translationNamespace).toBe('Derive2026');
   });
 

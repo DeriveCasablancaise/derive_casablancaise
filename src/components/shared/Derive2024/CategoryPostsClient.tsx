@@ -4,13 +4,13 @@ import type React from 'react';
 
 import { useEffect, useRef, useState } from 'react';
 import { cn } from '@/lib/utils';
-import Image from 'next/image';
 import Link from 'next/link';
 import { Calendar } from 'lucide-react';
 import { motion, useInView } from 'framer-motion';
 import type { IPost } from '@/lib/database/models/post.model';
 import { useRouter } from 'next/navigation';
 import ClientWrapper from '../PostWrapper';
+import { FallbackImage } from '../ImageFallback';
 import { ParentLink } from '@/components/shared/ParentLink';
 import SubCategorySelector from './SubcategorySelector';
 import {
@@ -172,20 +172,13 @@ const CategoryPostsClient: React.FC<CategoryPostsClientProps> = ({
                     href={`/${locale}${postHref(edition, post._id)}`}
                     className="block aspect-[16/9] md:aspect-[3/4] lg:aspect-[1/1] relative group overflow-hidden"
                   >
-                    {post.images && (
-                      <div className="absolute inset-0 flex justify-center items-center overflow-hidden">
-                        <Image
-                          src={
-                            post.thumbnailImage
-                              ? post.thumbnailImage
-                              : post.images[0]
-                          }
-                          alt={post.frenchTitle}
-                          fill
-                          className="object-cover transition-transform duration-700 ease-out group-hover:scale-110"
-                        />
-                      </div>
-                    )}
+                    <div className="absolute inset-0 flex justify-center items-center overflow-hidden">
+                      <FallbackImage
+                        src={post.thumbnailImage || post.images?.[0]}
+                        alt={post.frenchTitle}
+                        className="object-cover transition-transform duration-700 ease-out group-hover:scale-110"
+                      />
+                    </div>
                     <div className="absolute bottom-0 left-0 right-0 p-2">
                       <h3
                         className={cn(

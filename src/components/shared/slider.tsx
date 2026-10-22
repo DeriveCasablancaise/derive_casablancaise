@@ -7,7 +7,7 @@ import {
   animate,
 } from 'framer-motion';
 import { useLocale, useTranslations } from 'next-intl';
-import Image from 'next/image';
+import { FallbackImage } from './ImageFallback';
 import Link from 'next/link';
 import React, { useRef, useState, useEffect } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
@@ -199,10 +199,9 @@ const ArtistSliderInstance = ({
                 className="w-full h-full flex justify-center items-center group p-1 relative"
               >
                 <div className={cn('relative size-full overflow-hidden')}>
-                  <Image
-                    fill={true}
+                  <FallbackImage
                     alt={'image'}
-                    src={artist.images[0] || '/placeholder.svg'}
+                    src={artist.images?.[0]}
                     className="object-cover object-center transition duration-700 group-hover:scale-110"
                   />
                   <div

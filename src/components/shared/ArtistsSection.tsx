@@ -6,7 +6,7 @@ import { useLocale, useTranslations } from 'next-intl';
 import { motion, useInView } from 'framer-motion';
 import { IArtist } from '@/lib/database/models/artist.model';
 import { getAllArtists } from '@/lib/actions/artists.actions';
-import Image from 'next/image';
+import { FallbackImage } from './ImageFallback';
 import Link from 'next/link';
 import ClientWrapper from './PostWrapper';
 
@@ -147,15 +147,11 @@ const ArtistsSection = () => {
               >
                 <Link href={`/${locale}/community/${artist._id}`}>
                   <div className=" relative overflow-hidden max-h-36 aspect-square">
-                    {artist.images && artist.images.length > 0 && (
-                      <Image
-                        src={artist.images[0]}
-                        alt={isArabic ? artist.arabicName : artist.frenchName}
-                        layout="fill"
-                        objectFit="cover"
-                        className="transform transition-transform duration-700 group-hover:scale-110"
-                      />
-                    )}
+                    <FallbackImage
+                      src={artist.images?.[0]}
+                      alt={isArabic ? artist.arabicName : artist.frenchName}
+                      className="object-cover transform transition-transform duration-700 group-hover:scale-110"
+                    />
                     <div className="absolute inset-0 bg-gradient-to-t from-[#094142]/90 via-transparent to-transparent" />
                     <div className="absolute bottom-0 left-0 right-0 p-2 text-white">
                       <h3
