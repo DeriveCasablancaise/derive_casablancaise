@@ -23,7 +23,6 @@ const ProgramSection = ({ edition }: ProgramSectionProps) => {
   const isInView = useInView(sectionRef, { once: false, amount: 0.1 });
   const locale = useLocale();
   const isArabic = locale === 'ar';
-  // editions without a namespace (2026) have no heading yet
   const t = useTranslations(translationNamespace ?? 'Layout');
   const t2 = useTranslations('Layout');
 

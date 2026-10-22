@@ -1,6 +1,8 @@
 'use client';
 
+import { useEffect } from 'react';
 import { useEditor, EditorContent } from '@tiptap/react';
+import { isSameEditorContent } from './tiptap-sync';
 import StarterKit from '@tiptap/starter-kit';
 import Link from '@tiptap/extension-link';
 import {
@@ -54,6 +56,14 @@ const TiptapEditor = ({
       onChange(isEmpty ? '' : editor.getHTML());
     },
   });
+
+  // content can arrive after the editor is created (form.reset), so I sync it
+  useEffect(() => {
+    if (!editor || editor.isFocused) return;
+    if (isSameEditorContent(content, editor.getHTML())) return;
+    // false: no onUpdate, so no loop and the form is not marked dirty
+    editor.commands.setContent(content ?? '', false);
+  }, [content, editor]);
 
   if (!editor) {
     return null;
