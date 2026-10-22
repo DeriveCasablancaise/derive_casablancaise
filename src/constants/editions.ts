@@ -88,12 +88,12 @@ export const EDITIONS: Record<EditionYear, Edition> = {
       autres: '/assets/categories/en-marge.jpeg',
     },
   },
-  // 2026 has no programme PDF yet
   '2026': {
     year: '2026',
     routeBase: 'derive-2026',
     translationNamespace: 'Derive2026',
-    programmePdf: undefined,
+    // placeholder: still the 2024 programme until the 2026 PDF is provided
+    programmePdf: '/programme.pdf',
     // the labels of the programme grid, in the order they first appear
     categories: ['danse', 'lectures', 'cinema', 'exposition', 'theatre', 'concert'],
     // reuses the 2024 pictures; exposition has none and gets the placeholder tile

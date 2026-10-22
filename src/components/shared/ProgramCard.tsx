@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { motion } from 'framer-motion';
-import Image from 'next/image';
+import { FallbackImage } from './ImageFallback';
 import Link from 'next/link';
 import { IPost } from '@/lib/database/models/post.model';
 import { cn } from '@/lib/utils';
@@ -31,15 +31,11 @@ const ProgramCard: React.FC<ProgramCardProps> = ({ post, index }) => {
     >
       <Link href={`/${locale}/derive-2024/${post._id}`}>
         <div className="aspect-[3/4] relative overflow-hidden">
-          {post.images && (
-            <Image
-              src={post.thumbnailImage ? post.thumbnailImage : post.images[0]}
-              alt={post.frenchTitle}
-              layout="fill"
-              objectFit="cover"
-              className="transform transition-transform duration-700 group-hover:scale-110"
-            />
-          )}
+          <FallbackImage
+            src={post.thumbnailImage || post.images?.[0]}
+            alt={post.frenchTitle}
+            className="object-cover transform transition-transform duration-700 group-hover:scale-110"
+          />
           <div className="absolute inset-0 bg-gradient-to-t from-[#094142]/90 via-transparent to-transparent" />
           <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
             <h3

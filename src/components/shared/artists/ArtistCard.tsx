@@ -1,7 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import Image from 'next/image';
+import { FallbackImage } from '../ImageFallback';
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
 import { IArtist } from '@/lib/database/models/artist.model';
@@ -43,17 +43,13 @@ export const ArtistCard = ({
               'linear-gradient(135deg, #094142 0%, #00b0db 100%)',
           }}
         />
-        {artist.images && (
-          <div className="absolute inset-2 flex justify-center items-center overflow-hidden">
-            <Image
-              src={artist.images[0]}
-              alt={isArabic ? artist.arabicName : artist.frenchName}
-              layout="fill"
-              objectFit="cover"
-              className="transform transition-transform duration-700 ease-out group-hover:scale-110"
-            />
-          </div>
-        )}
+        <div className="absolute inset-2 flex justify-center items-center overflow-hidden">
+          <FallbackImage
+            src={artist.images?.[0]}
+            alt={isArabic ? artist.arabicName : artist.frenchName}
+            className="object-cover transform transition-transform duration-700 ease-out group-hover:scale-110"
+          />
+        </div>
         <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/60 to-transparent">
           <h3
             className={cn(

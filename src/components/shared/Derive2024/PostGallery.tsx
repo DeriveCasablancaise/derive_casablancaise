@@ -1,9 +1,9 @@
 'use client';
 
 import { useState } from 'react';
-import Image from 'next/image';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { FallbackImage, ImagePlaceholder } from '../ImageFallback';
 
 interface ImageGalleryProps {
   images: string[];
@@ -27,17 +27,26 @@ const ImageGallery: React.FC<ImageGalleryProps> = ({ images, alt }) => {
     setCurrentIndex(index);
   };
 
+  // nothing to show: one decorative block, same shape as the gallery
+  if (images.length === 0) {
+    return (
+      <div className="w-full">
+        <div className="relative aspect-square max-h-[600px] overflow-hidden">
+          <ImagePlaceholder />
+        </div>
+      </div>
+    );
+  }
+
   // If only one image, show simple display
   if (images.length === 1) {
     return (
       <div className="w-full">
         <div className="relative aspect-square max-h-[600px] overflow-hidden">
-          <Image
+          <FallbackImage
             src={images[0]}
             alt={alt}
-            layout="fill"
-            objectFit="cover"
-            className="transition-transform duration-300"
+            className="object-cover transition-transform duration-300"
           />
         </div>
       </div>
@@ -48,12 +57,10 @@ const ImageGallery: React.FC<ImageGalleryProps> = ({ images, alt }) => {
     <div className="w-full space-y-4">
       {/* Main Image Display */}
       <div className="relative aspect-square max-h-[600px] overflow-hidden group">
-        <Image
+        <FallbackImage
           src={images[currentIndex]}
           alt={`${alt} - Image ${currentIndex + 1}`}
-          layout="fill"
-          objectFit="cover"
-          className="transition-all duration-300"
+          className="object-cover transition-all duration-300"
         />
 
         {/* Navigation Buttons */}
@@ -118,12 +125,10 @@ const ImageGallery: React.FC<ImageGalleryProps> = ({ images, alt }) => {
                     : 'opacity-70 hover:opacity-100'
                 )}
               >
-                <Image
+                <FallbackImage
                   src={image}
                   alt={`${alt} thumbnail ${index + 1}`}
-                  layout="fill"
-                  objectFit="cover"
-                  className="transition-transform duration-200 hover:scale-105"
+                  className="object-cover transition-transform duration-200 hover:scale-105"
                 />
               </button>
             ))}
