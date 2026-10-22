@@ -59,7 +59,7 @@ const Contact = ({ edition = '2024' }: { edition?: EditionYear }) => {
 
   return (
     <motion.footer
-      className="bg-[#094142] text-white xl:pb-16 h-full"
+      className="bg-brand-red text-white xl:pb-16 h-full"
       style={{ y }}
       ref={container}
     >
