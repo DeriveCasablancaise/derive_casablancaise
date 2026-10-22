@@ -62,7 +62,10 @@
       "date": "04 - 08.12.2024",
       "lieu": "Casablanca"
     },
-    "Download": "Télécharger Le Programme"
+    "Download": "Télécharger Le Programme",
+    "Download2024": "Télécharger Le Programme de cette édition 2024",
+    "Download2022": "Télécharger Le Programme de l'édition 2022",
+    "Download2026": "Télécharger Le Programme de l'édition 2026"
   },
   "HomePage": {
     "Hero": {
@@ -218,6 +221,11 @@
     "heading": "Langue",
     "french": "Français",
     "arabic": "Arabe"
+  },
+  "HomeBanner": {
+    "alt": "Dérive Casablancaise, Rencontres des arts de la scène, 3e édition, 2 au 5 décembre 2026",
+    "titleFr": "Dérive Casablancaise, Rencontres des arts de la scène",
+    "titleAr": "منعطف بيضاوي، لقاءات فنون الأداء"
   },
   "Poster": {
     "alt": "Affiche de Dérive Casablancaise, 3e édition, 2 au 5 décembre 2026"

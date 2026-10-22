@@ -21,11 +21,7 @@ const PosterSection = () => {
   );
 
   return (
-    // the top padding clears the landing text box that hangs below its section on lg
-    <section
-      dir={isArabic ? 'rtl' : 'ltr'}
-      className="px-4 pt-16 lg:pt-24 2xl:pt-0"
-    >
+    <section dir={isArabic ? 'rtl' : 'ltr'} className="px-4 pt-16 lg:pt-24">
       <div className="mx-auto grid max-w-4xl grid-cols-1 items-center gap-10 lg:grid-cols-2">
         <motion.div
           initial={reduceMotion ? false : { opacity: 0, y: 20 }}
@@ -44,9 +40,9 @@ const PosterSection = () => {
           />
         </motion.div>
         <div className="flex flex-col items-center gap-6 text-center text-brand-teal lg:items-start lg:text-start">
-          <Link href={`/${locale}${editionHref('2026')}`} className={linkClass}>
+          {/* <Link href={`/${locale}${editionHref('2026')}`} className={linkClass}>
             {t('Navigation.derive2026.title')}
-          </Link>
+          </Link> */}
           {programmePdf && (
             <a
               href={programmePdf}
@@ -55,7 +51,7 @@ const PosterSection = () => {
               rel="noopener noreferrer"
               className={linkClass}
             >
-              {t('Download')}
+              {t('Download2026')}
             </a>
           )}
         </div>

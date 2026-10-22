@@ -1,12 +1,10 @@
 'use client';
 
-import { sanitizeHtml } from '@/lib/sanitize';
-import { cn, convertYouTubeToEmbed, descOpacity } from '@/lib/utils';
-import { useInView, motion, useTransform, useScroll } from 'framer-motion';
-import React, { useEffect, useRef, useState } from 'react';
+import { cn, convertYouTubeToEmbed } from '@/lib/utils';
+import { motion } from 'framer-motion';
+import React, { useState } from 'react';
 import SubHeader from './SubHeader';
-import { useLocale, useTranslations } from 'next-intl';
-import { Plus_Jakarta_Sans } from 'next/font/google';
+import { useLocale } from 'next-intl';
 import Image from 'next/image';
 import { PlayCircleIcon } from 'lucide-react';
 import { fadeIn } from '@/variants';
@@ -15,11 +13,8 @@ import { IHomepage } from '@/lib/database/models/homepage.model';
 import AfterMovieModal from './AfterMovieModal';
 import type { BannerView } from '@/lib/banner';
 import PosterSection from './PosterSection';
-
-const jakarta = Plus_Jakarta_Sans({
-  weight: ['600', '700', '800'],
-  subsets: ['latin'],
-});
+import { LandingFlow } from './LandingFlow';
+import { getLandingView } from '@/lib/landing';
 
 interface ProgramLandingProps {
   homepage: IHomepage;
@@ -27,83 +22,43 @@ interface ProgramLandingProps {
 }
 
 const ProgramLanding = ({ homepage, banner = null }: ProgramLandingProps) => {
-  const sectionRef = useRef(null);
-  const imageContainerRef = useRef(null);
-  const isInView = useInView(imageContainerRef);
-  const [isMobile, setIsMobile] = useState(false);
   const [isTeaseModalOpen, setIsTeaseModalOpen] = useState<boolean>(false);
   const [isAfterMovieModalOpen, setIsAfterMovieModalOpen] =
     useState<boolean>(false);
   const locale = useLocale();
   const hasArabicContent = homepage.textAr && homepage.textAr !== '';
   const isArabic = locale === 'ar' && hasArabicContent;
-  const t = useTranslations('Derive2024');
-  const t2 = useTranslations('HomePage');
 
   const video1EmbedLink = convertYouTubeToEmbed(homepage.video1IframeLink);
   const video2EmbedLink = convertYouTubeToEmbed(homepage.video2IframeLink);
 
-  // Detect if the user is on a smaller screen (e.g., mobile)
-  useEffect(() => {
-    const handleResize = () => setIsMobile(window.innerWidth < 768); // Example breakpoint (768px)
-    handleResize();
-    window.addEventListener('resize', handleResize);
-
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
-
-  const { scrollYProgress } = useScroll({
-    target: sectionRef,
-    offset: ['start end', 'end end'],
-  });
-
-  const backgroundSize = useTransform(
-    scrollYProgress,
-    [0.4, 1],
-    isMobile ? ['cover', 'cover'] : ['80%', '130%'],
+  // one block: the same sanitising and Arabic fallback as the other pages
+  const { texts, backgroundImage, showBackground } = getLandingView(
+    {
+      text1Fr: homepage.textFr,
+      text1Ar: homepage.textAr,
+      backgroundImage: homepage.backgroundImage,
+    },
+    locale === 'ar',
   );
 
   return (
     <>
-      <section ref={sectionRef} data-scroll-section="" className="">
-        <div className="relative flex h-full w-full">
-          <SubHeader banner={banner} />
-        </div>
-        <motion.div
-          ref={imageContainerRef}
-          className="w-full min-h-screen relative py-8 mb-8 lg:mt-[400px] md:mb-16 2xl:mb-[23rem] 2xl: mt-[26rem]  flex flex-col lg:flex-row lg:items-center border-b-2"
-          style={{
-            backgroundSize,
-            backgroundImage: `url(${homepage.backgroundImage})`,
-            backgroundPosition: 'center',
-            backgroundRepeat: 'no-repeat',
-          }}
-        >
-          <div
-            className="lg:absolute lg:left-0 lg:-bottom-24 lg:h-auto lg:bg-[#E9EAEB] lg:w-[60%] bg-white/70 h-fit  my-auto lg:flex flex-col justify-start py-4 lg:py-6 items-start gap-4 2xl:gap-8 text-[#00b0db] md:text-black/90 px-4 lg:px-6"
-            dir={isArabic ? 'rtl' : 'ltr'}
-          >
-            <div
-              className={cn(
-                'w-full font-bold text-[#094142] m-0 prose',
-                jakarta.className,
-              )}
-              dangerouslySetInnerHTML={{
-                __html: sanitizeHtml(
-                  isArabic ? homepage.textAr || homepage.textFr : homepage.textFr,
-                ),
-              }}
-            />
-          </div>
-        </motion.div>
-      </section>
+      <SubHeader banner={banner} />
+      {showBackground && (
+        <LandingFlow
+          texts={texts}
+          backgroundImage={backgroundImage}
+          isArabic={locale === 'ar'}
+        />
+      )}
       <PosterSection />
       <motion.div
         variants={fadeIn('up', 0.2)}
         initial="hidden"
         whileInView="show"
         viewport={{ once: true, amount: 0.3 }}
-        className="text-center mt-24 lg:mt-48"
+        className="text-center mt-16 lg:mt-24"
       >
         <h2
           className={cn(
