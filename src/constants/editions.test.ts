@@ -22,13 +22,26 @@ describe('editions registry', () => {
     expect(postHref('2024', 'abc')).toBe('/derive-2024/post/abc');
   });
 
-  it('returns /derive-2026 paths for 2026 with no assets', () => {
+  it('returns /derive-2026 paths for 2026 with no programme PDF', () => {
     expect(categoryHref('2026', 'danse')).toBe('/derive-2026/danse');
     expect(postHref('2026', 'abc')).toBe('/derive-2026/post/abc');
     const e = getEdition('2026');
     expect(e.programmePdf).toBeUndefined();
-    expect(e.categoryImages).toBeUndefined();
-    expect(e.translationNamespace).toBeUndefined();
+    expect(e.translationNamespace).toBe('Derive2026');
+  });
+
+  it('reuses 2024 images for 2026 and leaves exposition to the placeholder', () => {
+    const images = getEdition('2026').categoryImages!;
+    const y2024 = getEdition('2024').categoryImages!;
+    expect(images.danse).toBe(y2024.danse);
+    expect(images.theatre).toBe(y2024.theatre);
+    expect(images.lectures).toBe(y2024.lectures);
+    expect(images.cinema).toBe(y2024.cinema);
+    expect(images.concert).toBe(y2024.musique);
+    expect(images.exposition).toBeUndefined();
+    for (const k of Object.keys(images)) {
+      expect(getEdition('2026').categories).toContain(k);
+    }
   });
 
   it('has an image for every category in 2022 and 2024', () => {

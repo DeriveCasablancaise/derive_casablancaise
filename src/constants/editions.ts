@@ -88,15 +88,22 @@ export const EDITIONS: Record<EditionYear, Edition> = {
       autres: '/assets/categories/en-marge.jpeg',
     },
   },
-  // 2026 has no assets or texts yet
+  // 2026 has no programme PDF yet
   '2026': {
     year: '2026',
     routeBase: 'derive-2026',
-    translationNamespace: undefined,
+    translationNamespace: 'Derive2026',
     programmePdf: undefined,
     // the labels of the programme grid, in the order they first appear
     categories: ['danse', 'lectures', 'cinema', 'exposition', 'theatre', 'concert'],
-    categoryImages: undefined,
+    // reuses the 2024 pictures; exposition has none and gets the placeholder tile
+    categoryImages: {
+      danse: '/assets/categories/danse.jpg',
+      lectures: '/assets/categories/lectures.jpeg',
+      cinema: '/assets/categories/cinema.jpg',
+      theatre: '/assets/categories/theatre.jpg',
+      concert: '/assets/categories/musique.jpg',
+    },
   },
 };
 

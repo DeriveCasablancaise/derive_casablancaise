@@ -63,7 +63,13 @@ export const CategoryImageButton: React.FC<CategoryImageButtonProps> = ({
           sizes="(max-width: 768px) 50vw, (max-width: 1024px) 25vw, 20vw"
         />
       ) : (
-        <div className="absolute inset-0 bg-[#094142]" />
+        // brand tile when a category has no picture yet
+        <div className="absolute inset-0 bg-[#094142]">
+          <div
+            className="absolute inset-0 bg-center bg-no-repeat bg-contain opacity-20"
+            style={{ backgroundImage: "url('/images/spiralTrans.png')" }}
+          />
+        </div>
       )}
       <div className="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-all duration-300" />
       <div className="absolute inset-0 flex items-center justify-center">
