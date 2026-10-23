@@ -10,6 +10,7 @@ import {
   getEdition,
   type EditionYear,
 } from '@/constants/editions';
+import ProgrammeLink from './ProgrammeLink';
 
 
 interface ProgramSectionProps {
@@ -17,7 +18,7 @@ interface ProgramSectionProps {
 }
 
 const ProgramSection = ({ edition }: ProgramSectionProps) => {
-  const { translationNamespace, categories, categoryImages, programmePdf } =
+  const { translationNamespace, categories, categoryImages, programmePdf, programmeBook } =
     getEdition(edition);
   const sectionRef = useRef(null);
   const isInView = useInView(sectionRef, { once: false, amount: 0.1 });
@@ -93,9 +94,12 @@ const ProgramSection = ({ edition }: ProgramSectionProps) => {
               isArabic ? 'arabic-title-light' : 'latin-title-light',
             )}
           >
-            <a href={programmePdf} download target="_blank">
+            <ProgrammeLink
+              href={programmePdf}
+              programmeBook={programmeBook}
+            >
               {t2('Download')}
-            </a>
+            </ProgrammeLink>
           </div>
         )}
       </motion.div>

@@ -1,11 +1,11 @@
 'use client';
 
 import Image from 'next/image';
-import Link from 'next/link';
 import { motion, useReducedMotion } from 'framer-motion';
 import { useLocale, useTranslations } from 'next-intl';
 import { cn } from '@/lib/utils';
-import { editionHref, getEdition } from '@/constants/editions';
+import { getEdition } from '@/constants/editions';
+import ProgrammeLink from './ProgrammeLink';
 
 const PosterSection = () => {
   const locale = useLocale();
@@ -13,7 +13,8 @@ const PosterSection = () => {
   const t = useTranslations('Layout');
   const tPoster = useTranslations('Poster');
   const reduceMotion = useReducedMotion();
-  const programmePdf = getEdition('2026').programmePdf;
+  const edition = getEdition('2026');
+  const programmePdf = edition.programmePdf;
 
   const linkClass = cn(
     'text-xl lg:text-2xl underline underline-offset-4 decoration-brand-orange decoration-2 hover:text-brand-orange transition-colors duration-300',
@@ -44,15 +45,14 @@ const PosterSection = () => {
             {t('Navigation.derive2026.title')}
           </Link> */}
           {programmePdf && (
-            <a
+            <ProgrammeLink
               href={programmePdf}
+              programmeBook={edition.programmeBook}
               download
-              target="_blank"
-              rel="noopener noreferrer"
               className={linkClass}
             >
               {t('Download2026')}
-            </a>
+            </ProgrammeLink>
           )}
         </div>
       </div>

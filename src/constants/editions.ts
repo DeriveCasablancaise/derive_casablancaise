@@ -25,11 +25,19 @@ export const CATEGORY_KEYS = Object.keys(CATEGORIES) as [
 export const isCategoryKey = (x: string): x is CategoryKey =>
   Object.keys(CATEGORIES).includes(x);
 
+export interface ProgrammeBook {
+  dir: string;
+  pages: number;
+  width: number;
+  height: number;
+}
+
 export interface Edition {
   year: EditionYear;
   routeBase: 'derive-2024' | 'previous' | 'derive-2026';
   translationNamespace: string | undefined;
   programmePdf: string | undefined;
+  programmeBook?: ProgrammeBook;
   // key order is the tile order
   categories: readonly CategoryKey[];
   categoryImages: Partial<Record<CategoryKey, string>> | undefined;
@@ -94,6 +102,8 @@ export const EDITIONS: Record<EditionYear, Edition> = {
     translationNamespace: 'Derive2026',
     // placeholder: still the 2024 programme until the 2026 PDF is provided
     programmePdf: '/programme-2026.pdf',
+    // from public/programme/2026/manifest.json
+    programmeBook: { dir: '/programme/2026', pages: 2, width: 1100, height: 778 },
     // the labels of the programme grid, in the order they first appear
     categories: [
       'danse',
