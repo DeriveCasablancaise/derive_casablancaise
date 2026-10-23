@@ -56,7 +56,7 @@ const SubCategorySelector: React.FC<SubCategorySelectorProps> = ({
                     ? 'arabic-subtitle-regular'
                     : 'latin-subtitle-regular',
                   selectedSubCategory === subCat
-                    ? 'bg-[#ee7103] text-white shadow-lg transform scale-105'
+                    ? 'bg-brand-orange text-white shadow-lg transform scale-105'
                     : 'bg-gray-100 text-gray-700 hover:bg-gray-200 hover:shadow-md'
                 )}
               >

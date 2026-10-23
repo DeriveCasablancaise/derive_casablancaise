@@ -12,7 +12,7 @@ interface BannerStripProps {
 const BannerStrip = ({ view, preview = false }: BannerStripProps) => {
   const { text, isArabic, link } = view;
   const linkClass = cn(
-    'mx-2 font-bold underline decoration-[#ee7103] decoration-2 underline-offset-4',
+    'mx-2 font-bold underline decoration-brand-orange decoration-2 underline-offset-4',
     isArabic ? 'arabic-subtitle-bold' : 'latin-subtitle-bold',
   );
 

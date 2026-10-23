@@ -24,7 +24,7 @@ const Description = () => {
           variants={descOpacity}
           animate={isInView ? 'open' : 'closed'}
           className={cn(
-            'font-extrabold text-center text-6xl absolute bottom-96  transform -rotate-90  w-[600px] z-40 text-[#ee7103] ',
+            'font-extrabold text-center text-6xl absolute bottom-96  transform -rotate-90  w-[600px] z-40 text-brand-title ',
             isArabic
               ? 'arabic-title-bold 2xl:-right-36'
               : 'latin-title-bold 2xl:-left-36'

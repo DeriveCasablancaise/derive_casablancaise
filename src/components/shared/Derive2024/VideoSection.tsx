@@ -52,7 +52,7 @@ const VideoSection = () => {
           >
             <h2
               className={cn(
-                'text-[#ee7103] text-3xl md:text-4xl mb-4',
+                'text-brand-title text-3xl md:text-4xl mb-4',
                 isArabic ? 'arabic-title-bold' : 'latin-title-light'
               )}
             >
@@ -148,7 +148,7 @@ const VideoSection = () => {
                     </motion.div>
                   </div>
 
-                  <div className="absolute top-4 left-4 bg-[#ee7103] text-white px-3 py-1 rounded-full flex items-center space-x-2">
+                  <div className="absolute top-4 left-4 bg-brand-orange text-white px-3 py-1 rounded-full flex items-center space-x-2">
                     <Film size={16} />
                     <span className="font-medium text-sm">Aftermovie</span>
                   </div>

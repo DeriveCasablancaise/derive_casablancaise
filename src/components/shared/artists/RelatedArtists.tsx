@@ -29,7 +29,7 @@ export const RelatedArtists = ({
     <div className="my-16 px-4" ref={sectionRef}>
       <h2
         className={cn(
-          'text-2xl md:text-3xl mb-6 text-[#ee7103]',
+          'text-2xl md:text-3xl mb-6 text-brand-title',
           isArabic ? 'arabic-title-bold text-right' : 'latin-title-bold'
         )}
       >

@@ -26,7 +26,7 @@ export default function Component({ banner = null }: SubHeaderProps) {
   // longer text needs more time to stay readable
   const duration = Math.max(15, Math.round(text.length * 0.2));
   const linkClass = cn(
-    'mx-2 font-bold underline decoration-[#ee7103] decoration-2 underline-offset-4',
+    'mx-2 font-bold underline decoration-brand-orange decoration-2 underline-offset-4',
     isArabic ? 'arabic-subtitle-bold' : 'latin-subtitle-bold',
   );
 

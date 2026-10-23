@@ -72,7 +72,7 @@ const PostPageBody = async ({
           {/* Title */}
           <h1
             className={cn(
-              'text-xl lg:text-3xl text-[#ee7103] px-4 font-normal',
+              'text-xl lg:text-3xl text-brand-title px-4 font-normal',
               title.isArabic ? 'arabic-title-bold text-right' : 'latin-title-light',
             )}
           >

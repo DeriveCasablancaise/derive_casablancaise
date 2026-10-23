@@ -83,7 +83,7 @@ const ArtistsSection = () => {
             animate={isInView ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.6, delay: 0.1 }}
             className={cn(
-              'text-lg md:text-2xl xl:text-3xl text-[#ee7103] mb-12 text-center',
+              'text-lg md:text-2xl xl:text-3xl text-brand-title mb-12 text-center',
               isArabic ? 'arabic-title-bold' : 'latin-title-bold'
             )}
           >

@@ -62,7 +62,7 @@ const ProgramLanding = ({ homepage, banner = null }: ProgramLandingProps) => {
       >
         <h2
           className={cn(
-            'text-[#ee7103] text-xl lg:text-3xl mb-4',
+            'text-brand-title text-xl lg:text-3xl mb-4',
             isArabic ? 'arabic-title-bold' : 'latin-title-bold',
           )}
         >
@@ -97,7 +97,7 @@ const ProgramLanding = ({ homepage, banner = null }: ProgramLandingProps) => {
                 transition={{ type: 'spring', stiffness: 400, damping: 10 }}
                 className="bg-white/20 backdrop-blur-md rounded-full p-6"
               >
-                <PlayCircleIcon className="h-16 w-16 md:h-20 md:w-20 text-[#ee7103]" />
+                <PlayCircleIcon className="h-16 w-16 md:h-20 md:w-20 text-brand-orange" />
               </motion.div>
             </div>
           </motion.div>
@@ -141,7 +141,7 @@ const ProgramLanding = ({ homepage, banner = null }: ProgramLandingProps) => {
                 transition={{ type: 'spring', stiffness: 400, damping: 10 }}
                 className="bg-white/20 backdrop-blur-md rounded-full p-6"
               >
-                <PlayCircleIcon className="h-16 w-16 md:h-20 md:w-20 text-[#ee7103]" />
+                <PlayCircleIcon className="h-16 w-16 md:h-20 md:w-20 text-brand-orange" />
               </motion.div>
             </div>
           </motion.div>

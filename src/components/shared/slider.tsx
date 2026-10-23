@@ -44,7 +44,7 @@ const SlidingImages = ({ artists }: SlidingImagesProps) => {
       <div className="w-full hidden lg:flex py-4 xl:py-8 text-start bg-[#E9EAEB]">
         <h2
           className={cn(
-            'text-xl lg:text-3xl w-full text-[#ee7103] text-center',
+            'text-xl lg:text-3xl w-full text-brand-title text-center',
             isArabic ? 'arabic-title-bold' : 'latin-title-bold',
           )}
         >

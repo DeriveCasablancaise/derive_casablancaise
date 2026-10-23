@@ -24,6 +24,7 @@ const config = {
           'red-banner': 'var(--brand-red-banner)',
           teal: 'var(--brand-teal)',
           orange: 'var(--brand-orange)',
+          title: 'var(--brand-title)',
         },
         border: 'hsl(var(--border))',
         input: 'hsl(var(--input))',

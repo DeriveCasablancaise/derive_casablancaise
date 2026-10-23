@@ -121,7 +121,7 @@ const ImageGallery: React.FC<ImageGalleryProps> = ({ images, alt }) => {
                 className={cn(
                   'relative flex-shrink-0 w-16 h-16 sm:w-20 sm:h-20 overflow-hidden transition-all duration-200',
                   currentIndex === index
-                    ? 'ring-2 ring-[#ee7103] ring-offset-1'
+                    ? 'ring-2 ring-brand-orange ring-offset-1'
                     : 'opacity-70 hover:opacity-100'
                 )}
               >

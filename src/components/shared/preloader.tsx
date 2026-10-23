@@ -83,7 +83,7 @@ export default function Preloader({ pageName }: PreloaderProps) {
             initial="initial"
             animate="enter"
             className={cn(
-              'flex font-bold text-[#ee7103] text-[42px] items-center justify-center text-center absolute z-[1] ',
+              'flex font-bold text-brand-orange text-[42px] items-center justify-center text-center absolute z-[1] ',
               isArabic ? 'arabic-title-bold' : 'latin-title-bold'
             )}
             dir={isArabic ? 'rtl' : 'ltr'}

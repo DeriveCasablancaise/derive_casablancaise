@@ -19,7 +19,7 @@ const Project = ({ index, title, manageModal }: ProjectProps) => {
       onMouseEnter={(e) => manageModal(true, index, e.clientX, e.clientY)}
       onMouseLeave={(e) => manageModal(false, index, e.clientX, e.clientY)}
       className={cn(
-        'flex w-full justify-between items-center px-8 py-8 xl:py-[50px] border-t border-t-[#00b0db] cursor-pointer transition-all duration-200 last:border-b last:border-b-[#00b0db] text-[#00b0db] hover:text-[#ee7103] group '
+        'flex w-full justify-between items-center px-8 py-8 xl:py-[50px] border-t border-t-[#00b0db] cursor-pointer transition-all duration-200 last:border-b last:border-b-[#00b0db] text-[#00b0db] hover:text-brand-title group '
       )}
     >
       <h2

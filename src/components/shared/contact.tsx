@@ -80,7 +80,7 @@ const Contact = ({ edition = '2024' }: { edition?: EditionYear }) => {
                 <li key={index}>
                   <Link
                     href={link.path}
-                    className="text-white text-base hover:text-[#ee7103]"
+                    className="text-white text-base hover:text-brand-orange"
                   >
                     {link.link}
                   </Link>
@@ -89,7 +89,7 @@ const Contact = ({ edition = '2024' }: { edition?: EditionYear }) => {
               <li>
                 <NextLink
                   href="/darja-admin"
-                  className="text-white text-base hover:text-[#ee7103]"
+                  className="text-white text-base hover:text-brand-orange"
                 >
                   {t('admin')}
                 </NextLink>
@@ -114,7 +114,7 @@ const Contact = ({ edition = '2024' }: { edition?: EditionYear }) => {
                 className="bg-transparent border-white text-white placeholder-white"
               />
               <Button
-                className="bg-[#00b0db] text-[#2C4A4B] hover:bg-[#ee7103]"
+                className="bg-[#00b0db] text-[#2C4A4B] hover:bg-brand-orange"
                 size="sm"
               >
                 {t('subscribe')}

@@ -216,7 +216,7 @@ const AboutLanding = ({
             transition={{ type: 'spring', stiffness: 400, damping: 10 }}
             className="bg-white/20 backdrop-blur-md rounded-full p-4 md:p-6"
           >
-            <PlayCircleIcon className="h-12 w-12 md:h-16 md:w-16 text-[#ee7103]" />
+            <PlayCircleIcon className="h-12 w-12 md:h-16 md:w-16 text-brand-orange" />
           </motion.div>
         </div>
       </motion.div>
@@ -225,7 +225,7 @@ const AboutLanding = ({
         whileInView={{ y: 0, opacity: 1 }}
         transition={{ delay: delay + 0.1 }}
         className={cn(
-          'mt-4 text-center text-base md:text-lg font-bold text-[#ee7103]',
+          'mt-4 text-center text-base md:text-lg font-bold text-brand-title',
           isArabic ? 'arabic-subtitle-bold' : 'latin-subtitle-bold',
         )}
       >
@@ -258,7 +258,7 @@ const AboutLanding = ({
           >
             <h2
               className={cn(
-                'text-[#ee7103] text-xl lg:text-3xl',
+                'text-brand-title text-xl lg:text-3xl',
                 isArabic ? 'arabic-title-bold' : 'latin-title-bold',
               )}
             >
@@ -271,7 +271,7 @@ const AboutLanding = ({
               target="_blank"
               rel="noopener noreferrer"
               className={cn(
-                'text-sm md:text-base text-[#094142] hover:text-[#ee7103] transition-colors duration-300 flex items-center gap-2 underline underline-offset-4',
+                'text-sm md:text-base text-[#094142] hover:text-brand-title transition-colors duration-300 flex items-center gap-2 underline underline-offset-4',
                 isArabic ? 'arabic-subtitle-regular' : 'latin-subtitle-regular',
               )}
             >
@@ -336,7 +336,7 @@ const AboutLanding = ({
           >
             <h2
               className={cn(
-                'text-[#ee7103] text-xl lg:text-3xl',
+                'text-brand-title text-xl lg:text-3xl',
                 isArabic ? 'arabic-title-bold' : 'latin-title-bold',
               )}
             >
@@ -349,7 +349,7 @@ const AboutLanding = ({
               target="_blank"
               rel="noopener noreferrer"
               className={cn(
-                'text-sm md:text-base text-[#094142] hover:text-[#ee7103] transition-colors duration-300 flex items-center gap-2 underline underline-offset-4',
+                'text-sm md:text-base text-[#094142] hover:text-brand-title transition-colors duration-300 flex items-center gap-2 underline underline-offset-4',
                 isArabic ? 'arabic-subtitle-regular' : 'latin-subtitle-regular',
               )}
             >
@@ -412,7 +412,7 @@ const AboutLanding = ({
             >
               <h2
                 className={cn(
-                  'text-[#ee7103] text-xl lg:text-3xl mb-4 lg:mb-8',
+                  'text-brand-title text-xl lg:text-3xl mb-4 lg:mb-8',
                   isArabic ? 'arabic-title-bold' : 'latin-title-bold',
                 )}
               >

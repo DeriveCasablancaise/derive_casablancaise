@@ -44,7 +44,7 @@ const PartnersImagesSlider = ({ partners }: PartnerSliderProps) => {
         <div className="w-full hidden lg:flex flex-col gap-6 py-4 xl:py-8 text-center bg-[#E9EAEB] px-8">
           <h2
             className={cn(
-              'text-2xl xl:text-4xl w-full text-[#ee7103]',
+              'text-2xl xl:text-4xl w-full text-brand-title',
               isArabic ? 'arabic-title-bold' : 'latin-title-bold',
             )}
           >
