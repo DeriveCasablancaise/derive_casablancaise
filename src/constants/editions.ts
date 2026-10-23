@@ -93,9 +93,16 @@ export const EDITIONS: Record<EditionYear, Edition> = {
     routeBase: 'derive-2026',
     translationNamespace: 'Derive2026',
     // placeholder: still the 2024 programme until the 2026 PDF is provided
-    programmePdf: '/programme.pdf',
+    programmePdf: '/programme-2026.pdf',
     // the labels of the programme grid, in the order they first appear
-    categories: ['danse', 'lectures', 'cinema', 'exposition', 'theatre', 'concert'],
+    categories: [
+      'danse',
+      'lectures',
+      'cinema',
+      'exposition',
+      'theatre',
+      'concert',
+    ],
     // reuses the 2024 pictures; exposition has none and gets the placeholder tile
     categoryImages: {
       danse: '/assets/categories/danse.jpg',
@@ -109,7 +116,7 @@ export const EDITIONS: Record<EditionYear, Edition> = {
 
 export const EDITION_YEARS = Object.keys(EDITIONS) as EditionYear[];
 
-export const isEditionYear =(x: unknown): x is EditionYear =>
+export const isEditionYear = (x: unknown): x is EditionYear =>
   typeof x === 'string' && Object.prototype.hasOwnProperty.call(EDITIONS, x);
 
 export const getEdition = (year: EditionYear): Edition => EDITIONS[year];
@@ -118,7 +125,10 @@ export const getEdition = (year: EditionYear): Edition => EDITIONS[year];
 export const editionHref = (year: EditionYear) =>
   `/${EDITIONS[year].routeBase}`;
 
-export const isEditionCategory = (year: EditionYear, x: string): x is CategoryKey =>
+export const isEditionCategory = (
+  year: EditionYear,
+  x: string,
+): x is CategoryKey =>
   (EDITIONS[year].categories as readonly string[]).includes(x);
 
 export const categoryHref = (year: EditionYear, categoryId: string) =>

@@ -51,7 +51,7 @@ export default function Component({ banner = null }: SubHeaderProps) {
             From lg the whole image shows, the height is capped at 70vh */}
         <div className="relative mx-auto aspect-square w-full sm:aspect-[4/3] md:aspect-video lg:aspect-auto lg:h-[min(70vh,38.05vw)]">
           <Image
-            src="/images/home-banner-2026-2.png"
+            src="/images/banner-v8.png"
             alt={t('alt')}
             width={BANNER_WIDTH}
             height={BANNER_HEIGHT}
