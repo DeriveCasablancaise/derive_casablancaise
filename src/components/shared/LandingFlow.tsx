@@ -58,7 +58,7 @@ export const LandingFlow = ({
   const scale = useTransform(
     scrollYProgress,
     [0, 1],
-    pan || reduceMotion ? [1, 1] : isDesktop ? [1, 1.15] : [1.08, 1.08]
+    pan || reduceMotion ? [1, 1] : isDesktop ? [1, 1.15] : [1.08, 1.08],
   );
   const y = useTransform(
     scrollYProgress,
@@ -67,14 +67,14 @@ export const LandingFlow = ({
       ? ['0%', '0%']
       : isDesktop
         ? ['0%', '-5%']
-        : ['0%', '-3%']
+        : ['0%', '-3%'],
   );
   // pan: the visible part of the image moves from its top to its bottom,
   // nothing is scaled so no edge shows. Reduced motion stays on the top
   const panY = useTransform(
     scrollYProgress,
     [0, 1],
-    reduceMotion ? ['0%', '0%'] : ['0%', '100%']
+    reduceMotion ? ['0%', '0%'] : ['0%', '100%'],
   );
 
   const hasImage = Boolean(backgroundImage);
@@ -89,7 +89,7 @@ export const LandingFlow = ({
         // own stacking context and clipped: nothing of the image paints outside
         // (overflow clip, not hidden, so the sticky layer still works)
         'relative isolate overflow-clip bg-[#E9EAEB] border-b-2 lg:mt-[10vh]',
-        hasImage ? 'pb-16 lg:pb-[10vh]' : 'pb-0'
+        hasImage ? 'pb-16 lg:pb-[10vh]' : 'pb-0',
       )}
     >
       {hasImage && (
@@ -113,7 +113,7 @@ export const LandingFlow = ({
                 priority={false}
                 className={cn(
                   'object-cover',
-                  pan && '[object-position:50%_var(--pan-y)]'
+                  pan && '[object-position:50%_var(--pan-y)]',
                 )}
               />
             </motion.div>
@@ -124,8 +124,8 @@ export const LandingFlow = ({
         className={cn(
           'relative z-10 flex flex-col',
           hasImage
-            ? 'gap-16 pt-16 lg:gap-[20vh] lg:pt-[20vh]'
-            : 'gap-8 py-8 lg:gap-12 lg:py-16'
+            ? 'gap-16 pt-16 lg:gap-[20vh] lg:pt-[70vh]'
+            : 'gap-8 py-8 lg:gap-12 lg:py-16',
         )}
       >
         {texts.map(({ n, html, rtl }, i) => {
@@ -144,8 +144,10 @@ export const LandingFlow = ({
                 // below lg the block is inset and centred with a readable line length,
                 // from lg up it keeps the 60% side-aligned box
                 'landing-flow-block w-[calc(100%-2rem)] md:w-[calc(100%-5rem)] md:max-w-2xl lg:max-w-none lg:w-[60%] bg-white/70 lg:bg-[#E9EAEB] py-4 lg:py-6 px-4 lg:px-6 text-[#00b0db] md:text-black/90',
-                atStart ? 'self-center lg:self-start' : 'self-center lg:self-end',
-                rtl ? 'text-right' : 'text-left'
+                atStart
+                  ? 'self-center lg:self-start'
+                  : 'self-center lg:self-end',
+                rtl ? 'text-right' : 'text-left',
               )}
             >
               <div
@@ -153,7 +155,7 @@ export const LandingFlow = ({
                   'w-full font-bold text-[#094142] m-0 tiptap-content',
                   rtl
                     ? 'arabic-text-bold text-xl lg:text-2xl'
-                    : cn('text-sm md:text-base lg:text-sm', jakarta.className)
+                    : cn('text-sm md:text-base lg:text-sm', jakarta.className),
                 )}
                 dangerouslySetInnerHTML={{ __html: html }}
               />

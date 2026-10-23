@@ -68,12 +68,12 @@ const ProgramLanding = ({ homepage, banner = null }: ProgramLandingProps) => {
         >
           {isArabic
             ? ' الفيلم الختامي لفعالية المنعطف البيضاوي '
-            : 'Actualités'}
+            : 'After Movie 2024'}
         </h2>
       </motion.div>
       <div className="flex flex-col lg:flex-row justify-center items-start mx-auto my-8 md:my-10 xl:my-12 max-w-4xl gap-8 px-4">
         {/* First Video Showcase */}
-        <div className="flex flex-col items-center w-full lg:w-1/2">
+        {/* <div className="flex flex-col items-center w-full lg:w-1/2">
           <motion.div
             variants={fadeIn('up', 0.1)}
             initial="hidden"
@@ -114,7 +114,7 @@ const ProgramLanding = ({ homepage, banner = null }: ProgramLandingProps) => {
               ? homepage.video1TitleAr || homepage.video1TitleFr
               : homepage.video1TitleFr}
           </motion.div>
-        </div>
+        </div> */}
 
         {/* Second Video Showcase (Placeholder) */}
         <div className="flex flex-col items-center w-full lg:w-1/2 mt-8 lg:mt-0">
