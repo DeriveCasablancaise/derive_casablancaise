@@ -25,6 +25,8 @@ const config = {
           teal: 'var(--brand-teal)',
           orange: 'var(--brand-orange)',
           title: 'var(--brand-title)',
+          cream: 'var(--brand-cream)',
+          'cream-dark': 'var(--brand-cream-dark)',
         },
         border: 'hsl(var(--border))',
         input: 'hsl(var(--input))',

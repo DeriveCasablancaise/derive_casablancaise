@@ -24,6 +24,12 @@ interface LandingFlowProps {
   backgroundImage: string;
   isArabic: boolean;
   fit?: BackgroundFit;
+  // empty image area above the first block, below lg and from lg
+  topSpace?: { base: string; lg: string };
+  // drops the section's own top margin from lg
+  flushTop?: boolean;
+  // 'bottom-start': one block in the bottom start corner of the image
+  anchor?: 'default' | 'bottom-start';
 }
 
 // The image is a sticky full-screen layer, not absolute inset-0: the section can
@@ -34,7 +40,11 @@ export const LandingFlow = ({
   backgroundImage,
   isArabic,
   fit = 'cover',
+  topSpace = { base: '4rem', lg: '70vh' },
+  flushTop = false,
+  anchor = 'default',
 }: LandingFlowProps) => {
+  const corner = anchor === 'bottom-start';
   const sectionRef = useRef<HTMLElement>(null);
   const reduceMotion = useReducedMotion();
   const [isDesktop, setIsDesktop] = useState(false);
@@ -88,8 +98,13 @@ export const LandingFlow = ({
       className={cn(
         // own stacking context and clipped: nothing of the image paints outside
         // (overflow clip, not hidden, so the sticky layer still works)
-        'relative isolate overflow-clip bg-[#E9EAEB] border-b-2 lg:mt-[10vh]',
-        hasImage ? 'pb-16 lg:pb-[10vh]' : 'pb-0',
+        'relative isolate overflow-clip bg-[#E9EAEB] border-b-2',
+        !flushTop && 'lg:mt-[10vh]',
+        hasImage
+          ? corner
+            ? 'pb-4 md:pb-8 lg:pb-[5vh]'
+            : 'pb-16 lg:pb-[10vh]'
+          : 'pb-0',
       )}
     >
       {hasImage && (
@@ -121,10 +136,16 @@ export const LandingFlow = ({
         </div>
       )}
       <div
+        style={
+          {
+            '--top-space': topSpace.base,
+            '--top-space-lg': topSpace.lg,
+          } as React.CSSProperties
+        }
         className={cn(
           'relative z-10 flex flex-col',
           hasImage
-            ? 'gap-16 pt-16 lg:gap-[20vh] lg:pt-[70vh]'
+            ? 'gap-16 pt-[var(--top-space)] lg:gap-[20vh] lg:pt-[var(--top-space-lg)]'
             : 'gap-8 py-8 lg:gap-12 lg:py-16',
         )}
       >
@@ -144,9 +165,12 @@ export const LandingFlow = ({
                 // below lg the block is inset and centred with a readable line length,
                 // from lg up it keeps the 60% side-aligned box
                 'landing-flow-block w-[calc(100%-2rem)] md:w-[calc(100%-5rem)] md:max-w-2xl lg:max-w-none lg:w-[60%] bg-white/70 lg:bg-[#E9EAEB] py-4 lg:py-6 px-4 lg:px-6 text-[#00b0db] md:text-black/90',
-                atStart
-                  ? 'self-center lg:self-start'
-                  : 'self-center lg:self-end',
+                // start side follows the locale, inset from the image edges
+                corner
+                  ? 'self-start mx-4 md:mx-10 lg:mx-[5vw] max-w-xl lg:w-[45%]'
+                  : atStart
+                    ? 'self-center lg:self-start'
+                    : 'self-center lg:self-end',
                 rtl ? 'text-right' : 'text-left',
               )}
             >

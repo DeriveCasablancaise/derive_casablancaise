@@ -1,12 +1,7 @@
 'use client';
 
 import { cn, convertYouTubeToEmbed, descOpacity } from '@/lib/utils';
-import {
-  useInView,
-  motion,
-  useTransform,
-  useScroll,
-} from 'framer-motion';
+import { useInView, motion, useTransform, useScroll } from 'framer-motion';
 import React, { useEffect, useRef, useState } from 'react';
 import { useLocale, useTranslations } from 'next-intl';
 import { Plus_Jakarta_Sans } from 'next/font/google';
@@ -75,7 +70,7 @@ const LandingBackground = ({
   const backgroundSize = useTransform(
     scrollYProgress,
     [0.4, 1],
-    isMobile ? ['cover', 'cover'] : ['100%', '200%']
+    isMobile ? ['cover', 'cover'] : ['100%', '200%'],
   );
 
   return (
@@ -84,7 +79,7 @@ const LandingBackground = ({
         ref={imageContainerRef}
         className={cn(
           'w-full min-h-[200vh] relative py-24   lg:mt-[10vh]  flex flex-col lg:flex-row lg:items-center border-b-2 z-20',
-          isArabic ? 'text-lg z-30' : 'text-sm'
+          isArabic ? 'text-lg z-30' : 'text-sm',
         )}
         style={{
           backgroundSize,
@@ -111,7 +106,7 @@ const LandingBackground = ({
               animate={isInView ? 'open' : 'closed'}
               className={cn(
                 'w-full font-bold text-[#094142] m-0 tiptap-content',
-                jakarta.className
+                jakarta.className,
               )}
               dangerouslySetInnerHTML={{ __html: html }}
             />
@@ -140,12 +135,13 @@ const DeriveLanding = ({
 
   const isFlow = layout === 'flow';
   // the 2026 heading is editable and can be empty, the others keep the fixed one
-  const heading = headingSource === 'data' && isFlow
-    ? videosHeading && {
-        text: videosHeading.text,
-        arabic: videosHeading.rtl,
-      }
-    : { text: t('videosHeading'), arabic: isArabic };
+  const heading =
+    headingSource === 'data' && isFlow
+      ? videosHeading && {
+          text: videosHeading.text,
+          arabic: videosHeading.rtl,
+        }
+      : { text: t('videosHeading'), arabic: isArabic };
 
   return (
     <>
@@ -177,7 +173,7 @@ const DeriveLanding = ({
               <h2
                 className={cn(
                   'text-brand-title text-xl lg:text-3xl mb-4',
-                  heading.arabic ? 'arabic-title-bold' : 'latin-title-bold'
+                  heading.arabic ? 'arabic-title-bold' : 'latin-title-bold',
                 )}
               >
                 {heading.text}
@@ -190,7 +186,7 @@ const DeriveLanding = ({
                 key={n}
                 className={cn(
                   'flex flex-col items-center w-full lg:w-1/2',
-                  n === 2 && 'mt-8 lg:mt-0'
+                  n === 2 && 'mt-8 lg:mt-0',
                 )}
               >
                 <motion.div
@@ -217,10 +213,14 @@ const DeriveLanding = ({
                     <motion.div
                       initial={{ scale: 0.8, opacity: 0.8 }}
                       whileHover={{ scale: 1.1, opacity: 1 }}
-                      transition={{ type: 'spring', stiffness: 400, damping: 10 }}
+                      transition={{
+                        type: 'spring',
+                        stiffness: 400,
+                        damping: 10,
+                      }}
                       className="bg-white/20 backdrop-blur-md rounded-full p-6"
                     >
-                      <PlayCircleIcon className="h-16 w-16 md:h-20 md:w-20 text-brand-orange" />
+                      <PlayCircleIcon className="h-16 w-16 md:h-20 md:w-20 text-brand-title" />
                     </motion.div>
                   </div>
                 </motion.div>
@@ -230,7 +230,7 @@ const DeriveLanding = ({
                   transition={{ delay: 0.2 }}
                   className={cn(
                     'mt-4 text-center text-base md:text-lg font-bold text-[#094142]',
-                    isArabic ? 'arabic-subtitle-bold' : 'latin-subtitle-bold'
+                    isArabic ? 'arabic-subtitle-bold' : 'latin-subtitle-bold',
                   )}
                 >
                   {title}
@@ -244,18 +244,14 @@ const DeriveLanding = ({
         <TeaserModal
           isOpen={isTeaseModalOpen}
           onClose={() => setIsTeaseModalOpen(false)}
-          videoLink={convertYouTubeToEmbed(
-            videos.find((v) => v.n === 1)!.link
-          )}
+          videoLink={convertYouTubeToEmbed(videos.find((v) => v.n === 1)!.link)}
         />
       )}
       {videos.some((v) => v.n === 2) && (
         <AfterMovieModal
           isOpen={isAfterMovieModalOpen}
           onClose={() => setIsAfterMovieModalOpen(false)}
-          videoLink={convertYouTubeToEmbed(
-            videos.find((v) => v.n === 2)!.link
-          )}
+          videoLink={convertYouTubeToEmbed(videos.find((v) => v.n === 2)!.link)}
         />
       )}
     </>

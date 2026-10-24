@@ -5,21 +5,21 @@ import { cn, landingSlideUp } from '@/lib/utils';
 import { useLocale, useTranslations } from 'next-intl';
 import { motion, useInView } from 'framer-motion';
 import { CategoryImageButton } from './Derive2024/CategoryImageBtn';
-import {
-  CATEGORIES,
-  getEdition,
-  type EditionYear,
-} from '@/constants/editions';
+import { CATEGORIES, getEdition, type EditionYear } from '@/constants/editions';
 import ProgrammeLink from './ProgrammeLink';
-
 
 interface ProgramSectionProps {
   edition: EditionYear;
 }
 
 const ProgramSection = ({ edition }: ProgramSectionProps) => {
-  const { translationNamespace, categories, categoryImages, programmePdf, programmeBook } =
-    getEdition(edition);
+  const {
+    translationNamespace,
+    categories,
+    categoryImages,
+    programmePdf,
+    programmeBook,
+  } = getEdition(edition);
   const sectionRef = useRef(null);
   const isInView = useInView(sectionRef, { once: false, amount: 0.1 });
   const locale = useLocale();
@@ -45,7 +45,7 @@ const ProgramSection = ({ edition }: ProgramSectionProps) => {
           {translationNamespace && (
             <h2
               className={cn(
-                'text-2xl xl:text-4xl text-[#FF5C00] mb-12 text-center',
+                'text-2xl xl:text-4xl text-brand-title mb-12 text-center',
                 isArabic ? 'arabic-title-bold' : 'latin-title-bold',
               )}
             >
@@ -94,10 +94,7 @@ const ProgramSection = ({ edition }: ProgramSectionProps) => {
               isArabic ? 'arabic-title-light' : 'latin-title-light',
             )}
           >
-            <ProgrammeLink
-              href={programmePdf}
-              programmeBook={programmeBook}
-            >
+            <ProgrammeLink href={programmePdf} programmeBook={programmeBook}>
               {t2('Download')}
             </ProgrammeLink>
           </div>
