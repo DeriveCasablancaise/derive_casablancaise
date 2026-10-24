@@ -50,6 +50,9 @@ const ProgramLanding = ({ homepage, banner = null }: ProgramLandingProps) => {
           texts={texts}
           backgroundImage={backgroundImage}
           isArabic={locale === 'ar'}
+          topSpace={{ base: '60vh', lg: '85vh' }}
+          flushTop
+          anchor="bottom-start"
         />
       )}
       <PosterSection />

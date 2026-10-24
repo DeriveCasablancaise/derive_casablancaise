@@ -31,6 +31,9 @@
     --brand-orange: #ee7103;
     /* darker orange for titles on light backgrounds */
     --brand-title: #bb3e05;
+    /* the banner's light colour, and a darker shade for hover and focus */
+    --brand-cream: #f2e9d5;
+    --brand-cream-dark: #e6d8b8;
     --chart-1: 12 76% 61%;
     --chart-2: 173 58% 39%;
     --chart-3: 197 37% 24%;
@@ -1168,7 +1171,8 @@
   height: 0;
   width: 0;
   transform: translateY(0%) rotate(0.001deg) scale(1);
-  transition: opacity 0.3s ease-in 0.4s,
+  transition:
+    opacity 0.3s ease-in 0.4s,
     transform 1s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
@@ -1180,7 +1184,9 @@
 .work-tiles ul li.tile-fade-out {
   opacity: 0;
   transform: translateY(5em) rotate(0.001deg);
-  transition: opacity 0.25s ease-out, transform 0s linear 0.3s;
+  transition:
+    opacity 0.25s ease-out,
+    transform 0s linear 0.3s;
 }
 
 .work-tiles ul li.tile-fade-in {
@@ -1330,7 +1336,8 @@
   height: 0;
   overflow: hidden;
   transform: translateY(0%) rotate(0.001deg) scale(1);
-  transition: opacity 0.3s ease-in 0.4s,
+  transition:
+    opacity 0.3s ease-in 0.4s,
     transform 1s cubic-bezier(0.16, 1, 0.3, 1);
   padding: 0;
 }
@@ -1342,7 +1349,9 @@
 .grid-fade.grid-fade-out {
   opacity: 0;
   transform: translateY(5em) rotate(0.001deg);
-  transition: opacity 0.25s ease-out, transform 0s linear 0.3s;
+  transition:
+    opacity 0.25s ease-out,
+    transform 0s linear 0.3s;
 }
 
 .grid-fade.grid-fade-in {
