@@ -148,7 +148,7 @@ const ProgramLanding = ({ homepage, banner = null }: ProgramLandingProps) => {
               </motion.div>
             </div>
           </motion.div>
-          <motion.div
+          {/* <motion.div
             initial={{ y: 20, opacity: 0 }}
             whileInView={{ y: 0, opacity: 1 }}
             transition={{ delay: 0.2 }}
@@ -160,7 +160,7 @@ const ProgramLanding = ({ homepage, banner = null }: ProgramLandingProps) => {
             {isArabic
               ? homepage.video2TitleAr || homepage.video2TitleFr
               : homepage.video2TitleFr}
-          </motion.div>
+          </motion.div> */}
         </div>
       </div>
       <TeaserModal
