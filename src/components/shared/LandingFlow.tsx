@@ -150,7 +150,9 @@ export const LandingFlow = ({
         className={cn(
           'relative z-10 flex flex-col',
           hasImage
-            ? 'gap-16 pt-[var(--top-space)] lg:gap-[20vh] lg:pt-[var(--top-space-lg)]'
+            ? // below lg the stack sits in the vertical middle of the image, so
+              // the picture stays visible above and below the translucent blocks
+              'max-lg:min-h-[100svh] max-lg:justify-center max-lg:py-8 gap-16 lg:gap-[20vh] lg:pt-[var(--top-space-lg)]'
             : 'gap-8 py-8 lg:gap-12 lg:py-16',
         )}
       >
@@ -169,10 +171,10 @@ export const LandingFlow = ({
               className={cn(
                 // below lg the block is inset and centred with a readable line length,
                 // from lg up it keeps the 60% side-aligned box
-                'landing-flow-block w-[calc(100%-2rem)] md:w-[calc(100%-5rem)] md:max-w-2xl lg:max-w-none lg:w-[60%] bg-white/70 lg:bg-[#E9EAEB] py-4 lg:py-6 px-4 lg:px-6 text-[#00b0db] md:text-black/90',
+                'landing-flow-block w-[calc(100%-2rem)] md:w-[calc(100%-5rem)] md:max-w-2xl lg:max-w-none lg:w-[60%] bg-white/55 backdrop-blur-md shadow-lg ring-1 ring-white/40 lg:bg-[#E9EAEB] lg:backdrop-blur-none lg:rounded-none lg:shadow-none lg:ring-0 py-4 lg:py-6 px-4 lg:px-6 text-[#00b0db] md:text-black/90',
                 // start side follows the locale, inset from the image edges
                 corner
-                  ? 'self-start mx-4 md:mx-10 lg:mx-[5vw] max-w-xl lg:w-[45%]'
+                  ? 'self-center lg:self-start mx-4 md:mx-10 lg:mx-[5vw] max-w-xl lg:w-[45%]'
                   : atStart
                     ? 'self-center lg:self-start'
                     : 'self-center lg:self-end',
