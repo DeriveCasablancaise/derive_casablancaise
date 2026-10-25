@@ -62,10 +62,23 @@
       "date": "04 - 08.12.2024",
       "lieu": "Casablanca"
     },
-    "Download": "Télécharger le programme",
-    "Download2024": "Télécharger le programme de cette édition 2024",
-    "Download2022": "Télécharger le programme de l'édition 2022",
-    "Download2026": "Télécharger le programme de l'édition 2026"
+    "Download": "Découvrez le programme",
+    "Download2024": "Découvrez le programme de cette édition 2024",
+    "Download2022": "Découvrez le programme de l'édition 2022",
+    "Download2026": "Découvrez le programme de l'édition 2026",
+    "Reader": {
+      "first": "Première page",
+      "previous": "Page précédente",
+      "next": "Page suivante",
+      "last": "Dernière page",
+      "goTo": "Aller à la page",
+      "of": "sur",
+      "zoomIn": "Zoom avant",
+      "zoomOut": "Zoom arrière",
+      "zoomReset": "Ajuster à l'écran",
+      "fullscreen": "Plein écran",
+      "exitFullscreen": "Quitter le plein écran"
+    }
   },
   "HomePage": {
     "Hero": {
