@@ -26,8 +26,7 @@ describe('editions registry', () => {
     expect(categoryHref('2026', 'danse')).toBe('/derive-2026/danse');
     expect(postHref('2026', 'abc')).toBe('/derive-2026/post/abc');
     const e = getEdition('2026');
-    // still the 2024 file until the 2026 programme exists
-    expect(e.programmePdf).toBe('/programme.pdf');
+    expect(e.programmePdf).toBe('/programme-2026.pdf');
     expect(e.translationNamespace).toBe('Derive2026');
   });
 

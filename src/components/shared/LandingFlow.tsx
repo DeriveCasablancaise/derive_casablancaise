@@ -30,6 +30,8 @@ interface LandingFlowProps {
   flushTop?: boolean;
   // 'bottom-start': one block in the bottom start corner of the image
   anchor?: 'default' | 'bottom-start';
+  // no bottom padding: the last block ends exactly where the image track ends
+  flushBottom?: boolean;
 }
 
 // The image is a sticky full-screen layer, not absolute inset-0: the section can
@@ -43,6 +45,7 @@ export const LandingFlow = ({
   topSpace = { base: '4rem', lg: '70vh' },
   flushTop = false,
   anchor = 'default',
+  flushBottom = false,
 }: LandingFlowProps) => {
   const corner = anchor === 'bottom-start';
   const sectionRef = useRef<HTMLElement>(null);
@@ -101,9 +104,11 @@ export const LandingFlow = ({
         'relative isolate overflow-clip bg-[#E9EAEB] border-b-2',
         !flushTop && 'lg:mt-[10vh]',
         hasImage
-          ? corner
-            ? 'pb-4 md:pb-8 lg:pb-[5vh]'
-            : 'pb-16 lg:pb-[10vh]'
+          ? flushBottom
+            ? 'pb-0'
+            : corner
+              ? 'pb-4 md:pb-8 lg:pb-[5vh]'
+              : 'pb-16 lg:pb-[10vh]'
           : 'pb-0',
       )}
     >
