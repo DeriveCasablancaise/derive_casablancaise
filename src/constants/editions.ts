@@ -41,6 +41,8 @@ export interface Edition {
   // key order is the tile order
   categories: readonly CategoryKey[];
   categoryImages: Partial<Record<CategoryKey, string>> | undefined;
+  // last day of the festival, YYYY-MM-DD in Casablanca time
+  endDate?: string;
 }
 
 export const EDITIONS: Record<EditionYear, Edition> = {
@@ -100,6 +102,7 @@ export const EDITIONS: Record<EditionYear, Edition> = {
     year: '2026',
     routeBase: 'derive-2026',
     translationNamespace: 'Derive2026',
+    endDate: '2026-12-05',
     // placeholder: still the 2024 programme until the 2026 PDF is provided
     programmePdf: '/programme-2026.pdf',
     // from public/programme/2026/manifest.json
@@ -134,6 +137,23 @@ export const getEdition = (year: EditionYear): Edition => EDITIONS[year];
 // Paths have no locale prefix, callers add `/${locale}` as before.
 export const editionHref = (year: EditionYear) =>
   `/${EDITIONS[year].routeBase}`;
+
+// An edition is over from the day after endDate, in Casablanca time.
+// Editions without endDate are the older ones, so they count as over.
+export const isEditionOver = (
+  edition: Pick<Edition, 'endDate'>,
+  now: Date,
+): boolean => {
+  if (!edition.endDate) return true;
+  // en-CA formats as YYYY-MM-DD, which compares as a string
+  const today = new Intl.DateTimeFormat('en-CA', {
+    timeZone: 'Africa/Casablanca',
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+  }).format(now);
+  return today > edition.endDate;
+};
 
 export const isEditionCategory = (
   year: EditionYear,

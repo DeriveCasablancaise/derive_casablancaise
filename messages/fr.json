@@ -63,6 +63,7 @@
       "lieu": "Casablanca"
     },
     "Download": "Découvrez le programme",
+    "DownloadEdition": "Programme édition {year}",
     "Download2024": "Programme édition 2024",
     "Download2022": "Programme édition 2022",
     "Download2026": "Programme édition 2026",
@@ -114,7 +115,8 @@
       "view": "Voir"
     },
     "Community": {
-      "heading": "Les artistes et intervenants qui nous ont accompagnés"
+      "heading": "Les artistes et intervenants qui nous ont accompagnés",
+      "headingEdition": "Les artistes et intervenants de l'édition {year}"
     },
     "Contact": {
       "heading": "Contactez-nous",
@@ -245,7 +247,7 @@
   },
   "Footer": {
     "quicklinks": "Quicklinks",
-    "programme2024": "Programme 2024",
+    "programme2026": "Programme 2026",
     "edition2026": "Édition 2026",
     "previousEditions": "Éditions précédentes",
     "community": "Communauté",
