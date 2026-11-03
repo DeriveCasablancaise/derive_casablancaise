@@ -21,12 +21,11 @@ const config = {
       colors: {
         brand: {
           red: 'var(--brand-red)',
-          'red-banner': 'var(--brand-red-banner)',
           teal: 'var(--brand-teal)',
           orange: 'var(--brand-orange)',
           title: 'var(--brand-title)',
-          cream: 'var(--brand-cream)',
-          'cream-dark': 'var(--brand-cream-dark)',
+          chrome: 'var(--brand-chrome)',
+          'chrome-active': 'var(--brand-chrome-active)',
         },
         border: 'hsl(var(--border))',
         input: 'hsl(var(--input))',

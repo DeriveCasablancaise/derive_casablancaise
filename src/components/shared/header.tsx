@@ -31,7 +31,7 @@ const Header = () => {
         )}
       >
         <motion.div
-          className="md:w-[480px] w-full h-full bg-brand-red relative rounded-3xl"
+          className="md:w-[480px] w-full h-full bg-brand-chrome relative rounded-3xl"
           variants={menu(isMobile)}
           animate={isActive ? 'open' : 'closed'}
           initial="closed"
@@ -80,7 +80,7 @@ function Button({
           }}
         >
           <motion.div
-            className="bg-brand-red h-full w-full grid place-items-center text-gray-50"
+            className="bg-brand-chrome h-full w-full grid place-items-center text-white"
             onClick={() => {
               toggleMenu();
             }}
@@ -92,7 +92,7 @@ function Button({
             </TextReveal>
           </motion.div>
           <motion.div
-            className="bg-[#00b0db] h-full w-full grid place-items-center text-[#094142]"
+            className="bg-brand-chrome-active h-full w-full grid place-items-center text-white"
             onClick={() => {
               toggleMenu();
             }}

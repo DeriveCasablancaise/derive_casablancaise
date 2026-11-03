@@ -26,14 +26,14 @@
     --radius: 0.5rem;
     /* brand colours, red sampled from the 2026 poster */
     --brand-red: #ad0216;
-    --brand-red-banner: #c50219;
     --brand-teal: #094142;
     --brand-orange: #ee7103;
     /* darker orange for titles on light backgrounds */
     --brand-title: #bb3e05;
-    /* the banner's light colour, and a darker shade for hover and focus */
-    --brand-cream: #f2e9d5;
-    --brand-cream-dark: #e6d8b8;
+    /* header, navbar and banner: the poster's right-hand orange, white text 4.67:1 */
+    --brand-chrome: #dc3201;
+    /* hover, active and open states in the chrome, white text 7.51:1 */
+    --brand-chrome-active: #ad0216;
     --chart-1: 12 76% 61%;
     --chart-2: 173 58% 39%;
     --chart-3: 197 37% 24%;

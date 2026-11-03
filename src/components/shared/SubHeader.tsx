@@ -38,13 +38,12 @@ export default function Component({ banner = null }: SubHeaderProps) {
           {t('titleAr')}
         </span>
       </h1>
-      {/* The padding clears the fixed navbar and has the banner's own red,
-          so the image and the section read as one surface */}
+      {/* The padding clears the fixed navbar and has the navbar's orange */}
       <motion.section
         initial={reduceMotion ? false : { opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.6, ease: 'easeOut' }}
-        className="w-full bg-brand-red-banner pt-16 lg:pt-[10vh]"
+        className="w-full bg-brand-chrome pt-16 lg:pt-[10vh]"
       >
         {/* The text panel spans x 29.7-70.3% and y 16.4-83.6% of the image. With
             a 6% margin that is x 23.7-76.3% and y 10.4-89.6%, which stays visible

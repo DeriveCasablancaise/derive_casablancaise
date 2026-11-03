@@ -114,7 +114,7 @@ const Contact = ({ edition = '2024' }: { edition?: EditionYear }) => {
                 className="bg-transparent border-white text-white placeholder-white"
               />
               <Button
-                className="bg-brand-cream text-brand-teal hover:bg-brand-cream-dark focus-visible:bg-brand-cream-dark"
+                className="bg-brand-chrome text-white border border-white hover:bg-brand-chrome-active focus-visible:bg-brand-chrome-active"
                 size="sm"
               >
                 {t('subscribe')}
