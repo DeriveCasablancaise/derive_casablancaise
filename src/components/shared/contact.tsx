@@ -43,8 +43,9 @@ const Contact = ({ edition = '2024' }: { edition?: EditionYear }) => {
       path: `/${locale}${editionHref('2026')}`,
     },
     {
-      link: t('programme2024'),
-      path: `/${locale}${editionHref('2024')}`,
+      link: t('programme2026'),
+      // the programme section of the 2026 page
+      path: `/${locale}${editionHref('2026')}#program_section`,
     },
     {
       link: t('previousEditions'),

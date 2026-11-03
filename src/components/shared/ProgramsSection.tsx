@@ -95,7 +95,7 @@ const ProgramSection = ({ edition }: ProgramSectionProps) => {
             )}
           >
             <ProgrammeLink href={programmePdf} programmeBook={programmeBook}>
-              {t2('Download')}
+              {t2('DownloadEdition', { year: edition })}
             </ProgrammeLink>
           </div>
         )}

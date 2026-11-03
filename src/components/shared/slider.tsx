@@ -14,14 +14,17 @@ import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '../ui/button';
 import { IArtist } from '@/lib/database/models/artist.model';
+import type { EditionYear } from '@/constants/editions';
 
 const SCROLL_AMOUNT = 300;
 
 interface SlidingImagesProps {
   artists: IArtist[];
+  // set while that edition is not over yet
+  currentEdition?: EditionYear;
 }
 
-const SlidingImages = ({ artists }: SlidingImagesProps) => {
+const SlidingImages = ({ artists, currentEdition }: SlidingImagesProps) => {
   const container = useRef(null);
   const { scrollYProgress } = useScroll({
     target: container,
@@ -48,7 +51,9 @@ const SlidingImages = ({ artists }: SlidingImagesProps) => {
             isArabic ? 'arabic-title-bold' : 'latin-title-bold',
           )}
         >
-          {t('heading')}
+          {currentEdition
+            ? t('headingEdition', { year: currentEdition })
+            : t('heading')}
         </h2>
       </div>
 
