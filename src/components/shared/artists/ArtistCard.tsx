@@ -47,6 +47,7 @@ export const ArtistCard = ({
           <FallbackImage
             src={artist.images?.[0]}
             alt={isArabic ? artist.arabicName : artist.frenchName}
+            containLandscape
             className="object-cover transform transition-transform duration-700 ease-out group-hover:scale-110"
           />
         </div>

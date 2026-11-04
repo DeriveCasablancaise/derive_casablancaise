@@ -8,9 +8,15 @@ import { FallbackImage, ImagePlaceholder } from '../ImageFallback';
 interface ImageGalleryProps {
   images: string[];
   alt: string;
+  // artist pages: show a landscape main image whole instead of cropping it
+  containLandscape?: boolean;
 }
 
-const ImageGallery: React.FC<ImageGalleryProps> = ({ images, alt }) => {
+const ImageGallery: React.FC<ImageGalleryProps> = ({
+  images,
+  alt,
+  containLandscape,
+}) => {
   const [currentIndex, setCurrentIndex] = useState(0);
 
   const nextImage = () => {
@@ -46,6 +52,7 @@ const ImageGallery: React.FC<ImageGalleryProps> = ({ images, alt }) => {
           <FallbackImage
             src={images[0]}
             alt={alt}
+            containLandscape={containLandscape}
             className="object-cover transition-transform duration-300"
           />
         </div>
@@ -60,6 +67,7 @@ const ImageGallery: React.FC<ImageGalleryProps> = ({ images, alt }) => {
         <FallbackImage
           src={images[currentIndex]}
           alt={`${alt} - Image ${currentIndex + 1}`}
+          containLandscape={containLandscape}
           className="object-cover transition-all duration-300"
         />
 
