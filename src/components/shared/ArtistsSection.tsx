@@ -150,6 +150,7 @@ const ArtistsSection = () => {
                     <FallbackImage
                       src={artist.images?.[0]}
                       alt={isArabic ? artist.arabicName : artist.frenchName}
+                      containLandscape
                       className="object-cover transform transition-transform duration-700 group-hover:scale-110"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-[#094142]/90 via-transparent to-transparent" />

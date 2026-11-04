@@ -53,6 +53,7 @@ const page = async ({ params: { artistId } }: ArtistProps) => {
             <ImageGallery
               images={artist.images}
               alt={isArabic ? artist.arabicName : artist.frenchName}
+              containLandscape
             />
             <p
               className={cn(

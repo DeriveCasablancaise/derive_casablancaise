@@ -207,6 +207,7 @@ const ArtistSliderInstance = ({
                   <FallbackImage
                     alt={'image'}
                     src={artist.images?.[0]}
+                    containLandscape
                     className="object-cover object-center transition duration-700 group-hover:scale-110"
                   />
                   <div

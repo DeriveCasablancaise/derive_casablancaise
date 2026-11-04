@@ -19,12 +19,25 @@ export const ImagePlaceholder = ({ className }: { className?: string }) => (
 
 type FallbackImageProps = Omit<ImageProps, 'src' | 'fill'> & {
   src?: string | null;
+  // show a clearly landscape image whole (object-contain) instead of cropping it
+  containLandscape?: boolean;
 };
 
+// above this width / height a photo is a group or a wide shot, cropping it loses people
+const LANDSCAPE_RATIO = 1.2;
+
 // Fills its relative parent. Shows the placeholder when src is missing or fails to load.
-export const FallbackImage = ({ src, alt, ...props }: FallbackImageProps) => {
+export const FallbackImage = ({
+  src,
+  alt,
+  containLandscape,
+  className,
+  onLoad,
+  ...props
+}: FallbackImageProps) => {
   // I remember which src failed, so a new src gets a fresh try
   const [failedSrc, setFailedSrc] = useState<string | null>(null);
+  const [landscapeSrc, setLandscapeSrc] = useState<string | null>(null);
 
   if (!src || failedSrc === src) return <ImagePlaceholder />;
 
@@ -34,6 +47,22 @@ export const FallbackImage = ({ src, alt, ...props }: FallbackImageProps) => {
       src={src}
       alt={alt}
       fill
+      // the box keeps its size, only the fit inside changes
+      className={cn(
+        className,
+        containLandscape && landscapeSrc === src && 'object-contain object-center'
+      )}
+      onLoad={(e) => {
+        const img = e.currentTarget;
+        if (
+          containLandscape &&
+          img.naturalHeight > 0 &&
+          img.naturalWidth / img.naturalHeight > LANDSCAPE_RATIO
+        ) {
+          setLandscapeSrc(src);
+        }
+        onLoad?.(e);
+      }}
       onError={() => setFailedSrc(src)}
     />
   );

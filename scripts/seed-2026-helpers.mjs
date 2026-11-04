@@ -2,13 +2,16 @@
 
 export const ALL_EDITIONS = ['2022', '2024', '2026'];
 
-// lowercase, no accents, single spaces: matches "Chrystèle Khodr" to "chrystele khodr"
+// lowercase, no accents or Arabic vowel marks, punctuation as a space, single spaces:
+// "Chrystèle  Khodr" and "chrystele-khodr." both give "chrystele khodr".
+// Shared by every script that matches artists or partners by name.
 export function normaliseName(name) {
   return String(name ?? '')
     .normalize('NFD')
-    .replace(/[̀-ͯ]/g, '')
+    .replace(/\p{M}/gu, '')
+    .replace(/ـ/g, '') // Arabic tatweel
     .toLowerCase()
-    .replace(/\s+/g, ' ')
+    .replace(/[^\p{L}\p{N}]+/gu, ' ')
     .trim();
 }
 
