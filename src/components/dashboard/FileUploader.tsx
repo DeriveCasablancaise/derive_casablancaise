@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, Dispatch, SetStateAction } from 'react';
+import { useCallback, useRef, Dispatch, SetStateAction } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { generateClientDropzoneAccept } from 'uploadthing/client';
 import { Button } from '@/components/ui/button';
@@ -11,22 +11,42 @@ type FileUploaderProps = {
   onFieldChange: (urls: string[]) => void;
   imageUrls: string[];
   setFiles: Dispatch<SetStateAction<File[]>>;
+  // shows move buttons; only for forms that keep the order of new uploads
+  reorderable?: boolean;
 };
 
 export function FileUploader({
   imageUrls,
   onFieldChange,
   setFiles,
+  reorderable = false,
 }: FileUploaderProps) {
+  // files always follow the order of their blob previews in imageUrls
+  const fileByPreview = useRef(new Map<string, File>());
+
+  const applyUrls = useCallback(
+    (urls: string[]) => {
+      onFieldChange(urls);
+      setFiles(
+        urls
+          .map((url) => fileByPreview.current.get(url))
+          .filter((file): file is File => Boolean(file)),
+      );
+    },
+    [onFieldChange, setFiles],
+  );
+
   const onDrop = useCallback(
     (acceptedFiles: File[]) => {
-      setFiles((prevFiles) => [...prevFiles, ...acceptedFiles]);
-
       // Create preview URLs for the dropped files
-      const newImageUrls = acceptedFiles.map((file) => convertFileToUrl(file));
-      onFieldChange([...imageUrls, ...newImageUrls]);
+      const newImageUrls = acceptedFiles.map((file) => {
+        const url = convertFileToUrl(file);
+        fileByPreview.current.set(url, file);
+        return url;
+      });
+      applyUrls([...imageUrls, ...newImageUrls]);
     },
-    [imageUrls, onFieldChange, setFiles],
+    [imageUrls, applyUrls],
   );
 
   const { getRootProps, getInputProps } = useDropzone({
@@ -38,13 +58,15 @@ export function FileUploader({
   const removeImage = (index: number) => {
     const newImageUrls = [...imageUrls];
     newImageUrls.splice(index, 1);
-    onFieldChange(newImageUrls);
+    applyUrls(newImageUrls);
+  };
 
-    setFiles((prevFiles) => {
-      const newFiles = [...prevFiles];
-      newFiles.splice(index, 1);
-      return newFiles;
-    });
+  const moveImage = (from: number, to: number) => {
+    if (to < 0 || to >= imageUrls.length) return;
+    const newImageUrls = [...imageUrls];
+    const [moved] = newImageUrls.splice(from, 1);
+    newImageUrls.splice(to, 0, moved);
+    applyUrls(newImageUrls);
   };
 
   return (
@@ -75,7 +97,11 @@ export function FileUploader({
 
       {imageUrls.length > 0 && (
         <div className="flex flex-col gap-4">
-          <ImageSlider images={imageUrls} onRemove={removeImage} />
+          <ImageSlider
+            images={imageUrls}
+            onRemove={removeImage}
+            onMove={reorderable ? moveImage : undefined}
+          />
         </div>
       )}
     </div>

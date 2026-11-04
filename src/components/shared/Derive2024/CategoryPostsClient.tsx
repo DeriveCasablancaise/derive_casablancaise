@@ -22,6 +22,12 @@ import {
   type CategoryKey,
   type EditionYear,
 } from '@/constants/editions';
+import {
+  extraSessionsLabel,
+  formatCardSessions,
+  hasSessions,
+  sessionsForCard,
+} from '@/lib/post-sessions';
 
 
 const SubCategories = {
@@ -31,6 +37,38 @@ const SubCategories = {
 } as const;
 
 type SubCategoryKey = keyof typeof SubCategories;
+
+// only posts with a session list get the line, older cards stay as they were
+const SessionLine = ({
+  post,
+  isArabic,
+  day,
+}: {
+  post: IPost;
+  isArabic: boolean;
+  day?: string;
+}) => {
+  if (!hasSessions(post)) return null;
+  const { shown, extra } = sessionsForCard(post, { day });
+  return (
+    // "now" differs between server and browser clocks, hence the warning opt-out
+    <p
+      dir={isArabic ? 'rtl' : 'ltr'}
+      suppressHydrationWarning
+      className={cn(
+        'text-white text-sm',
+        isArabic ? 'arabic-subtitle-regular' : 'latin-subtitle-regular',
+      )}
+    >
+      {formatCardSessions(shown, isArabic)}
+      {extra > 0 && (
+        <span className="ms-2 opacity-80">
+          {extraSessionsLabel(extra, isArabic)}
+        </span>
+      )}
+    </p>
+  );
+};
 
 interface CategoryPostsClientProps {
   categoryId: CategoryKey;
@@ -192,6 +230,7 @@ const CategoryPostsClient: React.FC<CategoryPostsClientProps> = ({
                           ? post.arabicTitle
                           : post.frenchTitle}
                       </h3>
+                      <SessionLine post={post} isArabic={isArabic} />
                     </div>
                   </Link>
                 </motion.div>
