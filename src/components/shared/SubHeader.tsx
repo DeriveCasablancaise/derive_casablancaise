@@ -52,7 +52,7 @@ export default function Component({ banner = null }: SubHeaderProps) {
             narrow screens) clamped to 26.4vw..62.5vw */}
         <div className="relative mx-auto w-full h-[clamp(26.4vw,min(70vh,max(33.34vw,min(62.5vw,28rem))),62.5vw)]">
           <Image
-            src="/images/banner-v8.png"
+            src="/images/banner-v9.webp"
             alt={t('alt')}
             width={BANNER_WIDTH}
             height={BANNER_HEIGHT}
