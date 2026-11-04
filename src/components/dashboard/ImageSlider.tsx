@@ -5,10 +5,18 @@ import { Button } from '@/components/ui/button';
 type ImageSliderProps = {
   images: string[];
   onRemove: (index: number) => void;
+  onMove?: (from: number, to: number) => void;
 };
 
-export const ImageSlider = ({ images, onRemove }: ImageSliderProps) => {
+export const ImageSlider = ({ images, onRemove, onMove }: ImageSliderProps) => {
   const [currentIndex, setCurrentIndex] = useState(0);
+
+  const move = (offset: number) => {
+    const target = currentIndex + offset;
+    if (!onMove || target < 0 || target >= images.length) return;
+    onMove(currentIndex, target);
+    setCurrentIndex(target);
+  };
 
   const goToPrevious = () => {
     const isFirstSlide = currentIndex === 0;
@@ -24,7 +32,32 @@ export const ImageSlider = ({ images, onRemove }: ImageSliderProps) => {
 
   return (
     <div className="relative w-full h-[300px] bg-gray-800 bg-opacity-50 backdrop-blur-md rounded-xl overflow-hidden">
-      <div className="absolute top-4 right-4 z-10">
+      <div className="absolute top-4 right-4 z-10 flex gap-2">
+        {onMove && images.length > 1 && (
+          <>
+            <Button
+              type="button"
+              variant="secondary"
+              size="sm"
+              disabled={currentIndex === 0}
+              onClick={() => move(-1)}
+            >
+              Avancer
+            </Button>
+            <Button
+              type="button"
+              variant="secondary"
+              size="sm"
+              disabled={currentIndex === images.length - 1}
+              onClick={() => move(1)}
+            >
+              Reculer
+            </Button>
+            <span className="self-center rounded bg-black/60 px-2 text-sm text-white">
+              {currentIndex + 1}/{images.length}
+            </span>
+          </>
+        )}
         <Button
           type="button"
           variant="destructive"

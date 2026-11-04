@@ -6,6 +6,14 @@ import {
   type EditionYear,
 } from '@/constants/editions';
 
+// one performance; an empty venue means the post's own location
+export interface IPostSession {
+  start: Date;
+  end?: Date;
+  venueFr?: string;
+  venueAr?: string;
+}
+
 // Interface for the Project document
 export interface IPost extends Document {
   _id: string;
@@ -18,6 +26,7 @@ export interface IPost extends Document {
   videoSource?: string;
   startDateTime: Date;
   endDateTime?: Date;
+  sessions?: IPostSession[];
   postCategory: CategoryKey;
   subCategory?: 'rencontres' | 'expositions' | 'productions';
   yearOfEdition: EditionYear;
@@ -60,6 +69,19 @@ const PostSchema = new Schema({
   },
   startDateTime: { type: Date, default: Date.now },
   endDateTime: { type: Date, required: false },
+  // left unset on old posts, they keep using startDateTime/endDateTime
+  sessions: {
+    type: [
+      {
+        _id: false,
+        start: { type: Date, required: true },
+        end: { type: Date, required: false },
+        venueFr: { type: String, required: false },
+        venueAr: { type: String, required: false },
+      },
+    ],
+    default: undefined,
+  },
   postCategory: {
     type: String,
     enum: CATEGORY_KEYS,
