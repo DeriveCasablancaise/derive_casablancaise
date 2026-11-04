@@ -14,7 +14,7 @@ const Derive2026Page = async () => {
       <DeriveLanding data={derive2026} layout="flow" />
       <ProgramSection edition="2026" />
       <PartnersSlider edition="2026" />
-      <Contact edition="2026" />
+      <Contact />
     </div>
   );
 };

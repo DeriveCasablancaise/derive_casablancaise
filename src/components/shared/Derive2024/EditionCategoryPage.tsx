@@ -22,7 +22,7 @@ const EditionCategoryPage = async ({
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
-          <h1 className="text-2xl font-bold text-red-500 mb-4">
+          <h1 className="text-2xl font-bold text-brand-chrome-active mb-4">
             {isArabic ? 'فئة غير موجودة' : 'Catégorie non trouvée'}
           </h1>
           <p className="text-gray-600">
@@ -50,8 +50,7 @@ const EditionCategoryPage = async ({
         isArabic={isArabic}
         edition={edition}
       />
-      {/* 2022 keeps the default footer year */}
-      <Contact edition={edition === '2026' ? edition : undefined} />
+      <Contact />
     </div>
   );
 };

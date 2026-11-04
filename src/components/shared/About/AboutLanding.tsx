@@ -81,7 +81,7 @@ const AnchoredBackground = ({
     <section ref={sectionRef} className="">
       <motion.div
         ref={imageContainerRef}
-        className="bg-gradient-to-bl from-orange-400 via-red-500 to-pink-600 w-full min-h-[200vh] relative py-24 lg:py-0 lg:mt-[10vh] flex flex-col lg:flex-row lg:items-center border-b-2 z-20"
+        className="bg-gradient-to-bl from-brand-orange to-brand-chrome w-full min-h-[200vh] relative py-24 lg:py-0 lg:mt-[10vh] flex flex-col lg:flex-row lg:items-center border-b-2 z-20"
         style={{
           backgroundSize,
           backgroundImage: `url(${ar2d.backgroundImage})`, // Use dynamic image
