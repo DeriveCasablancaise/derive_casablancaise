@@ -14,11 +14,11 @@ import { usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import LocaleSwitcher from './locale-switcher-select';
 
-// orange at rest, red on hover, focus, active page and open menu
+// orange at rest, burnt orange on hover, focus, active page and open menu
 const itemClass =
   'w-full h-full flex justify-center items-center border-white text-white bg-brand-chrome transition-colors hover:bg-brand-chrome-active focus-within:bg-brand-chrome-active data-[state=open]:bg-brand-chrome-active';
 const activeClass = 'bg-brand-chrome-active';
-// white ring, drawn inside so it shows on orange and on red
+// white ring, drawn inside so it shows on both oranges
 const focusRing =
   'focus:outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-white focus-visible:-outline-offset-4';
 

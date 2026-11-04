@@ -20,7 +20,6 @@ const config = {
     extend: {
       colors: {
         brand: {
-          red: 'var(--brand-red)',
           teal: 'var(--brand-teal)',
           orange: 'var(--brand-orange)',
           title: 'var(--brand-title)',

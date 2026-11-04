@@ -248,7 +248,7 @@ const PostPageBody = async ({
           </div>
         </div>
       </ClientWrapper>
-      <Contact edition={edition === '2026' ? edition : undefined} />
+      <Contact />
     </div>
   );
 };

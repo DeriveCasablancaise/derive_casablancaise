@@ -24,16 +24,15 @@
     --input: 214.3 31.8% 91.4%;
     --ring: 222.2 84% 4.9%;
     --radius: 0.5rem;
-    /* brand colours, red sampled from the 2026 poster */
-    --brand-red: #ad0216;
+    /* brand colours, no red: the organisers only keep it in the logo image */
     --brand-teal: #094142;
     --brand-orange: #ee7103;
     /* darker orange for titles on light backgrounds */
     --brand-title: #bb3e05;
-    /* header, navbar and banner: the poster's right-hand orange, white text 4.67:1 */
+    /* header, navbar, banner and footer: the poster's right-hand orange, white text 4.67:1 */
     --brand-chrome: #dc3201;
-    /* hover, active and open states in the chrome, white text 7.51:1 */
-    --brand-chrome-active: #ad0216;
+    /* hover, active and open states in the chrome, same burnt orange as the titles, white text 5.52:1 */
+    --brand-chrome-active: #bb3e05;
     --chart-1: 12 76% 61%;
     --chart-2: 173 58% 39%;
     --chart-3: 197 37% 24%;
@@ -53,7 +52,6 @@
     --color-border-solid-light: #545557;
     --color-text: #1c1d20;
     --color-text-light: #fff;
-    --alert-error: #ff4444;
     --alert-success: #24c958;
     --animation-primary: all 0.5s cubic-bezier(0.7, 0, 0.3, 1);
     --animation-fast: all 0.3s cubic-bezier(0.7, 0, 0.3, 1);
@@ -306,7 +304,7 @@
     background: var(--color-blue);
   }
   50% {
-    background: #ff4444;
+    background: var(--brand-chrome);
   }
   100% {
     background: var(--color-blue);

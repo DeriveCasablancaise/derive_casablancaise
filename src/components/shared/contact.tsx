@@ -10,10 +10,9 @@ import { cn } from '../../lib/utils';
 import { Input } from '../ui/input';
 import { Button } from '../ui/button';
 import { Instagram } from 'lucide-react';
-import { editionHref, type EditionYear } from '@/constants/editions';
+import { editionHref } from '@/constants/editions';
 
-// the copyright year follows the edition page, other pages keep 2024
-const Contact = ({ edition = '2024' }: { edition?: EditionYear }) => {
+const Contact = () => {
   const locale = useLocale();
   const isArabic = locale === 'ar';
   const t = useTranslations('Footer');
@@ -60,7 +59,7 @@ const Contact = ({ edition = '2024' }: { edition?: EditionYear }) => {
 
   return (
     <motion.footer
-      className="bg-brand-red text-white xl:pb-16 h-full"
+      className="bg-brand-chrome text-white xl:pb-16 h-full"
       style={{ y }}
       ref={container}
     >
@@ -112,10 +111,10 @@ const Contact = ({ edition = '2024' }: { edition?: EditionYear }) => {
               <Input
                 type="email"
                 placeholder={t('emailPlaceholder')}
-                className="bg-transparent border-white text-white placeholder-white"
+                className="bg-transparent border-white text-white placeholder:text-white/70"
               />
               <Button
-                className="bg-brand-chrome text-white border border-white hover:bg-brand-chrome-active focus-visible:bg-brand-chrome-active"
+                className="bg-white text-brand-chrome border border-white hover:bg-brand-chrome-active hover:text-white focus-visible:bg-brand-chrome-active focus-visible:text-white"
                 size="sm"
               >
                 {t('subscribe')}
@@ -158,7 +157,7 @@ const Contact = ({ edition = '2024' }: { edition?: EditionYear }) => {
         {/* Copyright */}
         <div className="mt-12 text-center pb-6">
           <p className=" latin-subtitle-regular text-lg xl:text-2xl">
-            Dérive Casablancaise {edition} ©
+            Dérive Casablancaise {new Date().getFullYear()} ©
           </p>
         </div>
       </div>
