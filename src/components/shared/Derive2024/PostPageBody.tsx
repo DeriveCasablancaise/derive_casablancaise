@@ -8,7 +8,12 @@ import ImageGallery from '@/components/shared/Derive2024/PostGallery';
 import Artist from '@/lib/database/models/artist.model';
 import SoundCloudEmbed from '@/components/shared/SoundCloudEmbed';
 import { categoryHref, type EditionYear } from '@/constants/editions';
-import { formatPostDates, getPostFields } from '@/lib/post-display';
+import {
+  formatPostDates,
+  getPostFields,
+  pickLocalized,
+} from '@/lib/post-display';
+import { getPostSessions, hasSessions } from '@/lib/post-sessions';
 
 export const getPostArtists = async (post: any) => {
   let artists: any[] = [];
@@ -29,6 +34,43 @@ export const getPostArtists = async (post: any) => {
 
   return artists;
 };
+
+// every performance with its day, time and venue; an empty venue is the post's
+const SessionList = ({ post, isArabic }: { post: any; isArabic: boolean }) => (
+  <ul
+    dir={isArabic ? 'rtl' : 'ltr'}
+    className={cn(
+      'flex flex-col gap-3',
+      isArabic ? 'arabic-subtitle-regular text-right' : 'latin-subtitle-regular',
+    )}
+  >
+    {getPostSessions(post).map((session, index) => {
+      const venue =
+        session.venueFr || session.venueAr
+          ? pickLocalized(
+              session.venueAr,
+              session.venueFr || post.location,
+              isArabic,
+            )
+          : pickLocalized(post.locationAr, post.location, isArabic);
+      return (
+        <li key={index} className="flex flex-col">
+          <span className="font-semibold text-black">
+            {formatPostDates(session.start, session.end ?? undefined, isArabic)}
+          </span>
+          {venue.value && (
+            <span
+              dir={venue.isArabic ? 'rtl' : 'ltr'}
+              className="text-black"
+            >
+              {venue.value}
+            </span>
+          )}
+        </li>
+      );
+    })}
+  </ul>
+);
 
 interface PostPageBodyProps {
   post: any;
@@ -124,49 +166,53 @@ const PostPageBody = async ({
               {/* Event Details - Responsive Layout */}
               <div className="space-y-4 lg:space-y-6">
                 {/* Location and Date/Time - Same line on large screens */}
-                <div className={cn('flex flex-col gap-4 ', isArabic && '')}>
-                  {/* Location */}
-                  <div
-                    className={cn(
-                      'flex items-center gap-2',
-                      location.isArabic &&
-                        'flex-row-reverse justify-end lg:justify-start',
-                    )}
-                  >
-                    <p
+                {hasSessions(post) ? (
+                  <SessionList post={post} isArabic={isArabic} />
+                ) : (
+                  <div className={cn('flex flex-col gap-4 ', isArabic && '')}>
+                    {/* Location */}
+                    <div
                       className={cn(
-                        'font-semibold text-black',
-                        location.isArabic
-                          ? 'arabic-subtitle-regular'
-                          : 'latin-subtitle-regular',
+                        'flex items-center gap-2',
+                        location.isArabic &&
+                          'flex-row-reverse justify-end lg:justify-start',
                       )}
                     >
-                      {location.value}
-                    </p>
-                  </div>
+                      <p
+                        className={cn(
+                          'font-semibold text-black',
+                          location.isArabic
+                            ? 'arabic-subtitle-regular'
+                            : 'latin-subtitle-regular',
+                        )}
+                      >
+                        {location.value}
+                      </p>
+                    </div>
 
-                  {/* Date and Time */}
-                  <div
-                    className={cn(
-                      'flex items-center gap-2',
-                      isArabic &&
-                        'flex-row-reverse justify-end lg:justify-start',
-                    )}
-                  >
-                    <p
+                    {/* Date and Time */}
+                    <div
                       className={cn(
-                        'font-semibold text-[#094142]',
-                        isArabic
-                          ? 'arabic-subtitle-regular'
-                          : 'latin-subtitle-regular',
+                        'flex items-center gap-2',
+                        isArabic &&
+                          'flex-row-reverse justify-end lg:justify-start',
                       )}
                     >
-                      <span className="text-black">
-                        {dateText}
-                      </span>
-                    </p>
+                      <p
+                        className={cn(
+                          'font-semibold text-[#094142]',
+                          isArabic
+                            ? 'arabic-subtitle-regular'
+                            : 'latin-subtitle-regular',
+                        )}
+                      >
+                        <span className="text-black">
+                          {dateText}
+                        </span>
+                      </p>
+                    </div>
                   </div>
-                </div>
+                )}
               </div>
             </div>
             {/* Right Column - Content */}

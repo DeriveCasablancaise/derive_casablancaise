@@ -11,6 +11,7 @@ import { parseInput } from '../parse-input';
 import { sanitizeFields } from '../sanitize';
 import { postFormSchema } from '../validator';
 import { defaultEndDate } from '../post-display';
+import { sessionSpan } from '../post-sessions';
 import { locales } from '@/config';
 import {
   categoryHref,
@@ -35,6 +36,31 @@ const revalidatePostPaths = (post: {
   revalidatePath('/darja-admin/posts');
 };
 
+// with sessions, start/end become their overall span so date sorts still hold
+const toPostFields = (data: ReturnType<typeof postFormSchema.parse>) => {
+  const { sessions, ...rest } = data;
+  if (!sessions || sessions.length === 0) {
+    return {
+      fields: {
+        ...rest,
+        endDateTime: defaultEndDate(rest.startDateTime, rest.endDateTime),
+      },
+      sessions: undefined,
+    };
+  }
+  const cleaned = sessions.map((session) => ({
+    start: session.start,
+    end: session.end ?? undefined,
+    venueFr: session.venueFr || undefined,
+    venueAr: session.venueAr || undefined,
+  }));
+  const span = sessionSpan(cleaned);
+  return {
+    fields: { ...rest, startDateTime: span.start, endDateTime: span.end },
+    sessions: cleaned,
+  };
+};
+
 // Populate post (remains unchanged)
 const populatePost = async (query: any) => {
   return query; // No longer populating from another model
@@ -52,10 +78,10 @@ export async function createPost(post: CreatePostParams) {
   try {
     await connectToDatabase();
 
-    const newPost = await Post.create({
-      ...data,
-      endDateTime: defaultEndDate(data.startDateTime, data.endDateTime),
-    });
+    const { fields, sessions } = toPostFields(data);
+    const newPost = await Post.create(
+      sessions ? { ...fields, sessions } : fields,
+    );
 
     revalidatePostPaths(newPost);
     return JSON.parse(JSON.stringify(newPost));
@@ -84,12 +110,13 @@ export async function updatePost({ post }: UpdatePostParams) {
       throw new Error('Post Not Found!');
     }
 
+    // removing every session drops the field, the single dates apply again
+    const { fields, sessions } = toPostFields(data);
     const updatedPost = await Post.findByIdAndUpdate(
       _id,
-      {
-        ...data,
-        endDateTime: defaultEndDate(data.startDateTime, data.endDateTime),
-      },
+      sessions
+        ? { ...fields, sessions }
+        : { ...fields, $unset: { sessions: 1 } },
       { new: true, runValidators: true },
     );
 

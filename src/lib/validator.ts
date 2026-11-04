@@ -7,6 +7,25 @@ import {
 } from '@/constants/editions';
 import { isSafeBannerUrl } from '@/lib/banner';
 
+export const MAX_SESSIONS = 10;
+
+const sessionSchema = z.object({
+  start: z.date({ message: 'Veuillez choisir la date de la séance' }),
+  end: z.date().optional().nullable(),
+  venueFr: z.string().trim().optional(),
+  venueAr: z.string().trim().optional(),
+});
+
+// an empty list means "no sessions": the post keeps its single dates
+const sessionsSchema = z.preprocess(
+  (value) => (Array.isArray(value) && value.length === 0 ? undefined : value),
+  z
+    .array(sessionSchema)
+    .min(1, 'Ajoutez au moins une séance')
+    .max(MAX_SESSIONS, `${MAX_SESSIONS} séances au maximum`)
+    .optional(),
+);
+
 export const postFormSchema = z
   .object({
     frenchTitle: z
@@ -29,12 +48,23 @@ export const postFormSchema = z
     }),
     startDateTime: z.date().optional(),
     endDateTime: z.date().optional(),
+    sessions: sessionsSchema,
     location: z.string().min(3, "Veuillez rentrer le lieu de l'événement. "),
     locationAr: z.string().optional(),
     url: z.string().optional(),
     artists: z.array(z.string()).default([]),
   })
   .superRefine((data, ctx) => {
+    data.sessions?.forEach((session, index) => {
+      if (session.end && session.end.getTime() <= session.start.getTime()) {
+        ctx.addIssue({
+          code: 'custom',
+          path: ['sessions', index, 'end'],
+          message: 'La fin doit être après le début',
+        });
+      }
+    });
+
     // a post stays in a category of its own edition
     if (!isEditionCategory(data.yearOfEdition, data.postCategory)) {
       ctx.addIssue({
@@ -48,9 +78,11 @@ export const postFormSchema = z
 export const artistFormSchema = z.object({
   frenchName: z
     .string()
+    .trim()
     .min(3, 'Le nom doit consister de 3 caractères ou plus.'),
   arabicName: z
     .string()
+    .trim()
     .min(3, 'Le nom doit consister de 3 caractères ou plus.'),
   frenchText: z
     .string()

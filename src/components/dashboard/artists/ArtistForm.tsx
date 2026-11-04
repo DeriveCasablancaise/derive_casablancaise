@@ -50,6 +50,16 @@ const ArtistForm = ({ type, artist, artistId }: ArtistFormProps) => {
     defaultValues: initialValues as z.infer<typeof artistFormSchema>,
   });
 
+  // the action answers a taken name with a message for the name field
+  const showFieldError = (result: unknown) => {
+    const message = (result as { fieldError?: { frenchName?: string } })
+      ?.fieldError?.frenchName;
+    if (!message) return false;
+    form.setError('frenchName', { type: 'server', message });
+    form.setFocus('frenchName');
+    return true;
+  };
+
   async function onSubmit(values: z.infer<typeof artistFormSchema>) {
     setIsLoading(true);
 
@@ -70,6 +80,8 @@ const ArtistForm = ({ type, artist, artistId }: ArtistFormProps) => {
           images: uploadedImageUrls,
         });
 
+        if (showFieldError(newArtist)) return;
+
         if (newArtist) {
           form.reset();
           router.push(`/darja-admin/artists`);
@@ -85,6 +97,8 @@ const ArtistForm = ({ type, artist, artistId }: ArtistFormProps) => {
         const updatedArtist = await updateArtist({
           artist: { ...values, images: uploadedImageUrls, _id: artistId },
         });
+
+        if (showFieldError(updatedArtist)) return;
 
         if (updatedArtist) {
           form.reset();

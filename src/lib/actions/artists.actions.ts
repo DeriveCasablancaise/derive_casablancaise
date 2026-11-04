@@ -11,6 +11,18 @@ import { parseInput } from '../parse-input';
 import { artistFormSchema } from '../validator';
 import { buildArtistEditionsFilter } from '../artist-editions';
 import type { EditionYear } from '@/constants/editions';
+import { DUPLICATE_ARTIST_MESSAGE, findDuplicateArtist } from '../artist-name';
+
+// returned, not thrown: production hides thrown server action messages
+const duplicateNameError = {
+  fieldError: { frenchName: DUPLICATE_ARTIST_MESSAGE },
+} as const;
+
+// few artists, so I compare normalised names in memory
+const isNameTaken = async (frenchName: string, excludeId?: string) => {
+  const artists = await Artist.find({}, { frenchName: 1 }).lean();
+  return Boolean(findDuplicateArtist(frenchName, artists as any[], excludeId));
+};
 
 // Populate post
 const populatePost = async (query: any) => {
@@ -26,6 +38,8 @@ export async function createArtist(artist: CreateArtistParams) {
 
   try {
     await connectToDatabase();
+
+    if (await isNameTaken(data.frenchName)) return duplicateNameError;
 
     const newArtist = await Artist.create(data);
 
@@ -50,6 +64,13 @@ export async function updateArtist({ artist }: UpdateArtistParams) {
 
     if (!artistToUpdate) {
       throw new Error('Artist Not Found!');
+    }
+
+    if (
+      data.frenchName !== artistToUpdate.frenchName &&
+      (await isNameTaken(data.frenchName, String(_id)))
+    ) {
+      return duplicateNameError;
     }
 
     const updatedArtist = await Artist.findByIdAndUpdate(_id, data, {

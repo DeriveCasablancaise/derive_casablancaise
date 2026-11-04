@@ -1,7 +1,7 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useForm } from 'react-hook-form';
+import { useFieldArray, useForm } from 'react-hook-form';
 import {
   Form,
   FormControl,
@@ -18,7 +18,9 @@ import { useRouter } from 'next/navigation';
 import { useUploadThing } from '@/lib/uploadthing';
 import { toast } from '@/components/hooks/use-toast';
 import { containsBlobUrl, uploadFilesOrThrow } from '@/lib/upload-helpers';
-import { postFormSchema } from '@/lib/validator';
+import { MAX_SESSIONS, postFormSchema } from '@/lib/validator';
+import { fromFloatingUTC, toFloatingUTC } from '@/lib/post-sessions';
+import { Button } from '@/components/ui/button';
 import { createPost, updatePost } from '@/lib/actions/post.actions';
 import { FileUploader } from '../FileUploader';
 import SubmitButton from '../SubmitButton';
@@ -36,33 +38,6 @@ import SubCategoryDropdown from './SubcategoryDropdown';
 import { ThumbnailUploader } from './ThumbnailUploader';
 import EditionDropdown from './EditionDropdown';
 import { isEditionCategory, isEditionYear } from '@/constants/editions';
-
-const toFloatingUTC = (date?: Date) => {
-  if (!date) return undefined;
-  return new Date(
-    Date.UTC(
-      date.getFullYear(),
-      date.getMonth(),
-      date.getDate(),
-      date.getHours(),
-      date.getMinutes(),
-      date.getSeconds(),
-    ),
-  );
-};
-
-const fromFloatingUTC = (dateString?: Date | string) => {
-  if (!dateString) return undefined;
-  const date = new Date(dateString);
-  return new Date(
-    date.getUTCFullYear(),
-    date.getUTCMonth(),
-    date.getUTCDate(),
-    date.getUTCHours(),
-    date.getUTCMinutes(),
-    date.getUTCSeconds(),
-  );
-};
 
 type PostFormProps = {
   type: 'Create' | 'Update';
@@ -82,6 +57,12 @@ const PostForm = ({ type, post, postId }: PostFormProps) => {
           ...post,
           startDateTime: fromFloatingUTC(post.startDateTime),
           endDateTime: fromFloatingUTC(post.endDateTime),
+          sessions: (post.sessions ?? []).map((session) => ({
+            start: fromFloatingUTC(session.start),
+            end: fromFloatingUTC(session.end),
+            venueFr: session.venueFr ?? '',
+            venueAr: session.venueAr ?? '',
+          })),
         }
       : postDefaultValues;
 
@@ -106,6 +87,24 @@ const PostForm = ({ type, post, postId }: PostFormProps) => {
     defaultValues: initialValues as z.infer<typeof postFormSchema>,
   });
 
+  const sessionFields = useFieldArray({
+    control: form.control,
+    name: 'sessions',
+  });
+  const hasSessionList = sessionFields.fields.length > 0;
+
+  // a new session starts from the previous one, or from the single dates
+  const addSession = () => {
+    const sessions = form.getValues('sessions') ?? [];
+    const last = sessions[sessions.length - 1];
+    sessionFields.append({
+      start: last?.start ?? form.getValues('startDateTime') ?? new Date(),
+      end: last ? undefined : form.getValues('endDateTime'),
+      venueFr: '',
+      venueAr: '',
+    });
+  };
+
   // picker follows the post's edition, but selected artists stay visible
   const watchedEdition = form.watch('yearOfEdition');
   const selectedArtistIds = form.watch('artists') ?? [];
@@ -119,16 +118,16 @@ const PostForm = ({ type, post, postId }: PostFormProps) => {
     setIsLoading(true);
 
     try {
-      let uploadedImageUrls = values.images.filter(
-        (url) => !url.startsWith('blob:'),
-      );
+      let uploadedImageUrls = values.images;
 
       let uploadedThumbnailUrl = values.thumbnailImage;
 
-      // 2. Upload NEW files
+      // new files are in the same order as their previews, so I swap them in place
       if (files.length > 0) {
         const newImageUrls = await uploadFilesOrThrow(startUpload, files);
-        uploadedImageUrls = [...uploadedImageUrls, ...newImageUrls];
+        uploadedImageUrls = values.images.map((url) =>
+          url.startsWith('blob:') ? newImageUrls.shift() ?? url : url,
+        );
       }
 
       if (thumbnailFile) {
@@ -148,6 +147,11 @@ const PostForm = ({ type, post, postId }: PostFormProps) => {
         ...values,
         startDateTime: finalStart,
         endDateTime: finalEnd,
+        sessions: values.sessions?.map((session) => ({
+          ...session,
+          start: toFloatingUTC(session.start)!,
+          end: toFloatingUTC(session.end ?? undefined),
+        })),
         images: uploadedImageUrls,
         thumbnailImage: uploadedThumbnailUrl,
       };
@@ -233,6 +237,7 @@ const PostForm = ({ type, post, postId }: PostFormProps) => {
             )}
           />
         </div>
+        {!hasSessionList && (
         <div className="flex flex-col gap-5 md:flex-row">
           <FormField
             control={form.control}
@@ -300,6 +305,166 @@ const PostForm = ({ type, post, postId }: PostFormProps) => {
             )}
           />
         </div>
+        )}
+
+        <div className="flex flex-col gap-3 rounded-xl border border-gray-300 p-4">
+          <div className="flex items-center justify-between gap-3">
+            <p className="font-semibold text-grey-600">Séances</p>
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={addSession}
+              disabled={sessionFields.fields.length >= MAX_SESSIONS}
+            >
+              Ajouter une séance
+            </Button>
+          </div>
+          <p className="text-sm text-grey-600">
+            {hasSessionList
+              ? 'Les séances remplacent les dates du poste. Un lieu vide reprend le lieu du poste.'
+              : 'Pour un spectacle joué plusieurs fois, ajoutez une séance par représentation.'}
+          </p>
+
+          {sessionFields.fields.map((item, index) => (
+            <div
+              key={item.id}
+              className="flex flex-col gap-3 rounded-lg bg-gray-50 p-3"
+            >
+              <div className="flex flex-col gap-3 md:flex-row">
+                <FormField
+                  control={form.control}
+                  name={`sessions.${index}.start`}
+                  render={({ field }) => (
+                    <FormItem className="w-full">
+                      <FormControl>
+                        <div className="input-field flex justify-center items-center">
+                          <p className="ml-3 whitespace-nowrap text-grey-600">
+                            Début :
+                          </p>
+                          <DatePicker
+                            locale={fr}
+                            selected={field.value ?? null}
+                            onChange={(date: Date | null) =>
+                              field.onChange(date ?? undefined)
+                            }
+                            showTimeSelect
+                            timeInputLabel="Time:"
+                            dateFormat="dd/MM/yyyy h:mm aa"
+                            wrapperClassName="datePicker"
+                          />
+                        </div>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name={`sessions.${index}.end`}
+                  render={({ field }) => (
+                    <FormItem className="w-full">
+                      <FormControl>
+                        <div className="input-field flex justify-center items-center">
+                          <p className="ml-3 whitespace-nowrap text-grey-600">
+                            Fin (facultatif) :
+                          </p>
+                          <DatePicker
+                            locale={fr}
+                            selected={field.value ?? null}
+                            onChange={(date: Date | null) =>
+                              field.onChange(date ?? undefined)
+                            }
+                            showTimeSelect
+                            timeInputLabel="Time:"
+                            dateFormat="dd/MM/yyyy h:mm aa"
+                            wrapperClassName="datePicker"
+                          />
+                        </div>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+              <div className="flex flex-col gap-3 md:flex-row">
+                <FormField
+                  control={form.control}
+                  name={`sessions.${index}.venueFr`}
+                  render={({ field }) => (
+                    <FormItem className="w-full">
+                      <FormControl>
+                        <Input
+                          placeholder="Lieu de la séance (facultatif)"
+                          className="input-field"
+                          {...field}
+                          value={field.value ?? ''}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name={`sessions.${index}.venueAr`}
+                  render={({ field }) => (
+                    <FormItem className="w-full">
+                      <FormControl>
+                        <Input
+                          placeholder="مكان العرض (اختياري)"
+                          className="input-field"
+                          {...field}
+                          value={field.value ?? ''}
+                          dir="rtl"
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+              <div className="flex gap-2">
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  disabled={index === 0}
+                  onClick={() => sessionFields.move(index, index - 1)}
+                >
+                  Monter
+                </Button>
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  disabled={index === sessionFields.fields.length - 1}
+                  onClick={() => sessionFields.move(index, index + 1)}
+                >
+                  Descendre
+                </Button>
+                <Button
+                  type="button"
+                  variant="destructive"
+                  size="sm"
+                  onClick={() => sessionFields.remove(index)}
+                >
+                  Supprimer
+                </Button>
+              </div>
+            </div>
+          ))}
+          <FormField
+            control={form.control}
+            name="sessions"
+            render={() => (
+              <FormItem>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+
         <div className="flex flex-col gap-5 md:flex-row">
           <FormField
             control={form.control}
@@ -498,6 +663,7 @@ const PostForm = ({ type, post, postId }: PostFormProps) => {
                   onFieldChange={field.onChange}
                   imageUrls={field.value}
                   setFiles={setFiles}
+                  reorderable
                 />
               </FormControl>
               <FormMessage />

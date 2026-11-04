@@ -45,6 +45,13 @@ export type CreateArtistCategoryParams = {
 };
 
 // POST PARAMS
+export type PostSessionInput = {
+  start: Date;
+  end?: Date | null;
+  venueFr?: string;
+  venueAr?: string;
+};
+
 export type CreatePostParams = {
   frenchTitle: string;
   arabicTitle?: string;
@@ -55,6 +62,7 @@ export type CreatePostParams = {
   videoSource?: string;
   startDateTime?: Date;
   endDateTime?: Date;
+  sessions?: PostSessionInput[];
   postCategory: CategoryKey;
   subCategory?: 'rencontres' | 'expositions' | 'productions';
   yearOfEdition: EditionYear;
@@ -75,6 +83,7 @@ export type UpdatePostParams = {
     videoSource?: string;
     startDateTime?: Date;
     endDateTime?: Date;
+    sessions?: PostSessionInput[];
     postCategory: CategoryKey;
     subCategory?: 'rencontres' | 'expositions' | 'productions';
     yearOfEdition: EditionYear;
