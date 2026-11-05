@@ -203,6 +203,10 @@
   "ArtistsPage": {
     "heading": "الفنانين والمتحدثين"
   },
+  "PartnersSlider": {
+    "heading": "الشركاء الذين دعمونا",
+    "headingEdition": "شركاء دورة {year}"
+  },
   "Previous": {
     "heading": "الإصدارات السابقة"
   },

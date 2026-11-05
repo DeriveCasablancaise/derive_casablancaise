@@ -7,7 +7,7 @@ import {
   useMotionValue,
   animate,
 } from 'framer-motion';
-import { useLocale } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
 import Image from 'next/image';
 import Link from 'next/link';
 import React, { useRef, useState, useEffect } from 'react';
@@ -16,17 +16,24 @@ import { cn } from '@/lib/utils';
 import { Button } from '../ui/button';
 import { IPartner } from '@/lib/database/models/partner.model';
 import ClientWrapper from './PostWrapper';
+import type { EditionYear } from '@/constants/editions';
 
 interface PartnerSliderProps {
   partners: IPartner[];
+  // set while that edition is not over yet
+  currentEdition?: EditionYear;
 }
 
 const SCROLL_AMOUNT = 300;
 
-const PartnersImagesSlider = ({ partners }: PartnerSliderProps) => {
+const PartnersImagesSlider = ({
+  partners,
+  currentEdition,
+}: PartnerSliderProps) => {
   const container = useRef(null);
   const locale = useLocale();
   const isArabic = locale === 'ar';
+  const t = useTranslations('PartnersSlider');
 
   const { scrollYProgress } = useScroll({
     target: container,
@@ -48,9 +55,9 @@ const PartnersImagesSlider = ({ partners }: PartnerSliderProps) => {
               isArabic ? 'arabic-title-bold' : 'latin-title-bold',
             )}
           >
-            {isArabic
-              ? ' الشركاء الذين دعمونا'
-              : 'Les partenaires qui nous ont accompagnés'}
+            {currentEdition
+              ? t('headingEdition', { year: currentEdition })
+              : t('heading')}
           </h2>
         </div>
 
@@ -187,12 +194,26 @@ const SliderInstance = ({ partners, isArabic, title }: SliderInstanceProps) => {
                 rel={partner.hrefLink ? 'noopener noreferrer' : undefined}
                 className="w-full h-full flex justify-center items-center relative"
               >
-                <div className="relative w-full h-full p-6">
+                {/* Multiply turns white into the card's grey. The white backing
+                    gives transparent logos something to screen against,
+                    otherwise the overlay shows as a solid orange box. */}
+                <div className="relative w-full h-full p-6 bg-white isolate mix-blend-multiply">
                   <Image
                     fill
                     alt={partner.frenchName}
                     src={partner.logoImage || '/placeholder.svg'}
-                    className="object-contain p-1 transition-all duration-500 group-hover/card:scale-110"
+                    className={cn(
+                      'object-contain p-1 transition-all duration-500 group-hover/card:scale-110',
+                      // written out because Tailwind's filter utilities force
+                      // their own order, with invert last
+                      partner.invertLogo
+                        ? '[filter:invert(1)_grayscale(1)_contrast(1.3)]'
+                        : '[filter:grayscale(1)_contrast(1.3)]',
+                    )}
+                  />
+                  <div
+                    aria-hidden="true"
+                    className="absolute inset-0 bg-brand-title mix-blend-screen pointer-events-none"
                   />
                 </div>
 

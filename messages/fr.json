@@ -229,6 +229,10 @@
   "ArtistsPage": {
     "heading": "Artistes & Intervenants qui nous ont accompagnés"
   },
+  "PartnersSlider": {
+    "heading": "Les partenaires qui nous ont accompagnés",
+    "headingEdition": "Les partenaires de l'édition {year}"
+  },
   "Previous": {
     "heading": "Editions Précédentes"
   },

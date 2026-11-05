@@ -45,6 +45,7 @@ const PartnerForm = ({ type, partner, partnerId }: PartnerFormProps) => {
           // an unmigrated partner still has to show its old edition ticked
           editions: getPartnerEditions(partner),
           logoImage: partner.logoImage,
+          invertLogo: partner.invertLogo ?? false,
         }
       : partnerDefaultValues;
 
@@ -222,6 +223,28 @@ const PartnerForm = ({ type, partner, partnerId }: PartnerFormProps) => {
                   setFile={setFile}
                 />
               </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+
+        <FormField
+          control={form.control}
+          name="invertLogo"
+          render={({ field }) => (
+            <FormItem className="w-full">
+              <div className="flex items-center gap-2 py-2">
+                <Checkbox
+                  id="invert-logo"
+                  checked={field.value ?? false}
+                  onCheckedChange={(checked) =>
+                    field.onChange(checked === true)
+                  }
+                />
+                <label htmlFor="invert-logo" className="checkbox-label">
+                  Logo clair (inverser)
+                </label>
+              </div>
               <FormMessage />
             </FormItem>
           )}

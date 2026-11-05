@@ -111,4 +111,5 @@ export const partnerDefaultValues: Partial<IPartner> = {
   hrefLink: '',
   editions: [],
   logoImage: '',
+  invertLogo: false,
 };
