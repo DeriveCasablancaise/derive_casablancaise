@@ -124,12 +124,13 @@ export const EDITIONS: Record<EditionYear, Edition> = {
     ],
     // reuses the 2024 pictures; exposition has none and gets the placeholder tile
     categoryImages: {
-      danse: '/assets/categories/danse.jpg',
-      lectures: '/assets/categories/lectures.jpeg',
-      cinema: '/assets/categories/cinema.jpg',
-      theatre: '/assets/categories/theatre.jpg',
-      concert: '/assets/categories/musique.jpg',
-      ateliers: '/assets/categories/ateliers.jpg',
+      danse: '/assets/categories/2026/danse.jpeg',
+      lectures: '/assets/categories/2026/lectures.jpg',
+      cinema: '/assets/categories/2026/cinema.png',
+      theatre: '/assets/categories/2026/theatre.jpg',
+      concert: '/assets/categories/2026/concert.webp',
+      ateliers: '/assets/categories/2026/ateliers.jpeg',
+      exposition: '/assets/categories/2026/expositions.jpg',
     },
   },
 };
