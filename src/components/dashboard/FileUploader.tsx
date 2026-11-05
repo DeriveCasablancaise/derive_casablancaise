@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useRef, Dispatch, SetStateAction } from 'react';
+import { useCallback, useRef, useState, Dispatch, SetStateAction } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { generateClientDropzoneAccept } from 'uploadthing/client';
 import { Button } from '@/components/ui/button';
@@ -13,6 +13,11 @@ type FileUploaderProps = {
   setFiles: Dispatch<SetStateAction<File[]>>;
   // shows move buttons; only for forms that keep the order of new uploads
   reorderable?: boolean;
+  // runs before files are added, e.g. to crop them; left out files are dropped
+  prepareFiles?: (files: File[]) => Promise<File[]>;
+  onFilesRejected?: () => void;
+  onRecrop?: (url: string) => void;
+  formatsHint?: string;
 };
 
 export function FileUploader({
@@ -20,9 +25,18 @@ export function FileUploader({
   onFieldChange,
   setFiles,
   reorderable = false,
+  prepareFiles,
+  onFilesRejected,
+  onRecrop,
+  formatsHint = 'SVG, PNG, JPG',
 }: FileUploaderProps) {
   // files always follow the order of their blob previews in imageUrls
   const fileByPreview = useRef(new Map<string, File>());
+  const [isPreparing, setIsPreparing] = useState(false);
+
+  // preparing is async, the list may have changed once it ends
+  const latestUrls = useRef(imageUrls);
+  latestUrls.current = imageUrls;
 
   const applyUrls = useCallback(
     (urls: string[]) => {
@@ -36,23 +50,42 @@ export function FileUploader({
     [onFieldChange, setFiles],
   );
 
-  const onDrop = useCallback(
-    (acceptedFiles: File[]) => {
+  const addFiles = useCallback(
+    (files: File[]) => {
       // Create preview URLs for the dropped files
-      const newImageUrls = acceptedFiles.map((file) => {
+      const newImageUrls = files.map((file) => {
         const url = convertFileToUrl(file);
         fileByPreview.current.set(url, file);
         return url;
       });
-      applyUrls([...imageUrls, ...newImageUrls]);
+      applyUrls([...latestUrls.current, ...newImageUrls]);
     },
-    [imageUrls, applyUrls],
+    [applyUrls],
+  );
+
+  const onDrop = useCallback(
+    (acceptedFiles: File[]) => {
+      if (acceptedFiles.length === 0) return;
+
+      if (!prepareFiles) {
+        addFiles(acceptedFiles);
+        return;
+      }
+
+      setIsPreparing(true);
+      prepareFiles(acceptedFiles)
+        .then(addFiles)
+        .finally(() => setIsPreparing(false));
+    },
+    [prepareFiles, addFiles],
   );
 
   const { getRootProps, getInputProps } = useDropzone({
     onDrop,
+    onDropRejected: onFilesRejected,
     accept: generateClientDropzoneAccept(['image/*']),
     multiple: true,
+    disabled: isPreparing,
   });
 
   const removeImage = (index: number) => {
@@ -84,7 +117,7 @@ export function FileUploader({
             alt="file upload"
           />
           <h3 className="mb-2 mt-2">Placez vos images ici</h3>
-          <p className="mb-4">SVG, PNG, JPG</p>
+          <p className="mb-4">{formatsHint}</p>
           <Button
             type="button"
             className="bg-gray-800 bg-opacity-50 backdrop-blur-md shadow-lg rounded-xl border border-gray-700 my-4"
@@ -101,6 +134,7 @@ export function FileUploader({
             images={imageUrls}
             onRemove={removeImage}
             onMove={reorderable ? moveImage : undefined}
+            onRecrop={onRecrop && ((index) => onRecrop(imageUrls[index]))}
           />
         </div>
       )}
