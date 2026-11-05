@@ -3,7 +3,9 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { cn, landingSlideUp } from '@/lib/utils';
 import { useLocale, useTranslations } from 'next-intl';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { motion, useInView } from 'framer-motion';
+import { parseEditionParam } from '@/constants/editions';
 import { IArtist } from '@/lib/database/models/artist.model';
 import { getAllArtists } from '@/lib/actions/artists.actions';
 import { FallbackImage } from './ImageFallback';
@@ -28,11 +30,25 @@ const ArtistCategories = {
 
 type ArtistCategoryKey = keyof typeof ArtistCategories;
 
+// the filter allows several years, so the parameter can repeat; invalid values are dropped
+const readEditions = (values: string[]) =>
+  new Set(
+    values
+      .map(parseEditionParam)
+      .filter((year): year is ArtistCategoryKey => year !== null)
+  );
+
 const ArtistsSection = () => {
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const editionValues = searchParams.getAll('edition');
+  const editionKey = editionValues.join(',');
+
   const [artists, setArtists] = useState<IArtist[]>([]);
   const [selectedCategories, setSelectedCategories] = useState<
     Set<ArtistCategoryKey>
-  >(new Set());
+  >(() => readEditions(editionValues));
   const locale = useLocale();
   const isArabic = locale === 'ar';
   const t = useTranslations('ArtistsPage');
@@ -40,16 +56,33 @@ const ArtistsSection = () => {
   const isInView = useInView(ref, { once: true, margin: '-100px' });
 
   const handleCategoryToggle = (category: ArtistCategoryKey) => {
-    setSelectedCategories((prev) => {
-      const newCategories = new Set(prev);
-      if (newCategories.has(category)) {
-        newCategories.delete(category);
-      } else {
-        newCategories.add(category);
-      }
-      return newCategories;
+    const newCategories = new Set(selectedCategories);
+    if (newCategories.has(category)) {
+      newCategories.delete(category);
+    } else {
+      newCategories.add(category);
+    }
+    setSelectedCategories(newCategories);
+
+    const params = new URLSearchParams(searchParams.toString());
+    params.delete('edition');
+    newCategories.forEach((year) => params.append('edition', year));
+    const query = params.toString();
+    router.replace(query ? `${pathname}?${query}` : pathname, {
+      scroll: false,
     });
   };
+
+  // the URL can change while this stays mounted (the Community menu link)
+  useEffect(() => {
+    setSelectedCategories((prev) => {
+      const fromUrl = readEditions(editionKey ? editionKey.split(',') : []);
+      const same =
+        fromUrl.size === prev.size &&
+        Array.from(fromUrl).every((year) => prev.has(year));
+      return same ? prev : fromUrl;
+    });
+  }, [editionKey]);
 
   useEffect(() => {
     let cancelled = false;
@@ -140,18 +173,17 @@ const ArtistsSection = () => {
                 initial={{ opacity: 0, y: 20 }}
                 animate={isInView ? { opacity: 1, y: 0 } : {}}
                 transition={{ duration: 0.5, delay: 0.5 + index * 0.1 }}
-                className="group relative overflow-hidden shadow-xl p-1 max-h-36 aspect-square"
+                className="group relative overflow-hidden shadow-xl p-1 aspect-square"
                 style={{
                   backgroundColor: '#094142',
                 }}
               >
                 <Link href={`/${locale}/community/${artist._id}`}>
-                  <div className=" relative overflow-hidden max-h-36 aspect-square">
+                  <div className="relative overflow-hidden aspect-square">
                     <FallbackImage
                       src={artist.images?.[0]}
                       alt={isArabic ? artist.arabicName : artist.frenchName}
-                      containLandscape
-                      className="object-cover transform transition-transform duration-700 group-hover:scale-110"
+                      className="object-contain object-center"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-[#094142]/90 via-transparent to-transparent" />
                     <div className="absolute bottom-0 left-0 right-0 p-2 text-white">

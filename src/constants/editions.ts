@@ -139,6 +139,10 @@ export const EDITION_YEARS = Object.keys(EDITIONS) as EditionYear[];
 export const isEditionYear = (x: unknown): x is EditionYear =>
   typeof x === 'string' && Object.prototype.hasOwnProperty.call(EDITIONS, x);
 
+// for the ?edition= query parameter: a registry year, or null for anything else
+export const parseEditionParam = (value: string | null): EditionYear | null =>
+  isEditionYear(value) ? value : null;
+
 export const getEdition = (year: EditionYear): Edition => EDITIONS[year];
 
 // Paths have no locale prefix, callers add `/${locale}` as before.

@@ -34,21 +34,13 @@ export const ArtistCard = ({
     >
       <Link
         href={`/${locale}/community/${artist._id}`}
-        className="block aspect-[16/9] md:aspect-[3/4] lg:aspect-[1/1] relative group overflow-hidden p-16 group"
+        className="block aspect-square relative overflow-hidden bg-[#094142]"
       >
-        <div
-          className="absolute inset-0 transition-all duration-300"
-          style={{
-            backgroundImage:
-              'linear-gradient(135deg, #094142 0%, #00b0db 100%)',
-          }}
-        />
-        <div className="absolute inset-2 flex justify-center items-center overflow-hidden">
+        <div className="absolute inset-2">
           <FallbackImage
             src={artist.images?.[0]}
             alt={isArabic ? artist.arabicName : artist.frenchName}
-            containLandscape
-            className="object-cover transform transition-transform duration-700 ease-out group-hover:scale-110"
+            className="object-contain object-center"
           />
         </div>
         <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/60 to-transparent">

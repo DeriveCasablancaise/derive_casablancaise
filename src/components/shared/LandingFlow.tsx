@@ -32,6 +32,10 @@ interface LandingFlowProps {
   anchor?: 'default' | 'bottom-start';
   // no bottom padding: the last block ends exactly where the image track ends
   flushBottom?: boolean;
+  // CSS object-position of the image, ignored by the 'pan' fit which animates it
+  imagePosition?: string;
+  // from lg, an Arabic block is wider and tighter so it does not run very tall
+  wideBlock?: boolean;
 }
 
 // The image is a sticky full-screen layer, not absolute inset-0: the section can
@@ -46,6 +50,8 @@ export const LandingFlow = ({
   flushTop = false,
   anchor = 'default',
   flushBottom = false,
+  imagePosition = '50% 50%',
+  wideBlock = false,
 }: LandingFlowProps) => {
   const corner = anchor === 'bottom-start';
   const sectionRef = useRef<HTMLElement>(null);
@@ -131,6 +137,7 @@ export const LandingFlow = ({
                 fill
                 sizes="100vw"
                 priority={false}
+                style={pan ? undefined : { objectPosition: imagePosition }}
                 className={cn(
                   'object-cover',
                   pan && '[object-position:50%_var(--pan-y)]',
@@ -178,6 +185,7 @@ export const LandingFlow = ({
                   : atStart
                     ? 'self-center lg:self-start'
                     : 'self-center lg:self-end',
+                wideBlock && rtl && 'lg:w-[75%] lg:max-w-[1100px]',
                 rtl ? 'text-right' : 'text-left',
               )}
             >
@@ -187,6 +195,10 @@ export const LandingFlow = ({
                   rtl
                     ? 'arabic-text-bold text-xl lg:text-2xl'
                     : cn('text-sm md:text-base lg:text-sm', jakarta.className),
+                  // important: globals.css sets 1.9 on these with a stronger selector
+                  wideBlock &&
+                    rtl &&
+                    '[&_li]:!leading-relaxed [&_p]:!leading-relaxed',
                 )}
                 dangerouslySetInnerHTML={{ __html: html }}
               />
