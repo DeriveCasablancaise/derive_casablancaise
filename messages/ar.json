@@ -207,6 +207,10 @@
     "heading": "الشركاء الذين دعمونا",
     "headingEdition": "شركاء دورة {year}"
   },
+  "SliderControls": {
+    "previous": "السابق",
+    "next": "التالي"
+  },
   "Previous": {
     "heading": "الإصدارات السابقة"
   },

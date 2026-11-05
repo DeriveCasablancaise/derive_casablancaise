@@ -233,6 +233,10 @@
     "heading": "Les partenaires qui nous ont accompagnés",
     "headingEdition": "Les partenaires de l'édition {year}"
   },
+  "SliderControls": {
+    "previous": "Précédent",
+    "next": "Suivant"
+  },
   "Previous": {
     "heading": "Editions Précédentes"
   },
