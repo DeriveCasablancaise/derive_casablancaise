@@ -6,10 +6,20 @@ type ImageSliderProps = {
   images: string[];
   onRemove: (index: number) => void;
   onMove?: (from: number, to: number) => void;
+  onRecrop?: (index: number) => void;
 };
 
-export const ImageSlider = ({ images, onRemove, onMove }: ImageSliderProps) => {
+export const ImageSlider = ({
+  images,
+  onRemove,
+  onMove,
+  onRecrop,
+}: ImageSliderProps) => {
   const [currentIndex, setCurrentIndex] = useState(0);
+  const currentImage = images[currentIndex];
+  // a blob is a new image, it already went through the cropper
+  const canRecrop =
+    onRecrop && currentImage && !currentImage.startsWith('blob:');
 
   const move = (offset: number) => {
     const target = currentIndex + offset;
@@ -57,6 +67,16 @@ export const ImageSlider = ({ images, onRemove, onMove }: ImageSliderProps) => {
               {currentIndex + 1}/{images.length}
             </span>
           </>
+        )}
+        {canRecrop && (
+          <Button
+            type="button"
+            variant="secondary"
+            size="sm"
+            onClick={() => onRecrop?.(currentIndex)}
+          >
+            Recadrer
+          </Button>
         )}
         <Button
           type="button"

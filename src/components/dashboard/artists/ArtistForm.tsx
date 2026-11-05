@@ -25,6 +25,8 @@ import SubmitButton from '../SubmitButton';
 import { IArtist } from '@/lib/database/models/artist.model';
 import { createArtist, updateArtist } from '@/lib/actions/artists.actions';
 import { Checkbox } from '@/components/ui/checkbox';
+import { FORMAT_ERROR } from '@/lib/square-crop';
+import { useSquareCrop } from '../useSquareCrop';
 
 type ArtistFormProps = {
   type: 'Create' | 'Update';
@@ -44,6 +46,7 @@ const ArtistForm = ({ type, artist, artistId }: ArtistFormProps) => {
   const router = useRouter();
 
   const { startUpload } = useUploadThing('imageUploader');
+  const { prepareFiles, recrop, cropperNode } = useSquareCrop();
 
   const form = useForm<z.infer<typeof artistFormSchema>>({
     resolver: zodResolver(artistFormSchema),
@@ -60,14 +63,36 @@ const ArtistForm = ({ type, artist, artistId }: ArtistFormProps) => {
     return true;
   };
 
+  // the new file replaces the url in the form; the old file stays on UploadThing
+  const handleRecrop = (url: string) =>
+    recrop(url, async (file) => {
+      const [newUrl] = await uploadFilesOrThrow(startUpload, [file]);
+
+      form.setValue(
+        'images',
+        form.getValues('images').map((image) =>
+          image === url ? newUrl : image,
+        ),
+        { shouldDirty: true, shouldValidate: true },
+      );
+      toast({
+        title: 'Image recadrée',
+        description: "Enregistrez l'artiste pour conserver ce cadrage.",
+      });
+    });
+
   async function onSubmit(values: z.infer<typeof artistFormSchema>) {
     setIsLoading(true);
 
     try {
       let uploadedImageUrls = values.images;
 
+      // new files are in the same order as their previews, so I swap them in place
       if (files.length > 0) {
-        uploadedImageUrls = await uploadFilesOrThrow(startUpload, files);
+        const newImageUrls = await uploadFilesOrThrow(startUpload, files);
+        uploadedImageUrls = values.images.map((url) =>
+          url.startsWith('blob:') ? newImageUrls.shift() ?? url : url,
+        );
       }
 
       if (containsBlobUrl(uploadedImageUrls)) {
@@ -271,6 +296,16 @@ const ArtistForm = ({ type, artist, artistId }: ArtistFormProps) => {
                   onFieldChange={field.onChange}
                   imageUrls={field.value}
                   setFiles={setFiles}
+                  prepareFiles={prepareFiles}
+                  onFilesRejected={() =>
+                    toast({
+                      variant: 'destructive',
+                      title: 'Image refusée',
+                      description: FORMAT_ERROR,
+                    })
+                  }
+                  onRecrop={handleRecrop}
+                  formatsHint="JPG, PNG, WebP, HEIC (8 Mo maximum)"
                 />
               </FormControl>
               <FormMessage />
@@ -304,6 +339,7 @@ const ArtistForm = ({ type, artist, artistId }: ArtistFormProps) => {
           {type === 'Create' ? "Créer l'artiste " : "Modifier l'artiste"}
         </SubmitButton>
       </form>
+      {cropperNode}
     </Form>
   );
 };
