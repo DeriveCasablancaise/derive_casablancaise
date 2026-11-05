@@ -32,7 +32,7 @@ const getAdminId = async (req: Request) => {
 };
 
 export const ourFileRouter = {
-  imageUploader: f({ image: { maxFileSize: '4MB', maxFileCount: 10 } })
+  imageUploader: f({ image: { maxFileSize: '8MB', maxFileCount: 10 } })
     .middleware(async ({ req }) => {
       const userId = await getAdminId(req);
 
