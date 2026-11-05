@@ -106,7 +106,12 @@ export const EDITIONS: Record<EditionYear, Edition> = {
     // placeholder: still the 2024 programme until the 2026 PDF is provided
     programmePdf: '/programme-2026.pdf',
     // from public/programme/2026/manifest.json
-    programmeBook: { dir: '/programme/2026', pages: 2, width: 1100, height: 778 },
+    programmeBook: {
+      dir: '/programme/2026',
+      pages: 2,
+      width: 1100,
+      height: 778,
+    },
     // the labels of the programme grid, in the order they first appear
     categories: [
       'danse',
@@ -115,6 +120,7 @@ export const EDITIONS: Record<EditionYear, Edition> = {
       'exposition',
       'theatre',
       'concert',
+      'ateliers',
     ],
     // reuses the 2024 pictures; exposition has none and gets the placeholder tile
     categoryImages: {
@@ -123,6 +129,7 @@ export const EDITIONS: Record<EditionYear, Edition> = {
       cinema: '/assets/categories/cinema.jpg',
       theatre: '/assets/categories/theatre.jpg',
       concert: '/assets/categories/musique.jpg',
+      ateliers: '/assets/categories/ateliers.jpg',
     },
   },
 };
