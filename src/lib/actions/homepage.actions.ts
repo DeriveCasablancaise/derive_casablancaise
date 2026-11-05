@@ -74,7 +74,9 @@ export async function updateHomepage({ homepage }: UpdateHomepageParams) {
       });
     }
 
-    revalidatePath('/');
+    // the home page lives under the locale, '/' alone does not reach it
+    revalidatePath('/fr');
+    revalidatePath('/ar');
     return JSON.parse(JSON.stringify(doc));
   } catch (error) {
     console.error('Error updating homepage:', error);

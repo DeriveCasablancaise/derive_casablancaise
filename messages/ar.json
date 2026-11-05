@@ -227,6 +227,11 @@
   "Poster": {
     "alt": "ملصق منعطف بيضاوي، الدورة الثالثة، من 2 إلى 5 دجنبر 2026"
   },
+  "HomeVideos": {
+    "teaserFallback": "إعلان دورة 2026",
+    "afterMovieFallback": "الفيلم الختامي لفعالية المنعطف البيضاوي",
+    "playVideo": "تشغيل الفيديو: {title}"
+  },
   "Footer": {
     "quicklinks": "روابط سريعة",
     "programme2026": "برنامج 2026",
