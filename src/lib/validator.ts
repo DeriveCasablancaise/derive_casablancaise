@@ -271,4 +271,14 @@ export const partnerFormSchema = z.object({
     .array(z.custom<EditionYear>(isEditionYear))
     .min(1, 'Veuillez choisir au moins une édition'),
   logoImage: z.string().min(1, 'Logo image is required'),
+  invertLogo: z.boolean().optional(),
+});
+
+// whether each id belongs to the edition is checked against the database
+export const editionOrderSchema = z.object({
+  edition: z.custom<EditionYear>(isEditionYear),
+  partnerIds: z
+    .array(z.string().regex(/^[0-9a-fA-F]{24}$/))
+    .max(200)
+    .refine((ids) => new Set(ids).size === ids.length),
 });

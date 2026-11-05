@@ -8,12 +8,18 @@ import { revalidatePath } from 'next/cache';
 import { Types } from 'mongoose';
 import Order from '../database/models/order.model';
 import { parseInput } from '../parse-input';
-import { partnerFormSchema } from '../validator';
+import { editionOrderSchema, partnerFormSchema } from '../validator';
 import {
   buildPartnerEditionsFilter,
   getPartnerEditions,
 } from '../partner-editions';
-import { isEditionYear, type EditionYear } from '@/constants/editions';
+import { mergeEditionOrder } from '../partner-order';
+import {
+  EDITION_YEARS,
+  editionHref,
+  isEditionYear,
+  type EditionYear,
+} from '@/constants/editions';
 
 // Type definitions for partner operations
 export type CreatePartnerParams = {
@@ -22,10 +28,21 @@ export type CreatePartnerParams = {
   hrefLink?: string;
   editions: EditionYear[];
   logoImage: string;
+  invertLogo?: boolean;
 };
 
 export type UpdatePartnerParams = {
   partner: CreatePartnerParams & { _id: string };
+};
+
+const revalidatePartnerPages = (years: readonly EditionYear[]) => {
+  for (const locale of ['fr', 'ar']) {
+    revalidatePath(`/${locale}`);
+    for (const year of years) {
+      revalidatePath(`/${locale}${editionHref(year)}`);
+    }
+  }
+  revalidatePath('/darja-admin/partners');
 };
 
 // Populate partner (remains unchanged for consistency with post pattern)
@@ -72,7 +89,8 @@ export async function updatePartner({ partner }: UpdatePartnerParams) {
       runValidators: true,
     });
 
-    revalidatePath('/darja-admin/partners');
+    // all years, the partner may just have left one of them
+    revalidatePartnerPages(EDITION_YEARS);
     return JSON.parse(JSON.stringify(updatedPartner));
   } catch (error) {
     console.error('Error updating the partner', error);
@@ -99,10 +117,36 @@ export async function updatePartnerOrder(
   try {
     await connectToDatabase();
     await Order.findOneAndUpdate({ year }, { orderedIds }, { upsert: true });
-    revalidatePath('/darja-admin/partners');
+    revalidatePartnerPages([year]);
   } catch (error) {
     handleError(error);
   }
+}
+
+// Save from the "Ordre d'affichage" view, the whole list at once.
+export async function saveEditionOrder(
+  edition: EditionYear,
+  partnerIds: string[],
+) {
+  await requireAdmin();
+
+  const data = parseInput(editionOrderSchema, { edition, partnerIds });
+
+  await connectToDatabase();
+
+  const known = await Partner.countDocuments({
+    _id: { $in: data.partnerIds },
+    ...buildPartnerEditionsFilter([data.edition]),
+  });
+  if (known !== data.partnerIds.length) throw new Error('Invalid data');
+
+  await Order.findOneAndUpdate(
+    { year: data.edition },
+    { orderedIds: data.partnerIds },
+    { upsert: true },
+  );
+
+  revalidatePartnerPages([data.edition]);
 }
 
 // Delete Partner
@@ -155,24 +199,9 @@ export async function getAllPartners(year: EditionYear) {
   // 2. Get the partners
   const partners = await Partner.find(buildPartnerEditionsFilter([year]));
 
-  // 3. Sort partners based on the orderedIds array
-  // We type 'a' and 'b' as 'any' here because JSON.stringify makes them plain objects,
-  // or you can use your IPartner interface if it's imported.
-  const sortedPartners = JSON.parse(JSON.stringify(partners)).sort(
-    (a: any, b: any) => {
-      const indexA = orderedIds.indexOf(a._id);
-      const indexB = orderedIds.indexOf(b._id);
-
-      // If an item isn't in the orderedIds list yet, move it to the end
-      if (indexA === -1 && indexB === -1) return 0;
-      if (indexA === -1) return 1;
-      if (indexB === -1) return -1;
-
-      return indexA - indexB;
-    },
-  );
-
-  return sortedPartners;
+  // 3. Apply the order, partners not in it go last by name
+  const plainPartners: any[] = JSON.parse(JSON.stringify(partners));
+  return mergeEditionOrder(orderedIds, plainPartners);
 }
 // Get Partners By Year
 export async function getPartnersByYear(year: EditionYear) {

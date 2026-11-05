@@ -10,6 +10,8 @@ export interface IPartner extends Document {
   // Deprecated, read it through getPartnerEditions.
   yearOfPartnership?: '2022' | '2024' | 'both';
   logoImage: string;
+  // for a light logo on transparent, inverted in the public slider only
+  invertLogo?: boolean;
   order: number;
   createdAt: Date;
   __v?: number;
@@ -44,6 +46,10 @@ const PartnerSchema = new Schema({
   logoImage: {
     type: String,
     required: true,
+  },
+  invertLogo: {
+    type: Boolean,
+    default: false,
   },
   order: {
     type: Number,
