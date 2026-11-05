@@ -4,7 +4,7 @@ import { cn, convertYouTubeToEmbed } from '@/lib/utils';
 import { motion } from 'framer-motion';
 import React, { useState } from 'react';
 import SubHeader from './SubHeader';
-import { useLocale } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
 import Image from 'next/image';
 import { PlayCircleIcon } from 'lucide-react';
 import { fadeIn } from '@/variants';
@@ -21,16 +21,124 @@ interface ProgramLandingProps {
   banner?: BannerView | null;
 }
 
+interface VideoCardProps {
+  title: string;
+  titleIsArabic: boolean;
+  thumbnail: string;
+  ariaLabel: string;
+  sizes: string;
+  featured?: boolean;
+  className?: string;
+  onOpen: () => void;
+}
+
+const VideoCard = ({
+  title,
+  titleIsArabic,
+  thumbnail,
+  ariaLabel,
+  sizes,
+  featured = false,
+  className,
+  onOpen,
+}: VideoCardProps) => (
+  <motion.div
+    variants={fadeIn('up', 0.1)}
+    initial="hidden"
+    whileInView="show"
+    viewport={{ once: true, amount: 0.3 }}
+    className={cn('flex flex-col items-center w-full', className)}
+  >
+    <button
+      type="button"
+      onClick={onOpen}
+      aria-label={ariaLabel}
+      className="relative block w-full rounded-lg shadow-md cursor-pointer group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-title focus-visible:ring-offset-2"
+    >
+      <Image
+        src={thumbnail}
+        width={1200}
+        height={675}
+        sizes={sizes}
+        alt={title}
+        className="w-full h-auto object-contain rounded-lg"
+      />
+      <span className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent rounded-lg" />
+      <span className="absolute inset-0 flex items-center justify-center">
+        <motion.span
+          initial={{ scale: 0.8, opacity: 0.8 }}
+          whileHover={{ scale: 1.1, opacity: 1 }}
+          transition={{ type: 'spring', stiffness: 400, damping: 10 }}
+          className="block bg-white/20 backdrop-blur-md rounded-full p-6"
+        >
+          <PlayCircleIcon
+            className={cn(
+              'text-brand-title',
+              featured
+                ? 'h-20 w-20 md:h-24 md:w-24'
+                : 'h-16 w-16 md:h-20 md:w-20',
+            )}
+          />
+        </motion.span>
+      </span>
+    </button>
+    <h2
+      className={cn(
+        'mt-4 text-center font-bold text-brand-title',
+        featured ? 'text-lg md:text-xl' : 'text-base md:text-lg',
+        titleIsArabic ? 'arabic-subtitle-bold' : 'latin-subtitle-bold',
+      )}
+    >
+      {title}
+    </h2>
+  </motion.div>
+);
+
 const ProgramLanding = ({ homepage, banner = null }: ProgramLandingProps) => {
   const [isTeaseModalOpen, setIsTeaseModalOpen] = useState<boolean>(false);
   const [isAfterMovieModalOpen, setIsAfterMovieModalOpen] =
     useState<boolean>(false);
   const locale = useLocale();
-  const hasArabicContent = homepage.textAr && homepage.textAr !== '';
-  const isArabic = locale === 'ar' && hasArabicContent;
+  const t = useTranslations('HomeVideos');
+  const isArabicLocale = locale === 'ar';
 
-  const video1EmbedLink = convertYouTubeToEmbed(homepage.video1IframeLink);
-  const video2EmbedLink = convertYouTubeToEmbed(homepage.video2IframeLink);
+  const video1EmbedLink = convertYouTubeToEmbed(
+    homepage.video1IframeLink?.trim(),
+  );
+  const video2EmbedLink = convertYouTubeToEmbed(
+    homepage.video2IframeLink?.trim(),
+  );
+
+  // a video needs both its link and its thumbnail to be shown
+  const showTeaser = Boolean(video1EmbedLink && homepage.video1Thumbnail?.trim());
+  const showAfterMovie = Boolean(
+    video2EmbedLink && homepage.video2Thumbnail?.trim(),
+  );
+  const showBoth = showTeaser && showAfterMovie;
+
+  // the flag follows the text, not the page: a French title on /ar keeps its Latin font
+  const pickTitle = (
+    titleFr: string | undefined,
+    titleAr: string | undefined,
+    fallback: string,
+  ) => {
+    const arabicTitle = isArabicLocale ? titleAr?.trim() : '';
+    if (arabicTitle) return { title: arabicTitle, titleIsArabic: true };
+    const frenchTitle = titleFr?.trim();
+    if (frenchTitle) return { title: frenchTitle, titleIsArabic: false };
+    return { title: fallback, titleIsArabic: isArabicLocale };
+  };
+
+  const teaser = pickTitle(
+    homepage.video1TitleFr,
+    homepage.video1TitleAr,
+    t('teaserFallback'),
+  );
+  const afterMovie = pickTitle(
+    homepage.video2TitleFr,
+    homepage.video2TitleAr,
+    t('afterMovieFallback'),
+  );
 
   // one block: the same sanitising and Arabic fallback as the other pages
   const { texts, backgroundImage, showBackground } = getLandingView(
@@ -39,7 +147,7 @@ const ProgramLanding = ({ homepage, banner = null }: ProgramLandingProps) => {
       text1Ar: homepage.textAr,
       backgroundImage: homepage.backgroundImage,
     },
-    locale === 'ar',
+    isArabicLocale,
   );
 
   return (
@@ -49,7 +157,7 @@ const ProgramLanding = ({ homepage, banner = null }: ProgramLandingProps) => {
         <LandingFlow
           texts={texts}
           backgroundImage={backgroundImage}
-          isArabic={locale === 'ar'}
+          isArabic={isArabicLocale}
           topSpace={{ base: '60vh', lg: '15vh' }}
           flushTop
           anchor="bottom-start"
@@ -59,113 +167,44 @@ const ProgramLanding = ({ homepage, banner = null }: ProgramLandingProps) => {
         />
       )}
       <PosterSection />
-      <motion.div
-        variants={fadeIn('up', 0.2)}
-        initial="hidden"
-        whileInView="show"
-        viewport={{ once: true, amount: 0.3 }}
-        className="text-center mt-16 lg:mt-24"
-      >
-        <h2
+      {(showTeaser || showAfterMovie) && (
+        <div
           className={cn(
-            'text-brand-title text-xl lg:text-3xl mb-4',
-            isArabic ? 'arabic-title-bold' : 'latin-title-bold',
+            'grid grid-cols-1 items-center gap-8 mx-auto mt-16 lg:mt-24 mb-8 md:mb-10 xl:mb-12 px-4',
+            showBoth ? 'lg:grid-cols-3 max-w-[1200px]' : 'max-w-3xl',
           )}
         >
-          {isArabic
-            ? ' الفيلم الختامي لفعالية المنعطف البيضاوي '
-            : 'After Movie 2024'}
-        </h2>
-      </motion.div>
-      <div className="flex flex-col lg:flex-row justify-center items-start mx-auto my-8 md:my-10 xl:my-12 max-w-4xl gap-8 px-4">
-        {/* First Video Showcase */}
-        {/* <div className="flex flex-col items-center w-full lg:w-1/2">
-          <motion.div
-            variants={fadeIn('up', 0.1)}
-            initial="hidden"
-            whileInView="show"
-            viewport={{ once: true, amount: 0.3 }}
-            className="relative flex justify-center items-center shadow-md cursor-pointer group w-full"
-            onClick={() => setIsTeaseModalOpen(true)}
-          >
-            <Image
-              src={homepage.video1Thumbnail}
-              width={600}
-              height={600}
-              alt="tease_thumbnail"
-              className="w-full object-contain rounded-lg"
+          {showTeaser && (
+            <VideoCard
+              {...teaser}
+              thumbnail={homepage.video1Thumbnail}
+              ariaLabel={t('playVideo', { title: teaser.title })}
+              sizes={
+                showBoth
+                  ? '(min-width: 1024px) 800px, 100vw'
+                  : '(min-width: 768px) 768px, 100vw'
+              }
+              featured
+              className={showBoth ? 'lg:col-span-2' : undefined}
+              onOpen={() => setIsTeaseModalOpen(true)}
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-[#094142]/50 via-transparent to-transparent rounded-lg"></div>
-            <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 flex items-center justify-center">
-              <motion.div
-                initial={{ scale: 0.8, opacity: 0.8 }}
-                whileHover={{ scale: 1.1, opacity: 1 }}
-                transition={{ type: 'spring', stiffness: 400, damping: 10 }}
-                className="bg-white/20 backdrop-blur-md rounded-full p-6"
-              >
-                <PlayCircleIcon className="h-16 w-16 md:h-20 md:w-20 text-brand-orange" />
-              </motion.div>
-            </div>
-          </motion.div>
-          <motion.div
-            initial={{ y: 20, opacity: 0 }}
-            whileInView={{ y: 0, opacity: 1 }}
-            transition={{ delay: 0.2 }}
-            className={cn(
-              'mt-4 text-center text-base md:text-lg font-bold text-[#094142]',
-              isArabic ? 'arabic-subtitle-bold' : 'latin-subtitle-bold',
-            )}
-          >
-            {isArabic
-              ? homepage.video1TitleAr || homepage.video1TitleFr
-              : homepage.video1TitleFr}
-          </motion.div>
-        </div> */}
-
-        {/* Second Video Showcase (Placeholder) */}
-        <div className="flex flex-col items-center w-full lg:w-1/2 mt-8 lg:mt-0">
-          <motion.div
-            variants={fadeIn('up', 0.1)}
-            initial="hidden"
-            whileInView="show"
-            viewport={{ once: true, amount: 0.3 }}
-            className="relative flex justify-center items-center shadow-md cursor-pointer group w-full"
-            onClick={() => setIsAfterMovieModalOpen(true)}
-          >
-            <Image
-              src={homepage.video2Thumbnail}
-              width={600}
-              height={600}
-              alt="tease_thumbnail"
-              className="w-full object-contain rounded-lg"
+          )}
+          {showAfterMovie && (
+            <VideoCard
+              {...afterMovie}
+              thumbnail={homepage.video2Thumbnail}
+              ariaLabel={t('playVideo', { title: afterMovie.title })}
+              sizes={
+                showBoth
+                  ? '(min-width: 1024px) 400px, 100vw'
+                  : '(min-width: 768px) 768px, 100vw'
+              }
+              className={showBoth ? 'lg:col-span-1' : undefined}
+              onOpen={() => setIsAfterMovieModalOpen(true)}
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-[#094142]/50 via-transparent to-transparent rounded-lg"></div>
-            <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 flex items-center justify-center">
-              <motion.div
-                initial={{ scale: 0.8, opacity: 0.8 }}
-                whileHover={{ scale: 1.1, opacity: 1 }}
-                transition={{ type: 'spring', stiffness: 400, damping: 10 }}
-                className="bg-white/20 backdrop-blur-md rounded-full p-6"
-              >
-                <PlayCircleIcon className="h-16 w-16 md:h-20 md:w-20 text-brand-orange" />
-              </motion.div>
-            </div>
-          </motion.div>
-          {/* <motion.div
-            initial={{ y: 20, opacity: 0 }}
-            whileInView={{ y: 0, opacity: 1 }}
-            transition={{ delay: 0.2 }}
-            className={cn(
-              'mt-4 text-center text-base md:text-lg font-bold text-[#094142]',
-              isArabic ? 'arabic-subtitle-bold' : 'latin-subtitle-bold',
-            )}
-          >
-            {isArabic
-              ? homepage.video2TitleAr || homepage.video2TitleFr
-              : homepage.video2TitleFr}
-          </motion.div> */}
+          )}
         </div>
-      </div>
+      )}
       <TeaserModal
         isOpen={isTeaseModalOpen}
         onClose={() => setIsTeaseModalOpen(false)}
