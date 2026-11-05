@@ -54,6 +54,8 @@ const ProgramLanding = ({ homepage, banner = null }: ProgramLandingProps) => {
           flushTop
           anchor="bottom-start"
           flushBottom
+          imagePosition="50% 80%"
+          wideBlock
         />
       )}
       <PosterSection />

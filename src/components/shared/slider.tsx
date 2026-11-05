@@ -51,9 +51,19 @@ const SlidingImages = ({ artists, currentEdition }: SlidingImagesProps) => {
             isArabic ? 'arabic-title-bold' : 'latin-title-bold',
           )}
         >
-          {currentEdition
-            ? t('headingEdition', { year: currentEdition })
-            : t('heading')}
+          <Link
+            // the past wording names no edition, so it opens the unfiltered page
+            href={
+              currentEdition
+                ? `/${locale}/community?edition=${currentEdition}`
+                : `/${locale}/community`
+            }
+            className="underline-offset-4 hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#094142]"
+          >
+            {currentEdition
+              ? t('headingEdition', { year: currentEdition })
+              : t('heading')}
+          </Link>
         </h2>
       </div>
 
@@ -207,8 +217,7 @@ const ArtistSliderInstance = ({
                   <FallbackImage
                     alt={'image'}
                     src={artist.images?.[0]}
-                    containLandscape
-                    className="object-cover object-center transition duration-700 group-hover:scale-110"
+                    className="object-contain object-center"
                   />
                   <div
                     dir={isArabic ? 'rtl' : 'ltr'}

@@ -8,16 +8,34 @@ import { FallbackImage, ImagePlaceholder } from '../ImageFallback';
 interface ImageGalleryProps {
   images: string[];
   alt: string;
-  // artist pages: show a landscape main image whole instead of cropping it
-  containLandscape?: boolean;
+  // artist pages: every photo whole in a true square, on the dark green frame
+  contain?: boolean;
 }
 
 const ImageGallery: React.FC<ImageGalleryProps> = ({
   images,
   alt,
-  containLandscape,
+  contain,
 }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
+
+  const mainBox = contain
+    ? 'relative mx-auto aspect-square w-full max-w-[600px] overflow-hidden bg-[#094142]'
+    : 'relative aspect-square max-h-[600px] overflow-hidden';
+
+  // fill ignores the parent's padding, so the frame comes from an inset wrapper
+  const mainImage = (src: string, imageAlt: string, coverClass: string) =>
+    contain ? (
+      <div className="absolute inset-2">
+        <FallbackImage
+          src={src}
+          alt={imageAlt}
+          className="object-contain object-center"
+        />
+      </div>
+    ) : (
+      <FallbackImage src={src} alt={imageAlt} className={coverClass} />
+    );
 
   const nextImage = () => {
     setCurrentIndex((prevIndex) => (prevIndex + 1) % images.length);
@@ -37,7 +55,7 @@ const ImageGallery: React.FC<ImageGalleryProps> = ({
   if (images.length === 0) {
     return (
       <div className="w-full">
-        <div className="relative aspect-square max-h-[600px] overflow-hidden">
+        <div className={mainBox}>
           <ImagePlaceholder />
         </div>
       </div>
@@ -48,13 +66,12 @@ const ImageGallery: React.FC<ImageGalleryProps> = ({
   if (images.length === 1) {
     return (
       <div className="w-full">
-        <div className="relative aspect-square max-h-[600px] overflow-hidden">
-          <FallbackImage
-            src={images[0]}
-            alt={alt}
-            containLandscape={containLandscape}
-            className="object-cover transition-transform duration-300"
-          />
+        <div className={mainBox}>
+          {mainImage(
+            images[0],
+            alt,
+            'object-cover transition-transform duration-300',
+          )}
         </div>
       </div>
     );
@@ -63,13 +80,12 @@ const ImageGallery: React.FC<ImageGalleryProps> = ({
   return (
     <div className="w-full space-y-4">
       {/* Main Image Display */}
-      <div className="relative aspect-square max-h-[600px] overflow-hidden group">
-        <FallbackImage
-          src={images[currentIndex]}
-          alt={`${alt} - Image ${currentIndex + 1}`}
-          containLandscape={containLandscape}
-          className="object-cover transition-all duration-300"
-        />
+      <div className={cn(mainBox, 'group')}>
+        {mainImage(
+          images[currentIndex],
+          `${alt} - Image ${currentIndex + 1}`,
+          'object-cover transition-all duration-300',
+        )}
 
         {/* Navigation Buttons */}
         {images.length > 1 && (
@@ -120,7 +136,7 @@ const ImageGallery: React.FC<ImageGalleryProps> = ({
 
       {/* Thumbnail Navigation */}
       {images.length > 1 && (
-        <div className="w-full max-w-[600px]">
+        <div className={cn('w-full max-w-[600px]', contain && 'mx-auto')}>
           <div className="flex gap-2 overflow-x-auto py-2 scrollbar-hide cursor-grab active:cursor-grabbing scroll-smooth justify-center">
             {images.map((image, index) => (
               <button
@@ -128,6 +144,7 @@ const ImageGallery: React.FC<ImageGalleryProps> = ({
                 onClick={() => goToImage(index)}
                 className={cn(
                   'relative flex-shrink-0 w-16 h-16 sm:w-20 sm:h-20 overflow-hidden transition-all duration-200',
+                  contain && 'bg-[#094142]',
                   currentIndex === index
                     ? 'ring-2 ring-brand-orange ring-offset-1'
                     : 'opacity-70 hover:opacity-100'
@@ -136,7 +153,11 @@ const ImageGallery: React.FC<ImageGalleryProps> = ({
                 <FallbackImage
                   src={image}
                   alt={`${alt} thumbnail ${index + 1}`}
-                  className="object-cover transition-transform duration-200 hover:scale-105"
+                  className={
+                    contain
+                      ? 'object-contain object-center'
+                      : 'object-cover transition-transform duration-200 hover:scale-105'
+                  }
                 />
               </button>
             ))}
