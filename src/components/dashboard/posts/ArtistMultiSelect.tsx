@@ -1,9 +1,9 @@
 'use client';
 
 import { useState } from 'react';
+import type { KeyboardEvent } from 'react';
 import { Check, ChevronsUpDown, X } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { Button } from '@/components/ui/button';
 import {
   Command,
   CommandEmpty,
@@ -21,12 +21,14 @@ import { Badge } from '@/components/ui/badge';
 import type { IArtist } from '@/lib/database/models/artist.model';
 
 type ArtistMultiSelectProps = {
+  id?: string;
   value?: string[];
   onChangeHandler: (value: string[]) => void;
   artists: IArtist[];
 };
 
 const ArtistMultiSelect = ({
+  id,
   value = [],
   onChangeHandler,
   artists,
@@ -51,80 +53,79 @@ const ArtistMultiSelect = ({
     return artist ? artist.frenchName : '';
   };
 
+  const onRemoveKey = (
+    event: KeyboardEvent<HTMLSpanElement>,
+    artistId: string,
+  ) => {
+    if (event.key !== 'Enter' && event.key !== ' ') return;
+    event.preventDefault();
+    event.stopPropagation();
+    handleRemove(artistId);
+  };
+
   return (
     <div className="w-full">
       <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger asChild>
-          <Button
-            variant="outline"
+          <button
+            id={id}
+            type="button"
             role="combobox"
             aria-expanded={open}
-            className="w-full justify-between input-field h-auto min-h-[44px] p-3 bg-transparent"
+            className="admin-combobox"
           >
             <div className="flex flex-wrap gap-1 flex-1">
               {value.length === 0 ? (
-                <span className="text-gray-500">
+                <span className="admin-placeholder">
                   Sélectionner des artistes...
                 </span>
               ) : (
                 value.map((artistId) => (
-                  <Badge
-                    key={artistId}
-                    variant="secondary"
-                    className="bg-gray-100 text-gray-800 hover:bg-gray-200"
-                  >
+                  <Badge key={artistId} variant="secondary">
                     {getArtistName(artistId)}
-                    <button
-                      className="ml-1 ring-offset-background rounded-full outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
-                      onKeyDown={(e) => {
-                        if (e.key === 'Enter') {
-                          handleRemove(artistId);
-                        }
+                    {/* a span: a button inside this button would be invalid */}
+                    <span
+                      role="button"
+                      tabIndex={0}
+                      aria-label={`Retirer ${getArtistName(artistId)}`}
+                      className="ml-1 cursor-pointer rounded-full"
+                      onKeyDown={(event) => onRemoveKey(event, artistId)}
+                      onClick={(event) => {
+                        event.stopPropagation();
+                        handleRemove(artistId);
                       }}
-                      onMouseDown={(e) => {
-                        e.preventDefault();
-                        e.stopPropagation();
-                      }}
-                      onClick={() => handleRemove(artistId)}
                     >
-                      <X className="h-3 w-3 text-muted-foreground hover:text-foreground" />
-                    </button>
+                      <X className="h-3 w-3" aria-hidden="true" />
+                    </span>
                   </Badge>
                 ))
               )}
             </div>
-            <ChevronsUpDown className="h-4 w-4 shrink-0 opacity-50" />
-          </Button>
+            <ChevronsUpDown className="h-4 w-4 shrink-0" aria-hidden="true" />
+          </button>
         </PopoverTrigger>
-        <PopoverContent className="w-full p-0 bg-gray-800 bg-opacity-50 backdrop-blur-md shadow-lg border">
-          <Command className="bg-gray-800 border-none">
-            <CommandInput
-              placeholder="Rechercher un artiste..."
-              className="text-gray-100"
-            />
+        <PopoverContent className="w-[var(--radix-popover-trigger-width)] p-0">
+          <Command>
+            <CommandInput placeholder="Rechercher un artiste..." />
             <CommandList>
-              <CommandEmpty className="text-gray-100 p-4">
-                Aucun artiste trouvé.
-              </CommandEmpty>
-              <CommandGroup className="max-h-64 overflow-auto ">
+              <CommandEmpty className="p-4">Aucun artiste trouvé.</CommandEmpty>
+              <CommandGroup className="max-h-64 overflow-auto">
                 {artists.map((artist) => (
                   <CommandItem
                     key={artist._id}
                     value={artist.frenchName}
                     onSelect={() => handleSelect(artist._id)}
-                    className="text-gray-100 focus:text-gray-900 cursor-pointer"
+                    className="cursor-pointer"
                   >
                     <Check
                       className={cn(
                         'mr-2 h-4 w-4',
-                        value.includes(artist._id) ? 'opacity-100' : 'opacity-0'
+                        value.includes(artist._id) ? 'opacity-100' : 'opacity-0',
                       )}
                     />
                     <div className="flex flex-col">
                       <span className="font-medium">{artist.frenchName}</span>
-                      <span className="text-sm text-gray-400">
-                        {artist.arabicName}
-                      </span>
+                      <span className="admin-help">{artist.arabicName}</span>
                     </div>
                   </CommandItem>
                 ))}

@@ -7,7 +7,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { useEffect, useState } from 'react';
 import {
   CATEGORIES,
   getEdition,
@@ -15,39 +14,30 @@ import {
 } from '@/constants/editions';
 
 type DropdownProps = {
+  id?: string;
   value?: string | null;
   onChangeHandler: (value: string) => void;
   edition: EditionYear;
 };
 
-const Dropdown = ({ value, onChangeHandler, edition }: DropdownProps) => {
-  const categories = getEdition(edition).categories.map((id) => ({
-    id,
-    name: CATEGORIES[id].fr,
+const Dropdown = ({ id, value, onChangeHandler, edition }: DropdownProps) => {
+  const categories = getEdition(edition).categories.map((key) => ({
+    id: key,
+    name: CATEGORIES[key].fr,
   }));
-  const [selectedValue, setSelectedValue] = useState(value?.toString() || '');
-
-  useEffect(() => {
-    setSelectedValue(value?.toString() || '');
-  }, [value]);
-
-  const handleChange = (value: string) => {
-    setSelectedValue(value);
-    onChangeHandler(value);
-  };
 
   return (
     <Select value={value || undefined} onValueChange={onChangeHandler}>
-      <SelectTrigger className="select-field">
+      <SelectTrigger id={id} className="select-field">
         <SelectValue placeholder="Catégorie de l'événement" />
       </SelectTrigger>
-      <SelectContent className=" bg-gray-800 bg-opacity-50 backdrop-blur-md  shadow-lg border ">
+      <SelectContent>
         {categories.length > 0 &&
           categories.map((category) => (
             <SelectItem
               key={category.id}
               value={category.id}
-              className="select-item text-gray-100  focus:text-gray-900"
+              className="select-item"
             >
               {category.name}
             </SelectItem>

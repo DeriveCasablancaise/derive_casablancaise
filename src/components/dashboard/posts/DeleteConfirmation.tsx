@@ -13,8 +13,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
-import { cn } from '@/lib/utils';
-import { buttonVariants } from '@/components/ui/button';
+import { adminButtonClass } from '../admin-ui';
 import { deletePost } from '@/lib/actions/post.actions';
 import { usePathname } from 'next/navigation';
 
@@ -30,16 +29,11 @@ export const DeleteConfirmation = ({
 
   return (
     <AlertDialog>
-      <AlertDialogTrigger
-        className={cn(
-          'capitalize text-red-500 hover:bg-red-500 hover:text-gray-100',
-          buttonVariants({ variant: 'ghost' })
-        )}
-      >
+      <AlertDialogTrigger className={adminButtonClass('danger', 'sm')}>
         Supprimer
       </AlertDialogTrigger>
 
-      <AlertDialogContent className="bg-gray-800 bg-opacity-50 backdrop-blur-md shadow-lg border border-gray-700">
+      <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle className="text-gray-100">
             Etes-vous sur de vouloir supprimer ce poste?
@@ -50,7 +44,9 @@ export const DeleteConfirmation = ({
         </AlertDialogHeader>
 
         <AlertDialogFooter>
-          <AlertDialogCancel>Annuler</AlertDialogCancel>
+          <AlertDialogCancel className={adminButtonClass('secondary')}>
+            Annuler
+          </AlertDialogCancel>
 
           <AlertDialogAction
             onClick={() =>
@@ -59,7 +55,7 @@ export const DeleteConfirmation = ({
                 onDelete(postId);
               })
             }
-            className="bg-red-600 hover:bg-red-600/40"
+            className={adminButtonClass('danger')}
           >
             {isPending ? 'En cours...' : 'Supprimer'}
           </AlertDialogAction>

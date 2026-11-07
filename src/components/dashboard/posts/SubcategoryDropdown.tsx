@@ -17,17 +17,19 @@ const SubCategories = {
 type SubCategoryKey = keyof typeof SubCategories;
 
 interface SubCategoryDropdownProps {
+  id?: string;
   value?: string;
   onChangeHandler: (value: string) => void;
 }
 
 const SubCategoryDropdown = ({
+  id,
   value,
   onChangeHandler,
 }: SubCategoryDropdownProps) => {
   return (
     <Select onValueChange={onChangeHandler} value={value}>
-      <SelectTrigger className="input-field">
+      <SelectTrigger id={id} className="select-field">
         <SelectValue placeholder="Sélectionner une sous-catégorie" />
       </SelectTrigger>
       <SelectContent>

@@ -1,7 +1,7 @@
 'use client';
 
 import Navbar from '@/components/shared/Navbar';
-import { Button } from '@/components/ui/button';
+import { AdminButton } from '@/components/dashboard/admin-ui';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import React from 'react';
@@ -32,15 +32,11 @@ const CultureContent = () => {
 
         <CultureTable />
 
-        <Button
-          asChild
-          className="w-full p-4 bg-gray-800 bg-opacity-50 backdrop-blur-md shadow-lg rounded-xl  border border-gray-700 my-4"
-          variant="outline"
-        >
+        <AdminButton asChild className="w-full my-4">
           <Link href="/darja-admin/culture/create">
             Créer un nouveau partenaire culturel
           </Link>
-        </Button>
+        </AdminButton>
       </main>
     </div>
   );

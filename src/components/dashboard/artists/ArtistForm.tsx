@@ -21,7 +21,8 @@ import { artistFormSchema } from '@/lib/validator';
 import { EDITION_YEARS, getArtistEditions } from '@/lib/artist-editions';
 import { Textarea } from '@/components/ui/textarea';
 import { FileUploader } from '../FileUploader';
-import SubmitButton from '../SubmitButton';
+import FormActions from '../FormActions';
+import { FieldHelp, FieldLabel, notifyInvalid } from '../admin-ui';
 import { IArtist } from '@/lib/database/models/artist.model';
 import { createArtist, updateArtist } from '@/lib/actions/artists.actions';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -109,6 +110,7 @@ const ArtistForm = ({ type, artist, artistId }: ArtistFormProps) => {
 
         if (newArtist) {
           form.reset();
+          toast({ title: 'Artiste créé' });
           router.push(`/darja-admin/artists`);
         }
       }
@@ -127,6 +129,7 @@ const ArtistForm = ({ type, artist, artistId }: ArtistFormProps) => {
 
         if (updatedArtist) {
           form.reset();
+          toast({ title: 'Artiste modifié' });
           router.push(`/darja-admin/artists`);
         }
       }
@@ -145,50 +148,55 @@ const ArtistForm = ({ type, artist, artistId }: ArtistFormProps) => {
   return (
     <Form {...form}>
       <form
-        onSubmit={form.handleSubmit(onSubmit)}
+        onSubmit={form.handleSubmit(onSubmit, notifyInvalid)}
         className="flex flex-col gap-5"
       >
-        <div className="flex flex-col gap-5 md:flex-row">
-          <FormField
-            control={form.control}
-            name="frenchName"
-            render={({ field }) => (
-              <FormItem className="w-full">
-                <FormControl>
-                  <Input
-                    placeholder="Nom de l'artiste en français"
-                    className="input-field"
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="arabicName"
-            render={({ field }) => (
-              <FormItem className="w-full">
-                <FormControl>
-                  <Input
-                    placeholder="الإسم باللغة العربية"
-                    className="input-field"
-                    {...field}
-                    dir="rtl"
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </div>
-        <div className="flex flex-col gap-5 md:flex-row">
+        <div className="admin-section">
+          <h2 className="admin-section-title">Informations</h2>
+          <div className="flex flex-col gap-5 md:flex-row">
+            <FormField
+              control={form.control}
+              name="frenchName"
+              render={({ field }) => (
+                <FormItem className="w-full">
+                  <FieldLabel required>Nom (français)</FieldLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="Nom de l'artiste en français"
+                      className="input-field"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="arabicName"
+              render={({ field }) => (
+                <FormItem className="w-full">
+                  <FieldLabel required>Nom (arabe)</FieldLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="الإسم باللغة العربية"
+                      className="input-field"
+                      {...field}
+                      dir="rtl"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+
           <FormField
             control={form.control}
             name="editions"
             render={({ field }) => (
               <FormItem className="w-full">
+                <FieldLabel required>Éditions</FieldLabel>
                 <div className="flex flex-wrap items-center gap-6 py-2">
                   {EDITION_YEARS.map((year) => (
                     <div key={year} className="flex items-center gap-2">
@@ -199,7 +207,7 @@ const ArtistForm = ({ type, artist, artistId }: ArtistFormProps) => {
                           field.onChange(
                             checked
                               ? [...field.value, year]
-                              : field.value.filter((y) => y !== year)
+                              : field.value.filter((y) => y !== year),
                           )
                         }
                       />
@@ -216,16 +224,138 @@ const ArtistForm = ({ type, artist, artistId }: ArtistFormProps) => {
               </FormItem>
             )}
           />
+
           <FormField
             control={form.control}
-            name="videoSource"
+            name="isInHomepage"
             render={({ field }) => (
               <FormItem className="w-full">
                 <FormControl>
-                  <Input
-                    placeholder="Source de la video"
-                    className="input-field"
-                    {...field}
+                  <div className="flex items-center gap-4">
+                    <Checkbox
+                      id="isInHomepage"
+                      checked={field.value}
+                      onCheckedChange={field.onChange}
+                    />
+                    <label htmlFor="isInHomepage" className="checkbox-label">
+                      Ajouter cet artiste à la page d&apos;accueil
+                    </label>
+                  </div>
+                </FormControl>
+                <FieldHelp>
+                  Sans effet pour le moment : l&apos;accueil montre tous les
+                  artistes de l&apos;édition en cours.
+                </FieldHelp>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+
+        <div className="admin-section">
+          <h2 className="admin-section-title">Textes</h2>
+          <div className="flex flex-col gap-5 md:flex-row">
+            <FormField
+              control={form.control}
+              name="frenchText"
+              render={({ field }) => (
+                <FormItem className="w-full">
+                  <FieldLabel required>Texte (français)</FieldLabel>
+                  <FormControl className="h-72">
+                    <Textarea
+                      placeholder="Texte en français"
+                      {...field}
+                      className="textarea"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="arabicText"
+              render={({ field }) => (
+                <FormItem className="w-full">
+                  <FieldLabel required>Texte (arabe)</FieldLabel>
+                  <FormControl className="h-72">
+                    <Textarea
+                      placeholder="المحتوى باللغة العربية"
+                      {...field}
+                      className="textarea"
+                      dir="rtl"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+        </div>
+
+        <div className="admin-section">
+          <h2 className="admin-section-title">Liens</h2>
+          <div className="flex flex-col gap-5 md:flex-row">
+            <FormField
+              control={form.control}
+              name="videoSource"
+              render={({ field }) => (
+                <FormItem className="w-full">
+                  <FieldLabel>Source de la vidéo</FieldLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="Lien de la vidéo"
+                      className="input-field"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="url"
+              render={({ field }) => (
+                <FormItem className="w-full">
+                  <FieldLabel>Lien utile</FieldLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="Lien utile à partager"
+                      className="input-field"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+        </div>
+
+        <div className="admin-section">
+          <h2 className="admin-section-title">Images</h2>
+          <FormField
+            control={form.control}
+            name="images"
+            render={({ field }) => (
+              <FormItem className="w-full">
+                <FieldLabel>Images de l&apos;artiste</FieldLabel>
+                <FormControl>
+                  <FileUploader
+                    onFieldChange={field.onChange}
+                    imageUrls={field.value}
+                    setFiles={setFiles}
+                    prepareFiles={prepareFiles}
+                    onFilesRejected={() =>
+                      toast({
+                        variant: 'destructive',
+                        title: 'Image refusée',
+                        description: FORMAT_ERROR,
+                      })
+                    }
+                    onRecrop={handleRecrop}
+                    formatsHint="JPG, PNG, WebP, HEIC (8 Mo maximum)"
                   />
                 </FormControl>
                 <FormMessage />
@@ -233,111 +363,12 @@ const ArtistForm = ({ type, artist, artistId }: ArtistFormProps) => {
             )}
           />
         </div>
-        <div className="flex flex-col gap-5 md:flex-row">
-          <FormField
-            control={form.control}
-            name="frenchText"
-            render={({ field }) => (
-              <FormItem className="w-full">
-                <FormControl className="h-72">
-                  <Textarea
-                    placeholder="Texte en français"
-                    {...field}
-                    className="textarea rounded-2xl"
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="arabicText"
-            render={({ field }) => (
-              <FormItem className="w-full">
-                <FormControl className="h-72">
-                  <Textarea
-                    placeholder="المحتوى باللغة العربية"
-                    {...field}
-                    className="textarea rounded-2xl"
-                    dir="rtl"
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </div>
 
-        <FormField
-          control={form.control}
-          name="url"
-          render={({ field }) => (
-            <FormItem className="w-full">
-              <FormControl>
-                <Input
-                  placeholder="Lien util à partager"
-                  className="input-field"
-                  {...field}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
+        <FormActions
+          isLoading={isLoading}
+          submitLabel={type === 'Create' ? "Créer l'artiste" : "Modifier l'artiste"}
+          cancelHref="/darja-admin/artists"
         />
-
-        <FormField
-          control={form.control}
-          name="images"
-          render={({ field }) => (
-            <FormItem className="w-full">
-              <FormControl className="h-72">
-                <FileUploader
-                  onFieldChange={field.onChange}
-                  imageUrls={field.value}
-                  setFiles={setFiles}
-                  prepareFiles={prepareFiles}
-                  onFilesRejected={() =>
-                    toast({
-                      variant: 'destructive',
-                      title: 'Image refusée',
-                      description: FORMAT_ERROR,
-                    })
-                  }
-                  onRecrop={handleRecrop}
-                  formatsHint="JPG, PNG, WebP, HEIC (8 Mo maximum)"
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name="isInHomepage"
-          render={({ field }) => (
-            <FormItem className="w-full">
-              <FormControl>
-                <div className="flex items-center gap-4">
-                  <Checkbox
-                    id="isInHomepage"
-                    checked={field.value}
-                    onCheckedChange={field.onChange}
-                  />
-                  <label htmlFor="isInHomepage" className="checkbox-label">
-                    Ajouter cet artiste à la page d'accueil
-                  </label>
-                </div>
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <SubmitButton isLoading={isLoading}>
-          {type === 'Create' ? "Créer l'artiste " : "Modifier l'artiste"}
-        </SubmitButton>
       </form>
       {cropperNode}
     </Form>

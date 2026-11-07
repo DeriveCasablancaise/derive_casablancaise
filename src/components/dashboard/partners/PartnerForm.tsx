@@ -19,7 +19,8 @@ import { toast } from '@/components/hooks/use-toast';
 import { containsBlobUrl, uploadFilesOrThrow } from '@/lib/upload-helpers';
 import { partnerFormSchema } from '@/lib/validator';
 import { createPartner, updatePartner } from '@/lib/actions/partner.actions';
-import SubmitButton from '../SubmitButton';
+import FormActions from '../FormActions';
+import { FieldHelp, FieldLabel, notifyInvalid } from '../admin-ui';
 import { PartnerLogoUploader } from './PartnerLogoUploader';
 import { Checkbox } from '@/components/ui/checkbox';
 import { EDITION_YEARS } from '@/constants/editions';
@@ -80,6 +81,7 @@ const PartnerForm = ({ type, partner, partnerId }: PartnerFormProps) => {
 
         if (newPartner) {
           form.reset();
+          toast({ title: 'Partenaire créé' });
           router.push(`/darja-admin/partners`);
         }
       }
@@ -100,6 +102,7 @@ const PartnerForm = ({ type, partner, partnerId }: PartnerFormProps) => {
 
         if (updatedPartner) {
           form.reset();
+          toast({ title: 'Partenaire modifié' });
           router.push(`/darja-admin/partners`);
         }
       }
@@ -118,142 +121,156 @@ const PartnerForm = ({ type, partner, partnerId }: PartnerFormProps) => {
   return (
     <Form {...form}>
       <form
-        onSubmit={form.handleSubmit(onSubmit)}
+        onSubmit={form.handleSubmit(onSubmit, notifyInvalid)}
         className="flex flex-col gap-5"
       >
-        {/* French and Arabic Names */}
-        <div className="flex flex-col gap-5 md:flex-row">
-          <FormField
-            control={form.control}
-            name="frenchName"
-            render={({ field }) => (
-              <FormItem className="w-full">
-                <FormControl>
-                  <Input
-                    placeholder="Nom du partenaire en français"
-                    className="input-field"
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="arabicName"
-            render={({ field }) => (
-              <FormItem className="w-full">
-                <FormControl>
-                  <Input
-                    placeholder="اسم الشريك باللغة العربية"
-                    className="input-field"
-                    {...field}
-                    dir="rtl"
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+        <div className="admin-section">
+          <h2 className="admin-section-title">Informations</h2>
+          <div className="flex flex-col gap-5 md:flex-row">
+            <FormField
+              control={form.control}
+              name="frenchName"
+              render={({ field }) => (
+                <FormItem className="w-full">
+                  <FieldLabel required>Nom (français)</FieldLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="Nom du partenaire en français"
+                      className="input-field"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="arabicName"
+              render={({ field }) => (
+                <FormItem className="w-full">
+                  <FieldLabel>Nom (arabe)</FieldLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="اسم الشريك باللغة العربية"
+                      className="input-field"
+                      {...field}
+                      dir="rtl"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+
+          <div className="flex flex-col gap-5 md:flex-row">
+            <FormField
+              control={form.control}
+              name="hrefLink"
+              render={({ field }) => (
+                <FormItem className="w-full">
+                  <FieldLabel>Lien du partenaire</FieldLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="https://..."
+                      className="input-field"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="editions"
+              render={({ field }) => (
+                <FormItem className="w-full">
+                  <FieldLabel required>Éditions</FieldLabel>
+                  <div className="flex flex-wrap items-center gap-6 py-2">
+                    {EDITION_YEARS.map((year) => (
+                      <div key={year} className="flex items-center gap-2">
+                        <Checkbox
+                          id={`edition-${year}`}
+                          checked={field.value.includes(year)}
+                          onCheckedChange={(checked) =>
+                            field.onChange(
+                              checked
+                                ? [...field.value, year]
+                                : field.value.filter((y) => y !== year),
+                            )
+                          }
+                        />
+                        <label
+                          htmlFor={`edition-${year}`}
+                          className="checkbox-label"
+                        >
+                          {year}
+                        </label>
+                      </div>
+                    ))}
+                  </div>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
         </div>
 
-        {/* Partner Link and Year */}
-        <div className="flex flex-col gap-5 md:flex-row">
+        <div className="admin-section">
+          <h2 className="admin-section-title">Images</h2>
           <FormField
             control={form.control}
-            name="hrefLink"
+            name="logoImage"
             render={({ field }) => (
               <FormItem className="w-full">
+                <FieldLabel required>Logo</FieldLabel>
                 <FormControl>
-                  <Input
-                    placeholder="Lien du partenaire (URL)"
-                    className="input-field"
-                    {...field}
+                  <PartnerLogoUploader
+                    onFieldChange={field.onChange}
+                    imageUrl={field.value}
+                    setFile={setFile}
                   />
                 </FormControl>
                 <FormMessage />
               </FormItem>
             )}
           />
+
           <FormField
             control={form.control}
-            name="editions"
+            name="invertLogo"
             render={({ field }) => (
               <FormItem className="w-full">
-                <div className="flex flex-wrap items-center gap-6 py-2">
-                  {EDITION_YEARS.map((year) => (
-                    <div key={year} className="flex items-center gap-2">
-                      <Checkbox
-                        id={`edition-${year}`}
-                        checked={field.value.includes(year)}
-                        onCheckedChange={(checked) =>
-                          field.onChange(
-                            checked
-                              ? [...field.value, year]
-                              : field.value.filter((y) => y !== year),
-                          )
-                        }
-                      />
-                      <label
-                        htmlFor={`edition-${year}`}
-                        className="checkbox-label"
-                      >
-                        {year}
-                      </label>
-                    </div>
-                  ))}
+                <div className="flex items-center gap-2 py-2">
+                  <Checkbox
+                    id="invert-logo"
+                    checked={field.value ?? false}
+                    onCheckedChange={(checked) =>
+                      field.onChange(checked === true)
+                    }
+                  />
+                  <label htmlFor="invert-logo" className="checkbox-label">
+                    Logo clair (inverser)
+                  </label>
                 </div>
+                <FieldHelp>
+                  À cocher pour un logo clair, peu lisible sur un fond clair.
+                </FieldHelp>
                 <FormMessage />
               </FormItem>
             )}
           />
         </div>
 
-        {/* Logo Uploader */}
-        <FormField
-          control={form.control}
-          name="logoImage"
-          render={({ field }) => (
-            <FormItem className="w-full">
-              <FormControl>
-                <PartnerLogoUploader
-                  onFieldChange={field.onChange}
-                  imageUrl={field.value}
-                  setFile={setFile}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
+        <FormActions
+          isLoading={isLoading}
+          submitLabel={
+            type === 'Create' ? 'Créer le partenaire' : 'Modifier le partenaire'
+          }
+          cancelHref="/darja-admin/partners"
         />
-
-        <FormField
-          control={form.control}
-          name="invertLogo"
-          render={({ field }) => (
-            <FormItem className="w-full">
-              <div className="flex items-center gap-2 py-2">
-                <Checkbox
-                  id="invert-logo"
-                  checked={field.value ?? false}
-                  onCheckedChange={(checked) =>
-                    field.onChange(checked === true)
-                  }
-                />
-                <label htmlFor="invert-logo" className="checkbox-label">
-                  Logo clair (inverser)
-                </label>
-              </div>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        {/* Submit Button */}
-        <SubmitButton isLoading={isLoading}>
-          {type === 'Create' ? 'Créer Le Partenaire' : 'Modifier Le Partenaire'}
-        </SubmitButton>
       </form>
     </Form>
   );

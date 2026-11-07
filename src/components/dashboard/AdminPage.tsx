@@ -8,7 +8,7 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
+import { AdminButton } from './admin-ui';
 import Link from 'next/link';
 import Navbar from '../shared/Navbar';
 import MainPage from './MainPage';
@@ -41,15 +41,12 @@ const AdminPage = async () => {
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
-              <Button asChild className="w-full bg-red-700 ">
-                <Link
-                  href="/"
-                  className="flex items-center justify-center gap-2"
-                >
-                  <LogIn className="w-4 h-4" />
+              <AdminButton asChild variant="secondary" className="w-full">
+                <Link href="/">
+                  <LogIn className="w-4 h-4" aria-hidden="true" />
                   Retour
                 </Link>
-              </Button>
+              </AdminButton>
             </CardContent>
           </Card>
         </div>

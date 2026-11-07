@@ -20,7 +20,7 @@ export default function RootLayout({
   return (
     <ClerkProvider localization={frFR}>
       <html lang="fr">
-        <body className={inter.className}>
+        <body className={`${inter.className} admin-theme`}>
           {children}
           <Toaster />
         </body>

@@ -5,7 +5,7 @@ import StatCard from '@/components/shared/StatsCard';
 import { motion } from 'framer-motion';
 import { LayersIcon } from 'lucide-react';
 import Link from 'next/link';
-import { Button } from '@/components/ui/button';
+import { AdminButton } from './admin-ui';
 
 const PagesToModify = ({ isAdmin }: { isAdmin: boolean }) => {
   return (
@@ -30,58 +30,34 @@ const PagesToModify = ({ isAdmin }: { isAdmin: boolean }) => {
 
         {isAdmin && (
           <div>
-            <Button
-              asChild
-              className="w-full p-4 bg-gray-800 bg-opacity-50 backdrop-blur-md shadow-lg rounded-xl  border border-gray-700 my-4"
-              variant="outline"
-            >
+            <AdminButton asChild variant="secondary" className="w-full my-4">
               <Link href="/darja-admin/homepage">
                 Modifier la page d'accueil
               </Link>
-            </Button>
-            <Button
-              asChild
-              className="w-full p-4 bg-gray-800 bg-opacity-50 backdrop-blur-md shadow-lg rounded-xl  border border-gray-700 my-4"
-              variant="outline"
-            >
+            </AdminButton>
+            <AdminButton asChild variant="secondary" className="w-full my-4">
               <Link href="/darja-admin/derive-2024">
                 Modifier la page derive 2024
               </Link>
-            </Button>
-            <Button
-              asChild
-              className="w-full p-4 bg-gray-800 bg-opacity-50 backdrop-blur-md shadow-lg rounded-xl  border border-gray-700 my-4"
-              variant="outline"
-            >
+            </AdminButton>
+            <AdminButton asChild variant="secondary" className="w-full my-4">
               <Link href="/darja-admin/derive-2026">
                 Modifier la page derive 2026
               </Link>
-            </Button>
-            <Button
-              asChild
-              className="w-full p-4 bg-gray-800 bg-opacity-50 backdrop-blur-md shadow-lg rounded-xl  border border-gray-700 my-4"
-              variant="outline"
-            >
+            </AdminButton>
+            <AdminButton asChild variant="secondary" className="w-full my-4">
               <Link href="/darja-admin/derive-2022">
                 Modifier la page derive 2022
               </Link>
-            </Button>
-            <Button
-              asChild
-              className="w-full p-4 bg-gray-800 bg-opacity-50 backdrop-blur-md shadow-lg rounded-xl  border border-gray-700 my-4"
-              variant="outline"
-            >
+            </AdminButton>
+            <AdminButton asChild variant="secondary" className="w-full my-4">
               <Link href="/darja-admin/ar2d">Modifier la page AR2D</Link>
-            </Button>
-            <Button
-              asChild
-              className="w-full p-4 bg-gray-800 bg-opacity-50 backdrop-blur-md shadow-lg rounded-xl  border border-gray-700 my-4"
-              variant="outline"
-            >
+            </AdminButton>
+            <AdminButton asChild variant="secondary" className="w-full my-4">
               <Link href="/darja-admin/banner">
                 Modifier la bannière de l'accueil
               </Link>
-            </Button>
+            </AdminButton>
           </div>
         )}
       </main>

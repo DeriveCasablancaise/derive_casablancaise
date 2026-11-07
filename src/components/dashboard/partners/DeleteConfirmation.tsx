@@ -10,7 +10,7 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
-import { Button } from '@/components/ui/button';
+import { AdminButton, adminButtonClass } from '../admin-ui';
 import { deletePartner } from '@/lib/actions/partner.actions';
 
 interface DeleteConfirmationProps {
@@ -42,12 +42,9 @@ export const DeleteConfirmation = ({
   return (
     <AlertDialog>
       <AlertDialogTrigger asChild>
-        <Button
-          className="bg-gray-800 bg-opacity-50 backdrop-blur-md shadow-lg rounded-md border border-gray-700 my-4 mx-2"
-          variant="outline"
-        >
+        <AdminButton variant="danger" size="sm" className="my-4 mx-2">
           Supprimer
-        </Button>
+        </AdminButton>
       </AlertDialogTrigger>
       <AlertDialogContent>
         <AlertDialogTitle>Êtes-vous sûr ?</AlertDialogTitle>
@@ -56,11 +53,13 @@ export const DeleteConfirmation = ({
           définitivement.
         </AlertDialogDescription>
         <div className="flex justify-end gap-4">
-          <AlertDialogCancel>Annuler</AlertDialogCancel>
+          <AlertDialogCancel className={adminButtonClass('secondary')}>
+            Annuler
+          </AlertDialogCancel>
           <AlertDialogAction
             onClick={handleDelete}
             disabled={isDeleting}
-            className="bg-red-600 hover:bg-red-700"
+            className={adminButtonClass('danger')}
           >
             {isDeleting ? 'Suppression...' : 'Supprimer'}
           </AlertDialogAction>

@@ -3,8 +3,8 @@
 import { useCallback, useRef, useState, Dispatch, SetStateAction } from 'react';
 import { useDropzone } from 'react-dropzone';
 import { generateClientDropzoneAccept } from 'uploadthing/client';
-import { Button } from '@/components/ui/button';
 import { convertFileToUrl } from '@/lib/utils';
+import { ImageDropzone } from './ImageDropzone';
 import { ImageSlider } from './ImageSlider';
 
 type FileUploaderProps = {
@@ -104,29 +104,13 @@ export function FileUploader({
 
   return (
     <div className="flex flex-col gap-4 w-full">
-      <div
-        {...getRootProps()}
-        className="flex justify-center items-center bg-gray-800 bg-opacity-50 backdrop-blur-md shadow-lg border cursor-pointer flex-col rounded-xl h-72"
-      >
-        <input {...getInputProps()} className="cursor-pointer" />
-        <div className="flex justify-center items-center flex-col py-5 text-gray-500">
-          <img
-            src="/assets/icons/upload.svg"
-            width={77}
-            height={77}
-            alt="file upload"
-          />
-          <h3 className="mb-2 mt-2">Placez vos images ici</h3>
-          <p className="mb-4">{formatsHint}</p>
-          <Button
-            type="button"
-            className="bg-gray-800 bg-opacity-50 backdrop-blur-md shadow-lg rounded-xl border border-gray-700 my-4"
-            variant="outline"
-          >
-            Choisir à partir de l'appareil
-          </Button>
-        </div>
-      </div>
+      <ImageDropzone
+        getRootProps={getRootProps}
+        getInputProps={getInputProps}
+        title="Placez vos images ici"
+        hint={formatsHint}
+        disabled={isPreparing}
+      />
 
       {imageUrls.length > 0 && (
         <div className="flex flex-col gap-4">

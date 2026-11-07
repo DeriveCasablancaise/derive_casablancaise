@@ -16,7 +16,8 @@ import { useRouter } from 'next/navigation';
 import { useUploadThing } from '@/lib/uploadthing';
 import { toast } from '@/components/hooks/use-toast';
 import { containsBlobUrl, uploadFilesOrThrow } from '@/lib/upload-helpers';
-import SubmitButton from '../SubmitButton';
+import FormActions from '../FormActions';
+import { FieldLabel, notifyInvalid } from '../admin-ui';
 import TiptapEditor from '../TiptapEditor';
 import { VideoFileUploader } from '../derive-2024/VideoFileUploader';
 import { BgImageUploader } from '../derive-2024/BgImageUploader';
@@ -96,6 +97,7 @@ const Derive2026Form = ({ derive2026 }: Derive2026FormProps) => {
       });
 
       if (result) {
+        toast({ title: 'Page enregistrée' });
         router.push('/darja-admin/derive-2026');
         router.refresh();
       }
@@ -114,29 +116,28 @@ const Derive2026Form = ({ derive2026 }: Derive2026FormProps) => {
   return (
     <Form {...form}>
       <form
-        onSubmit={form.handleSubmit(onSubmit)}
+        onSubmit={form.handleSubmit(onSubmit, notifyInvalid)}
         className="flex flex-col gap-5"
       >
         {TEXT_BLOCKS.map((n) => (
-          <div key={n} className="border-t-2 pt-4">
-            <h3 className="text-lg font-semibold mb-4">
-              Textes de description ( bloc {n} )
-            </h3>
+          <div key={n} className="admin-section">
+            <h2 className="admin-section-title">
+              Textes de description (bloc {n})
+            </h2>
 
-            <div className="flex flex-col gap-5 mb-4">
+            <div className="flex flex-col gap-5">
               <FormField
                 control={form.control}
                 name={`text${n}Fr`}
                 render={({ field }) => (
                   <FormItem className="w-full">
-                    <label className="text-sm font-medium">
-                      Texte en Français
-                    </label>
+                    <FieldLabel>Texte (français)</FieldLabel>
                     <FormControl>
                       <TiptapEditor
                         content={field.value || ''}
                         onChange={field.onChange}
                         dir="ltr"
+                        label={`Texte (français), bloc ${n}`}
                       />
                     </FormControl>
                     <FormMessage />
@@ -151,14 +152,13 @@ const Derive2026Form = ({ derive2026 }: Derive2026FormProps) => {
                 name={`text${n}Ar`}
                 render={({ field }) => (
                   <FormItem className="w-full">
-                    <label className="text-sm font-medium">
-                      الترجمة (اختياري)
-                    </label>
+                    <FieldLabel>Texte (arabe)</FieldLabel>
                     <FormControl>
                       <TiptapEditor
                         content={field.value || ''}
                         onChange={field.onChange}
                         dir="rtl"
+                        label={`Texte (arabe), bloc ${n}`}
                       />
                     </FormControl>
                     <FormMessage />
@@ -169,14 +169,15 @@ const Derive2026Form = ({ derive2026 }: Derive2026FormProps) => {
           </div>
         ))}
 
-        <div className="border-t-2 pt-4">
-          <h3 className="text-lg font-semibold mb-4">Image de fond</h3>
+        <div className="admin-section">
+          <h2 className="admin-section-title">Image de fond</h2>
           <FormField
             control={form.control}
             name="backgroundImage"
             render={({ field }) => (
               <FormItem className="w-full">
-                <FormControl className="h-72">
+                <FieldLabel>Image de fond</FieldLabel>
+                <FormControl>
                   <BgImageUploader
                     onFieldChange={field.onChange}
                     imageUrl={field.value || ''}
@@ -189,9 +190,9 @@ const Derive2026Form = ({ derive2026 }: Derive2026FormProps) => {
           />
         </div>
 
-        <div className="border-t-2 pt-4">
-          <h3 className="text-lg font-semibold mb-1">Titre de la section vidéos</h3>
-          <p className="text-sm text-gray-500 mb-4">
+        <div className="admin-section">
+          <h2 className="admin-section-title">Titre de la section vidéos</h2>
+          <p className="admin-help">
             Optionnel, affiché seulement si au moins une vidéo est publiée.
           </p>
           <div className="flex flex-col gap-5 md:flex-row">
@@ -200,6 +201,7 @@ const Derive2026Form = ({ derive2026 }: Derive2026FormProps) => {
               name="videosHeadingFr"
               render={({ field }) => (
                 <FormItem className="w-full">
+                  <FieldLabel>Titre de la section (français)</FieldLabel>
                   <FormControl>
                     <Input
                       placeholder="Titre de la section (Français)"
@@ -217,6 +219,7 @@ const Derive2026Form = ({ derive2026 }: Derive2026FormProps) => {
               name="videosHeadingAr"
               render={({ field }) => (
                 <FormItem className="w-full">
+                  <FieldLabel>Titre de la section (arabe)</FieldLabel>
                   <FormControl>
                     <Input
                       placeholder="عنوان القسم (اختياري)"
@@ -234,8 +237,8 @@ const Derive2026Form = ({ derive2026 }: Derive2026FormProps) => {
         </div>
 
         {VIDEOS.map((n) => (
-          <div key={n} className="border-t-2 pt-4">
-            <h3 className="text-lg font-semibold mb-4">Video {n}</h3>
+          <div key={n} className="admin-section">
+            <h2 className="admin-section-title">Vidéo {n}</h2>
 
             <div className="flex flex-col gap-5 md:flex-row">
               <FormField
@@ -243,6 +246,7 @@ const Derive2026Form = ({ derive2026 }: Derive2026FormProps) => {
                 name={`video${n}TitleFr`}
                 render={({ field }) => (
                   <FormItem className="w-full">
+                    <FieldLabel>Titre (français)</FieldLabel>
                     <FormControl>
                       <Input
                         placeholder={`Titre vidéo ${n} (Français)`}
@@ -259,6 +263,7 @@ const Derive2026Form = ({ derive2026 }: Derive2026FormProps) => {
                 name={`video${n}TitleAr`}
                 render={({ field }) => (
                   <FormItem className="w-full">
+                    <FieldLabel>Titre (arabe)</FieldLabel>
                     <FormControl>
                       <Input
                         placeholder={
@@ -283,6 +288,7 @@ const Derive2026Form = ({ derive2026 }: Derive2026FormProps) => {
                 name={`video${n}IframeLink`}
                 render={({ field }) => (
                   <FormItem className="w-full">
+                    <FieldLabel>Lien iframe</FieldLabel>
                     <FormControl>
                       <Input
                         placeholder={`Lien iframe vidéo ${n} (embed link)`}
@@ -302,7 +308,8 @@ const Derive2026Form = ({ derive2026 }: Derive2026FormProps) => {
                 name={`video${n}Thumbnail`}
                 render={({ field }) => (
                   <FormItem className="w-full">
-                    <FormControl className="h-72">
+                    <FieldLabel>Miniature</FieldLabel>
+                    <FormControl>
                       <VideoFileUploader
                         onFieldChange={field.onChange}
                         imageUrl={field.value || ''}
@@ -325,9 +332,12 @@ const Derive2026Form = ({ derive2026 }: Derive2026FormProps) => {
           </div>
         ))}
 
-        <SubmitButton isLoading={isLoading}>
-          Modifier la page derive 2026
-        </SubmitButton>
+        <FormActions
+          isLoading={isLoading}
+          submitLabel="Modifier la page Dérive 2026"
+          cancelHref="/darja-admin/pages-to-modify"
+          showRequiredHint={false}
+        />
       </form>
     </Form>
   );

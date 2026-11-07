@@ -1,8 +1,10 @@
 import { describe, expect, it } from 'vitest';
 import {
   clampCrop,
+  clampZoom,
   exportAttempts,
   FORMAT_ERROR,
+  hasUsableSize,
   initialCrop,
   MAX_SOURCE_BYTES,
   needsSquareCrop,
@@ -97,6 +99,48 @@ describe('zoomCrop', () => {
       y: 0,
       size: 900,
     });
+  });
+});
+
+describe('sizes that are zero or NaN', () => {
+  const safe = { x: 0, y: 0, size: 1 };
+
+  it('recognises an unusable size', () => {
+    expect(hasUsableSize(800, 600)).toBe(true);
+    expect(hasUsableSize(0, 600)).toBe(false);
+    expect(hasUsableSize(800, 0)).toBe(false);
+    expect(hasUsableSize(NaN, 600)).toBe(false);
+    expect(hasUsableSize(Infinity, 600)).toBe(false);
+  });
+
+  it('gives a safe crop before the image has a size', () => {
+    expect(initialCrop(0, 0)).toEqual(safe);
+    expect(initialCrop(NaN, 600)).toEqual(safe);
+    expect(initialCrop(800, NaN)).toEqual(safe);
+  });
+
+  it('never keeps a crop of size 0 or NaN', () => {
+    expect(clampCrop({ x: 0, y: 0, size: 0 }, 800, 600)).toEqual(safe);
+    expect(clampCrop({ x: 0, y: 0, size: NaN }, 800, 600)).toEqual(safe);
+    expect(clampCrop({ x: 5, y: 5, size: 100 }, 0, 0)).toEqual(safe);
+  });
+
+  it('replaces a NaN position by the top left corner', () => {
+    expect(clampCrop({ x: NaN, y: NaN, size: 100 }, 800, 600)).toEqual({
+      x: 0,
+      y: 0,
+      size: 100,
+    });
+  });
+
+  it('does not move the crop when the frame has no size', () => {
+    const crop = { x: 200, y: 0, size: 600 };
+    expect(panCrop(crop, 50, 50, 0, 800, 600)).toEqual(crop);
+  });
+
+  it('falls back to 100% on a NaN zoom', () => {
+    expect(clampZoom(NaN)).toBe(100);
+    expect(zoomCrop({ x: 0, y: 0, size: 600 }, NaN, 800, 600).size).toBe(600);
   });
 });
 

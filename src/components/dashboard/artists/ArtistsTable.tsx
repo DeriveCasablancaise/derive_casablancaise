@@ -6,7 +6,7 @@ import { Search } from 'lucide-react';
 import { getAllPosts } from '@/lib/actions/post.actions';
 import { DeleteConfirmation } from './DeleteConfirmation';
 import Link from 'next/link';
-import { Button } from '@/components/ui/button';
+import { AdminButton } from '../admin-ui';
 import { getAllArtists } from '@/lib/actions/artists.actions';
 import Image from 'next/image';
 import {
@@ -139,7 +139,7 @@ const ArtistsTable = ({ currentUserIsAdmin }: ArtistsTableProps) => {
                             sizes="96px"
                           />
                         ) : (
-                          <div className="w-full h-full flex items-center justify-center text-gray-500 text-xs">
+                          <div className="w-full h-full flex items-center justify-center text-gray-300 text-xs">
                             No image
                           </div>
                         )}
@@ -166,15 +166,16 @@ const ArtistsTable = ({ currentUserIsAdmin }: ArtistsTableProps) => {
 
                 {currentUserIsAdmin && (
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">
-                    <Button
+                    <AdminButton
                       asChild
-                      className=" bg-gray-800 bg-opacity-50 backdrop-blur-md shadow-lg rounded-md  border border-gray-700 my-4 mx-2"
-                      variant="outline"
+                      variant="secondary"
+                      size="sm"
+                      className="my-4 mx-2"
                     >
                       <Link href={`/darja-admin/artists/${artist._id}/update`}>
                         Modifier
                       </Link>
-                    </Button>
+                    </AdminButton>
                     <DeleteConfirmation
                       artistId={artist._id}
                       onDelete={handleDelete}

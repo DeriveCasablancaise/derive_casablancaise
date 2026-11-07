@@ -15,7 +15,8 @@ import * as z from 'zod';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { toast } from '@/components/hooks/use-toast';
-import SubmitButton from '../SubmitButton';
+import FormActions from '../FormActions';
+import { FieldHelp, FieldLabel, notifyInvalid } from '../admin-ui';
 import BannerStrip from '@/components/shared/BannerStrip';
 import { bannerFormSchema } from '@/lib/validator';
 import { BANNER_DEFAULTS, getBannerView } from '@/lib/banner';
@@ -82,36 +83,39 @@ const BannerForm = ({ banner }: BannerFormProps) => {
   return (
     <Form {...form}>
       <form
-        onSubmit={form.handleSubmit(onSubmit)}
+        onSubmit={form.handleSubmit(onSubmit, notifyInvalid)}
         className="flex flex-col gap-5"
       >
-        <FormField
-          control={form.control}
-          name="isActive"
-          render={({ field }) => (
-            <FormItem className="w-full">
-              <FormControl>
-                <div className="flex items-center gap-4">
-                  <Checkbox
-                    id="isActive"
-                    checked={field.value}
-                    onCheckedChange={field.onChange}
-                  />
-                  <label htmlFor="isActive" className="checkbox-label">
-                    Afficher la bannière sur la page d'accueil
-                  </label>
-                </div>
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+        <div className="admin-section">
+          <h2 className="admin-section-title">Affichage</h2>
+          <FormField
+            control={form.control}
+            name="isActive"
+            render={({ field }) => (
+              <FormItem className="w-full">
+                <FormControl>
+                  <div className="flex items-center gap-4">
+                    <Checkbox
+                      id="isActive"
+                      checked={field.value}
+                      onCheckedChange={field.onChange}
+                    />
+                    <label htmlFor="isActive" className="checkbox-label">
+                      Afficher la bannière sur la page d&apos;accueil
+                    </label>
+                  </div>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
 
-        <div className="border-t-2 pt-4">
-          <h3 className="text-lg font-semibold mb-1">Texte (200 caractères max)</h3>
-          <p className="text-sm opacity-70 mb-4">
-            Le texte défile sous le titre de la page d'accueil (200 caractères
-            max).
+        <div className="admin-section">
+          <h2 className="admin-section-title">Texte</h2>
+          <p className="admin-help">
+            Le texte défile sous le titre de la page d&apos;accueil (200
+            caractères max).
           </p>
           <div className="flex flex-col gap-5 md:flex-row">
             <FormField
@@ -119,6 +123,7 @@ const BannerForm = ({ banner }: BannerFormProps) => {
               name="textFr"
               render={({ field }) => (
                 <FormItem className="w-full">
+                  <FieldLabel>Texte (français)</FieldLabel>
                   <FormControl>
                     <Input
                       placeholder="Texte en français"
@@ -127,6 +132,9 @@ const BannerForm = ({ banner }: BannerFormProps) => {
                       {...field}
                     />
                   </FormControl>
+                  <FieldHelp>
+                    Obligatoire quand la bannière est affichée.
+                  </FieldHelp>
                   <FormMessage />
                 </FormItem>
               )}
@@ -136,6 +144,7 @@ const BannerForm = ({ banner }: BannerFormProps) => {
               name="textAr"
               render={({ field }) => (
                 <FormItem className="w-full">
+                  <FieldLabel>Texte (arabe)</FieldLabel>
                   <FormControl>
                     <Input
                       placeholder="النص بالعربية (اختياري)"
@@ -152,13 +161,14 @@ const BannerForm = ({ banner }: BannerFormProps) => {
           </div>
         </div>
 
-        <div className="border-t-2 pt-4">
-          <h3 className="text-lg font-semibold mb-4">Lien (optionnel)</h3>
+        <div className="admin-section">
+          <h2 className="admin-section-title">Lien (optionnel)</h2>
           <FormField
             control={form.control}
             name="linkUrl"
             render={({ field }) => (
               <FormItem className="w-full">
+                <FieldLabel>Adresse du lien</FieldLabel>
                 <FormControl>
                   <Input
                     placeholder="https://... ou /fr/derive-2026"
@@ -176,6 +186,7 @@ const BannerForm = ({ banner }: BannerFormProps) => {
               name="linkLabelFr"
               render={({ field }) => (
                 <FormItem className="w-full">
+                  <FieldLabel>Texte du lien (français)</FieldLabel>
                   <FormControl>
                     <Input
                       placeholder="Texte du lien (français)"
@@ -184,6 +195,7 @@ const BannerForm = ({ banner }: BannerFormProps) => {
                       {...field}
                     />
                   </FormControl>
+                  <FieldHelp>Obligatoire quand un lien est renseigné.</FieldHelp>
                   <FormMessage />
                 </FormItem>
               )}
@@ -193,6 +205,7 @@ const BannerForm = ({ banner }: BannerFormProps) => {
               name="linkLabelAr"
               render={({ field }) => (
                 <FormItem className="w-full">
+                  <FieldLabel>Texte du lien (arabe)</FieldLabel>
                   <FormControl>
                     <Input
                       placeholder="نص الرابط (اختياري)"
@@ -209,8 +222,8 @@ const BannerForm = ({ banner }: BannerFormProps) => {
           </div>
         </div>
 
-        <div className="border-t-2 pt-4">
-          <h3 className="text-lg font-semibold mb-4">Aperçu</h3>
+        <div className="admin-section">
+          <h2 className="admin-section-title">Aperçu</h2>
           <div className="flex flex-col gap-4">
             {(
               [
@@ -223,14 +236,19 @@ const BannerForm = ({ banner }: BannerFormProps) => {
                 {view ? (
                   <BannerStrip view={view} preview />
                 ) : (
-                  <p className="text-sm opacity-70">Rien à afficher</p>
+                  <p className="admin-help">Rien à afficher</p>
                 )}
               </div>
             ))}
           </div>
         </div>
 
-        <SubmitButton isLoading={isLoading}>Enregistrer la bannière</SubmitButton>
+        <FormActions
+          isLoading={isLoading}
+          submitLabel="Enregistrer la bannière"
+          cancelHref="/darja-admin/pages-to-modify"
+          showRequiredHint={false}
+        />
       </form>
     </Form>
   );

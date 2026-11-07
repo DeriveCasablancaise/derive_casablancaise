@@ -94,15 +94,15 @@
 @layer utilities {
   /* SHADCN OVERRIDES */
   .select-field {
-    @apply w-full bg-gray-800 bg-opacity-50 backdrop-blur-md overflow-hidden shadow-lg border  h-[54px] placeholder:text-gray-500 rounded-xl px-5 py-3 border-none focus-visible:ring-transparent focus:ring-transparent !important;
+    @apply w-full overflow-hidden h-[54px] rounded-xl px-4 py-3 focus-visible:ring-transparent focus:ring-transparent !important;
   }
 
   .input-field {
-    @apply bg-gray-800 h-[54px]  placeholder:text-gray-500 rounded-xl  px-4 py-3 border-none  !important;
+    @apply h-[54px] rounded-xl px-4 py-3 !important;
   }
 
   .textarea {
-    @apply bg-gray-800 flex flex-1 placeholder:text-gray-500  px-5 py-3 border-none focus-visible:ring-transparent !important;
+    @apply flex flex-1 rounded-xl px-4 py-3 focus-visible:ring-transparent !important;
   }
 
   .button {
@@ -110,18 +110,17 @@
   }
 
   .select-item {
-    @apply py-3 cursor-pointer  focus:bg-gray-800;
+    @apply py-3 cursor-pointer;
   }
 
   .checkbox-label {
-    @apply cursor-pointer text-sm font-medium text-gray-100 peer-disabled:cursor-not-allowed peer-disabled:opacity-70 md:leading-none;
+    @apply cursor-pointer text-sm font-medium peer-disabled:cursor-not-allowed peer-disabled:opacity-70 md:leading-none;
   }
 }
 
 /* Tiptap Styles */
 .ProseMirror p.is-editor-empty:first-child::before {
-  color: #0b4885;
-  background-color: #0b4885;
+  color: #4b5563;
   content: attr(data-placeholder);
   float: left;
   height: 0;
@@ -142,8 +141,8 @@
 }
 
 .ProseMirror blockquote {
-  border-left: 2px solid #ffffff;
-  padding-left: 1rem;
+  border-inline-start: 2px solid #6b7280;
+  padding-inline-start: 1rem;
   font-style: italic;
 }
 
@@ -162,15 +161,356 @@
   background-color: transparent;
   width: 100%;
   outline: none;
-  margin-left: 16px;
 }
 
-.react-datepicker__day--selected {
-  background-color: #624cf5 !important;
-  color: #ffffff !important;
+.react-datepicker-popper {
+  z-index: 40 !important;
+}
+
+.react-datepicker__day--selected,
+.react-datepicker__day--keyboard-selected {
+  background-color: var(--admin-primary) !important;
+  color: var(--admin-on-primary) !important;
   border-radius: 4px;
 }
 
 .react-datepicker__time-list-item--selected {
-  background-color: #624cf5 !important;
+  background-color: var(--admin-primary) !important;
+  color: var(--admin-on-primary) !important;
+}
+
+/* ========================================== ADMIN THEME
+   Set on the body of the admin root layout, so dialogs and popovers that
+   portal to the body get it too. Pairs are checked by admin-theme.test.ts. */
+.admin-theme {
+  --admin-bg: #111827;
+  --admin-surface: #1f2937;
+  --admin-raised: #374151;
+  --admin-border: #4b5563;
+  --admin-border-strong: #6b7280;
+  --admin-text: #f9fafb;
+  --admin-muted: #d1d5db;
+  --admin-placeholder: #9ca3af;
+  /* same values as --brand-chrome and --brand-chrome-active on the public site */
+  --admin-primary: #dc3201;
+  --admin-primary-hover: #bb3e05;
+  --admin-on-primary: #ffffff;
+  --admin-danger: #b91c1c;
+  --admin-danger-hover: #991b1b;
+  --admin-on-danger: #ffffff;
+  --admin-danger-text: #fca5a5;
+  --admin-success-text: #86efac;
+  --admin-disabled-bg: #374151;
+  --admin-disabled-text: #d1d5db;
+  --admin-ring: #fbbf24;
+  --admin-page: #ffffff;
+  --admin-page-text: #111827;
+  --admin-page-link: #1d4ed8;
+
+  /* the shadcn tokens follow, as H S% L% of the colours above */
+  --background: 220.9 39.3% 11%;
+  --foreground: 210 20% 98%;
+  --card: 215 27.9% 16.9%;
+  --card-foreground: 210 20% 98%;
+  --popover: 215 27.9% 16.9%;
+  --popover-foreground: 210 20% 98%;
+  --primary: 13.4 99.1% 43.3%;
+  --primary-foreground: 0 0% 100%;
+  --secondary: 216.9 19.1% 26.7%;
+  --secondary-foreground: 210 20% 98%;
+  --muted: 216.9 19.1% 26.7%;
+  --muted-foreground: 216 12.2% 83.9%;
+  --accent: 216.9 19.1% 26.7%;
+  --accent-foreground: 210 20% 98%;
+  --destructive: 0 73.7% 41.8%;
+  --destructive-foreground: 0 0% 100%;
+  --border: 215 13.8% 34.1%;
+  --input: 220 8.9% 46.1%;
+  --ring: 43.3 96.4% 56.3%;
+}
+
+.admin-theme :focus-visible {
+  outline: 2px solid var(--admin-ring);
+  outline-offset: 2px;
+}
+
+.admin-shell {
+  background-color: var(--admin-bg);
+  color: var(--admin-text);
+}
+
+/* text-destructive is a dark red made for buttons, too dark on these surfaces */
+.admin-theme .text-destructive,
+.admin-theme .admin-error {
+  color: var(--admin-danger-text);
+}
+
+.admin-error {
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.admin-theme .input-field,
+.admin-theme .select-field,
+.admin-theme .textarea {
+  background-color: var(--admin-bg);
+  color: var(--admin-text);
+  border: 1px solid var(--admin-border-strong);
+}
+
+.admin-theme .input-field::placeholder,
+.admin-theme .textarea::placeholder,
+.admin-theme .input-field input::placeholder {
+  color: var(--admin-placeholder);
+}
+
+.admin-theme .select-field[data-placeholder] {
+  color: var(--admin-placeholder);
+}
+
+.admin-theme .admin-combobox {
+  display: flex;
+  width: 100%;
+  min-height: 54px;
+  align-items: center;
+  gap: 0.5rem;
+  border-radius: 0.75rem;
+  border: 1px solid var(--admin-border-strong);
+  background-color: var(--admin-bg);
+  color: var(--admin-text);
+  padding: 0.75rem 1rem;
+  font-size: 0.875rem;
+  text-align: start;
+}
+
+.admin-placeholder {
+  color: var(--admin-placeholder);
+}
+
+/* Buttons: two classes so they win over anything left on a call site */
+.admin-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  height: 2.5rem;
+  padding: 0 1rem;
+  border: 1px solid transparent;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background-color 0.15s, border-color 0.15s;
+}
+
+.admin-btn-sm {
+  height: 2.25rem;
+  padding: 0 0.75rem;
+}
+
+.admin-btn-icon {
+  width: 2.5rem;
+  padding: 0;
+}
+
+.admin-theme .admin-btn-primary {
+  background-color: var(--admin-primary);
+  color: var(--admin-on-primary);
+}
+
+.admin-theme .admin-btn-primary:hover {
+  background-color: var(--admin-primary-hover);
+}
+
+.admin-theme .admin-btn-secondary {
+  background-color: transparent;
+  border-color: var(--admin-border-strong);
+  color: var(--admin-text);
+}
+
+.admin-theme .admin-btn-secondary:hover {
+  background-color: var(--admin-raised);
+}
+
+.admin-theme .admin-btn-ghost {
+  background-color: transparent;
+  color: var(--admin-text);
+}
+
+.admin-theme .admin-btn-ghost:hover {
+  background-color: var(--admin-raised);
+}
+
+.admin-theme .admin-btn-danger {
+  background-color: var(--admin-danger);
+  color: var(--admin-on-danger);
+}
+
+.admin-theme .admin-btn-danger:hover {
+  background-color: var(--admin-danger-hover);
+}
+
+.admin-theme .admin-btn[aria-pressed='true'] {
+  background-color: var(--admin-primary);
+  color: var(--admin-on-primary);
+}
+
+/* no opacity here: a dashed border says disabled and the text stays readable */
+.admin-theme .admin-btn:disabled {
+  background-color: var(--admin-disabled-bg);
+  border: 1px dashed var(--admin-border-strong);
+  color: var(--admin-disabled-text);
+  cursor: not-allowed;
+}
+
+/* Forms */
+.admin-section {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  padding: 1.25rem;
+  background-color: var(--admin-surface);
+  border: 1px solid var(--admin-border);
+  border-radius: 0.75rem;
+}
+
+.admin-section-title {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--admin-text);
+}
+
+.admin-subcard {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 0.75rem;
+  background-color: var(--admin-raised);
+  border-radius: 0.5rem;
+}
+
+.admin-theme .admin-label {
+  display: block;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--admin-text);
+}
+
+.admin-theme .admin-label.text-destructive {
+  color: var(--admin-danger-text);
+}
+
+.admin-required {
+  color: var(--admin-danger-text);
+}
+
+.admin-help {
+  font-size: 0.875rem;
+  color: var(--admin-muted);
+}
+
+.admin-actions {
+  position: sticky;
+  bottom: 0;
+  z-index: 30;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  background-color: var(--admin-surface);
+  border: 1px solid var(--admin-border);
+  border-radius: 0.75rem;
+}
+
+.admin-actions-hint {
+  margin-inline-end: auto;
+}
+
+/* Rich text: a white page, whatever the pasted text looked like */
+.admin-editor {
+  width: 100%;
+  overflow: hidden;
+  background-color: var(--admin-surface);
+  border: 1px solid var(--admin-border-strong);
+  border-radius: 0.75rem;
+}
+
+.admin-editor-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+  padding: 0.5rem;
+  border-bottom: 1px solid var(--admin-border);
+}
+
+.admin-theme .admin-editor .ProseMirror {
+  --tw-prose-body: var(--admin-page-text);
+  --tw-prose-headings: var(--admin-page-text);
+  --tw-prose-bold: var(--admin-page-text);
+  --tw-prose-quotes: var(--admin-page-text);
+  --tw-prose-counters: var(--admin-page-text);
+  --tw-prose-bullets: var(--admin-page-text);
+  --tw-prose-links: var(--admin-page-link);
+  max-width: 100%;
+  min-height: 200px;
+  padding: 1rem;
+  background-color: var(--admin-page);
+  color: var(--admin-page-text);
+  line-height: 1.7;
+  border-radius: 0;
+}
+
+/* the amber ring is too pale on the white page */
+.admin-theme .admin-editor .ProseMirror:focus-visible {
+  outline-color: var(--admin-page-link);
+  outline-offset: -2px;
+}
+
+/* Image uploads */
+.admin-dropzone {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  min-height: 14rem;
+  padding: 1.5rem;
+  text-align: center;
+  cursor: pointer;
+  background-color: var(--admin-surface);
+  border: 1px dashed var(--admin-border-strong);
+  border-radius: 0.75rem;
+  color: var(--admin-text);
+}
+
+.admin-preview {
+  overflow: hidden;
+  background-color: var(--admin-surface);
+  border: 1px solid var(--admin-border);
+  border-radius: 0.75rem;
+}
+
+.admin-preview-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem;
+  background-color: var(--admin-bg);
+  border-bottom: 1px solid var(--admin-border);
+  color: var(--admin-text);
+}
+
+/* the whole image, never cropped */
+.admin-preview-image {
+  display: block;
+  width: 100%;
+  height: auto;
+  min-height: 200px;
+  max-height: 60vh;
+  object-fit: contain;
+  background-color: var(--admin-surface);
 }

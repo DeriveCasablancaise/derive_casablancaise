@@ -20,7 +20,12 @@ function loadElement(src: string, crossOrigin?: 'anonymous') {
   return new Promise<HTMLImageElement>((resolve, reject) => {
     const image = new Image();
     if (crossOrigin) image.crossOrigin = crossOrigin;
-    image.onload = () => resolve(image);
+    // a failed decode() is not fatal, drawing decodes the image anyway
+    image.onload = () =>
+      image
+        .decode()
+        .catch(() => {})
+        .then(() => resolve(image));
     image.onerror = () => reject(new Error('Image illisible'));
     image.src = src;
   });

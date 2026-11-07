@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { Button } from '../ui/button';
+import { AdminButton } from './admin-ui';
 import { motion } from 'framer-motion';
 import PostsTable from './posts/PostsTable';
 import StatCard from '../shared/StatsCard';
@@ -49,15 +49,11 @@ const PostsPage = ({
         <PostsTable currentUserIsAdmin={isAdmin} />
 
         {isAdmin && (
-          <Button
-            asChild
-            className="w-full p-4 bg-gray-800 bg-opacity-50 backdrop-blur-md shadow-lg rounded-xl  border border-gray-700 my-4"
-            variant="outline"
-          >
+          <AdminButton asChild className="w-full my-4">
             <Link href="/darja-admin/posts/create">
               Créer un nouvel événement
             </Link>
-          </Button>
+          </AdminButton>
         )}
       </main>
     </div>
