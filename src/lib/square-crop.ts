@@ -37,15 +37,29 @@ export function needsSquareCrop(width: number, height: number) {
   return ratio < MIN_SQUARE_RATIO || ratio > MAX_SQUARE_RATIO;
 }
 
+const isPositive = (value: number) => Number.isFinite(value) && value > 0;
+const finiteOrZero = (value: number) => (Number.isFinite(value) ? value : 0);
+
+// a size of 0 would turn the drawing scale into Infinity
+const safeCrop = (): Crop => ({ x: 0, y: 0, size: 1 });
+
+export function hasUsableSize(width: number, height: number) {
+  return isPositive(width) && isPositive(height);
+}
+
 export function clampCrop(crop: Crop, width: number, height: number): Crop {
+  if (!hasUsableSize(width, height) || !isPositive(crop.size)) return safeCrop();
+
   return {
     size: crop.size,
-    x: Math.min(Math.max(crop.x, 0), width - crop.size),
-    y: Math.min(Math.max(crop.y, 0), height - crop.size),
+    x: Math.min(Math.max(finiteOrZero(crop.x), 0), width - crop.size),
+    y: Math.min(Math.max(finiteOrZero(crop.y), 0), height - crop.size),
   };
 }
 
 export function initialCrop(width: number, height: number): Crop {
+  if (!hasUsableSize(width, height)) return safeCrop();
+
   const size = Math.min(width, height);
   const centerY = height > width ? height * PORTRAIT_FOCUS : height / 2;
 
@@ -57,6 +71,7 @@ export function initialCrop(width: number, height: number): Crop {
 }
 
 export function clampZoom(zoom: number) {
+  if (Number.isNaN(zoom)) return MIN_ZOOM;
   return Math.min(Math.max(zoom, MIN_ZOOM), MAX_ZOOM);
 }
 
@@ -87,6 +102,8 @@ export function panCrop(
   width: number,
   height: number,
 ): Crop {
+  if (!isPositive(frameSide)) return clampCrop(crop, width, height);
+
   const sourcePerFramePixel = crop.size / frameSide;
 
   return clampCrop(

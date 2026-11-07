@@ -7,10 +7,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { useEffect, useState } from 'react';
 import { EDITION_YEARS } from '@/constants/editions';
 
 type EditionDropdownProps = {
+  id?: string;
   value?: string | null;
   onChangeHandler: (value: string) => void;
 };
@@ -20,29 +20,22 @@ const editions = EDITION_YEARS.map((year) => ({
   name: `Édition ${year}`,
 }));
 
-const EditionDropdown = ({ value, onChangeHandler }: EditionDropdownProps) => {
-  const [selectedValue, setSelectedValue] = useState(value?.toString() || '');
-
-  useEffect(() => {
-    setSelectedValue(value?.toString() || '');
-  }, [value]);
-
-  const handleChange = (value: string) => {
-    setSelectedValue(value);
-    onChangeHandler(value);
-  };
-
+const EditionDropdown = ({
+  id,
+  value,
+  onChangeHandler,
+}: EditionDropdownProps) => {
   return (
     <Select value={value || undefined} onValueChange={onChangeHandler}>
-      <SelectTrigger className="select-field">
+      <SelectTrigger id={id} className="select-field">
         <SelectValue placeholder="Année d'édition" />
       </SelectTrigger>
-      <SelectContent className="bg-gray-800 bg-opacity-50 backdrop-blur-md shadow-lg border">
+      <SelectContent>
         {editions.map((edition) => (
           <SelectItem
             key={edition.id}
             value={edition.id}
-            className="select-item text-gray-100 focus:text-gray-900"
+            className="select-item"
           >
             {edition.name}
           </SelectItem>

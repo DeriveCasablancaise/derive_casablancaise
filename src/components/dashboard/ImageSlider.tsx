@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { ChevronLeft, ChevronRight, X } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { AdminButton } from './admin-ui';
 
 type ImageSliderProps = {
   images: string[];
@@ -15,7 +15,9 @@ export const ImageSlider = ({
   onMove,
   onRecrop,
 }: ImageSliderProps) => {
-  const [currentIndex, setCurrentIndex] = useState(0);
+  const [selectedIndex, setCurrentIndex] = useState(0);
+  // removing the last image would otherwise leave the index past the end
+  const currentIndex = Math.min(selectedIndex, images.length - 1);
   const currentImage = images[currentIndex];
   // a blob is a new image, it already went through the cropper
   const canRecrop =
@@ -41,93 +43,85 @@ export const ImageSlider = ({
   };
 
   return (
-    <div className="relative w-full h-[300px] bg-gray-800 bg-opacity-50 backdrop-blur-md rounded-xl overflow-hidden">
-      <div className="absolute top-4 right-4 z-10 flex gap-2">
-        {onMove && images.length > 1 && (
+    <div className="admin-preview">
+      <div className="admin-preview-bar">
+        {images.length > 1 && (
           <>
-            <Button
+            <AdminButton
               type="button"
               variant="secondary"
-              size="sm"
-              disabled={currentIndex === 0}
-              onClick={() => move(-1)}
+              size="icon"
+              aria-label="Image précédente"
+              title="Image précédente"
+              onClick={goToPrevious}
             >
-              Avancer
-            </Button>
-            <Button
-              type="button"
-              variant="secondary"
-              size="sm"
-              disabled={currentIndex === images.length - 1}
-              onClick={() => move(1)}
-            >
-              Reculer
-            </Button>
-            <span className="self-center rounded bg-black/60 px-2 text-sm text-white">
-              {currentIndex + 1}/{images.length}
+              <ChevronLeft className="h-5 w-5" aria-hidden="true" />
+            </AdminButton>
+            <span className="text-sm tabular-nums" aria-live="polite">
+              {currentIndex + 1} / {images.length}
             </span>
+            <AdminButton
+              type="button"
+              variant="secondary"
+              size="icon"
+              aria-label="Image suivante"
+              title="Image suivante"
+              onClick={goToNext}
+            >
+              <ChevronRight className="h-5 w-5" aria-hidden="true" />
+            </AdminButton>
           </>
         )}
-        {canRecrop && (
-          <Button
+
+        <div className="ms-auto flex flex-wrap items-center gap-2">
+          {onMove && images.length > 1 && (
+            <>
+              <AdminButton
+                type="button"
+                variant="secondary"
+                size="sm"
+                disabled={currentIndex === 0}
+                onClick={() => move(-1)}
+              >
+                Avancer
+              </AdminButton>
+              <AdminButton
+                type="button"
+                variant="secondary"
+                size="sm"
+                disabled={currentIndex === images.length - 1}
+                onClick={() => move(1)}
+              >
+                Reculer
+              </AdminButton>
+            </>
+          )}
+          {canRecrop && (
+            <AdminButton
+              type="button"
+              variant="secondary"
+              size="sm"
+              onClick={() => onRecrop?.(currentIndex)}
+            >
+              Recadrer
+            </AdminButton>
+          )}
+          <AdminButton
             type="button"
-            variant="secondary"
+            variant="danger"
             size="sm"
-            onClick={() => onRecrop?.(currentIndex)}
+            onClick={() => onRemove(currentIndex)}
           >
-            Recadrer
-          </Button>
-        )}
-        <Button
-          type="button"
-          variant="destructive"
-          size="icon"
-          onClick={() => onRemove(currentIndex)}
-        >
-          <X className="h-4 w-4" />
-        </Button>
+            Supprimer
+          </AdminButton>
+        </div>
       </div>
 
-      <div
-        className="w-full h-full bg-center bg-cover duration-500"
-        style={{ backgroundImage: `url(${images[currentIndex]})` }}
+      <img
+        src={currentImage}
+        alt={`Aperçu de l'image ${currentIndex + 1} sur ${images.length}`}
+        className="admin-preview-image"
       />
-
-      {images.length > 1 && (
-        <>
-          <Button
-            type="button"
-            variant="ghost"
-            size="icon"
-            className="absolute top-1/2 left-4 transform -translate-y-1/2 bg-gray-700 hover:bg-gray-800 bg-opacity-50 backdrop-blur-md"
-            onClick={goToPrevious}
-          >
-            <ChevronLeft className="h-6 w-6" />
-          </Button>
-
-          <Button
-            type="button"
-            variant="ghost"
-            size="icon"
-            className="absolute top-1/2 right-4 transform -translate-y-1/2 bg-gray-700 hover:bg-gray-800 bg-opacity-50 backdrop-blur-md"
-            onClick={goToNext}
-          >
-            <ChevronRight className="h-6 w-6" />
-          </Button>
-
-          <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex gap-2">
-            {images.map((_, index) => (
-              <div
-                key={index}
-                className={`w-2 h-2 rounded-full cursor-pointer ${
-                  currentIndex === index ? 'bg-white' : 'bg-white/50'
-                }`}
-                onClick={() => setCurrentIndex(index)}
-              />
-            ))}
-          </div>
-        </>
-      )}
     </div>
   );
 };

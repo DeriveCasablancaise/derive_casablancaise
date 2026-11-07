@@ -3,7 +3,7 @@
 import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import Image from 'next/image';
 import { ArrowDown, ArrowUp, ChevronsDown, ChevronsUp } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { AdminButton, adminButtonClass } from '../admin-ui';
 import {
   getAllPartners,
   saveEditionOrder,
@@ -156,8 +156,8 @@ const PartnerOrderManager = ({
             className={cn(
               'min-h-10 px-4 py-2 rounded-md text-sm font-medium transition-all disabled:cursor-not-allowed disabled:opacity-50 focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-500',
               edition === year
-                ? 'bg-blue-600 text-white shadow-lg'
-                : 'text-gray-400 hover:text-gray-200',
+                ? 'admin-btn-primary shadow-lg'
+                : 'text-gray-300 hover:text-gray-100',
             )}
           >
             Édition {year}
@@ -171,23 +171,21 @@ const PartnerOrderManager = ({
             Ordre d&apos;affichage {edition}
           </h2>
           <div className="flex flex-wrap gap-2">
-            <Button
+            <AdminButton
               type="button"
-              variant="outline"
-              className="min-h-10"
+              variant="secondary"
               disabled={!isDirty || isSaving}
               onClick={handleCancel}
             >
               Annuler
-            </Button>
-            <Button
+            </AdminButton>
+            <AdminButton
               type="button"
-              className="min-h-10"
               disabled={!isDirty || isSaving}
               onClick={handleSave}
             >
               {isSaving ? 'Enregistrement...' : "Enregistrer l'ordre"}
-            </Button>
+            </AdminButton>
           </div>
         </div>
 
@@ -210,9 +208,9 @@ const PartnerOrderManager = ({
         )}
 
         {isLoading ? (
-          <p className="py-10 text-center text-gray-500">Chargement...</p>
+          <p className="py-10 text-center text-gray-300">Chargement...</p>
         ) : rows.length === 0 ? (
-          <p className="py-10 text-center text-gray-500">
+          <p className="py-10 text-center text-gray-300">
             Aucun partenaire trouvé pour cette édition.
           </p>
         ) : (
@@ -262,7 +260,7 @@ const PartnerOrderManager = ({
                           : index === rows.length - 1)
                       }
                       onClick={() => handleMove(index, move)}
-                      className="inline-flex h-10 w-10 items-center justify-center rounded-md border border-gray-600 text-gray-200 hover:bg-gray-700 disabled:cursor-not-allowed disabled:opacity-40 focus-visible:outline focus-visible:outline-2 focus-visible:outline-blue-500"
+                      className={adminButtonClass('secondary', 'icon')}
                     >
                       <Icon size={18} aria-hidden="true" />
                     </button>

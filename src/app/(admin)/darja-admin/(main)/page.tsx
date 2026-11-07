@@ -7,7 +7,7 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import { LogIn, ShieldCheck, UserPlus } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { AdminButton } from '@/components/dashboard/admin-ui';
 import Link from 'next/link';
 import AdminPage from '@/components/dashboard/AdminPage';
 
@@ -35,27 +35,18 @@ export default async function Home() {
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
-                <Button asChild className="w-full bg-green-700 ">
-                  <Link
-                    href="/sign-in"
-                    className="flex items-center justify-center gap-2"
-                  >
-                    <LogIn className="w-4 h-4" />
+                <AdminButton asChild className="w-full">
+                  <Link href="/sign-in">
+                    <LogIn className="w-4 h-4" aria-hidden="true" />
                     Se connecter
                   </Link>
-                </Button>
-                <Button
-                  asChild
-                  className="w-full bg-gray-300 hover:bg-green-700 text-green-700 hover:text-gray-100"
-                >
-                  <Link
-                    href="/sign-up"
-                    className="flex items-center justify-center gap-2  z-10"
-                  >
-                    <UserPlus className="w-4 h-4" />
+                </AdminButton>
+                <AdminButton asChild variant="secondary" className="w-full">
+                  <Link href="/sign-up">
+                    <UserPlus className="w-4 h-4" aria-hidden="true" />
                     S'enregistrer
                   </Link>
-                </Button>
+                </AdminButton>
               </div>
             </CardContent>
           </Card>

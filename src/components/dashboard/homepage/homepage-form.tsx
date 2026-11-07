@@ -18,7 +18,8 @@ import { useUploadThing } from '@/lib/uploadthing';
 import { toast } from '@/components/hooks/use-toast';
 import { containsBlobUrl, uploadFilesOrThrow } from '@/lib/upload-helpers';
 import { updateHomepage } from '@/lib/actions/homepage.actions';
-import SubmitButton from '../SubmitButton';
+import FormActions from '../FormActions';
+import { FieldLabel, notifyInvalid } from '../admin-ui';
 import TiptapEditor from '../TiptapEditor';
 import { VideoFileUploader } from './VideoFileUploader';
 import { homepageFormSchema } from '@/lib/validator';
@@ -116,6 +117,7 @@ const HomepageForm = ({ homepage }: HomepageFormProps) => {
       });
 
       if (result) {
+        toast({ title: 'Page enregistrée' });
         router.push('/darja-admin/homepage');
       }
     } catch (error) {
@@ -133,12 +135,12 @@ const HomepageForm = ({ homepage }: HomepageFormProps) => {
   return (
     <Form {...form}>
       <form
-        onSubmit={form.handleSubmit(onSubmit)}
+        onSubmit={form.handleSubmit(onSubmit, notifyInvalid)}
         className="flex flex-col gap-5"
       >
         {/* Hero Subtitles Section */}
-        <div className="border-t-2 pt-4">
-          <h3 className="text-lg font-semibold mb-4">Textes de description</h3>
+        <div className="admin-section">
+          <h3 className="admin-section-title">Textes de description</h3>
 
           <div className="flex flex-col gap-5 mb-4">
             <FormField
@@ -146,14 +148,13 @@ const HomepageForm = ({ homepage }: HomepageFormProps) => {
               name="textFr"
               render={({ field }) => (
                 <FormItem className="w-full">
-                  <label className="text-sm font-medium">
-                    Texte en Français
-                  </label>
+                  <FieldLabel required>Texte (français)</FieldLabel>
                   <FormControl>
                     <TiptapEditor
                       content={field.value || ''}
                       onChange={field.onChange}
                       dir="ltr"
+                      label="Texte (français)"
                     />
                   </FormControl>
                   <FormMessage />
@@ -168,14 +169,13 @@ const HomepageForm = ({ homepage }: HomepageFormProps) => {
               name="textAr"
               render={({ field }) => (
                 <FormItem className="w-full">
-                  <label className="text-sm font-medium">
-                    الترجمة (اختياري)
-                  </label>
+                  <FieldLabel>Texte (arabe)</FieldLabel>
                   <FormControl>
                     <TiptapEditor
                       content={field.value || ''}
                       onChange={field.onChange}
                       dir="rtl"
+                      label="Texte (arabe)"
                     />
                   </FormControl>
                   <FormMessage />
@@ -185,13 +185,14 @@ const HomepageForm = ({ homepage }: HomepageFormProps) => {
           </div>
         </div>
 
-        <div className="border-t-2 pt-4">
-          <h3 className="text-lg font-semibold mb-4">Image de fond</h3>
+        <div className="admin-section">
+          <h3 className="admin-section-title">Image de fond</h3>
           <FormField
             control={form.control}
             name="backgroundImage"
             render={({ field }) => (
               <FormItem className="w-full">
+                <FieldLabel required>Image de fond</FieldLabel>
                 <FormControl className="h-72">
                   <BgImageUploader
                     onFieldChange={field.onChange}
@@ -206,8 +207,8 @@ const HomepageForm = ({ homepage }: HomepageFormProps) => {
         </div>
 
         {/* Video 1 Section */}
-        <div className="border-t-2 pt-4">
-          <h3 className="text-lg font-semibold mb-4">Video 1</h3>
+        <div className="admin-section">
+          <h3 className="admin-section-title">Vidéo 1</h3>
 
           <div className="flex flex-col gap-5 md:flex-row">
             <FormField
@@ -215,6 +216,7 @@ const HomepageForm = ({ homepage }: HomepageFormProps) => {
               name="video1TitleFr"
               render={({ field }) => (
                 <FormItem className="w-full">
+                  <FieldLabel required>Titre (français)</FieldLabel>
                   <FormControl>
                     <Input
                       placeholder="Titre vidéo 1 (Français)"
@@ -231,6 +233,7 @@ const HomepageForm = ({ homepage }: HomepageFormProps) => {
               name="video1TitleAr"
               render={({ field }) => (
                 <FormItem className="w-full">
+                  <FieldLabel>Titre (arabe)</FieldLabel>
                   <FormControl>
                     <Input
                       placeholder="العنوان الأول (اختياري)"
@@ -251,6 +254,7 @@ const HomepageForm = ({ homepage }: HomepageFormProps) => {
               name="video1IframeLink"
               render={({ field }) => (
                 <FormItem className="w-full">
+                  <FieldLabel required>Lien iframe</FieldLabel>
                   <FormControl>
                     <Input
                       placeholder="Lien iframe vidéo 1 (embed link)"
@@ -270,6 +274,7 @@ const HomepageForm = ({ homepage }: HomepageFormProps) => {
               name="video1Thumbnail"
               render={({ field }) => (
                 <FormItem className="w-full">
+                  <FieldLabel required>Miniature</FieldLabel>
                   <FormControl className="h-72">
                     <VideoFileUploader
                       onFieldChange={field.onChange}
@@ -285,8 +290,8 @@ const HomepageForm = ({ homepage }: HomepageFormProps) => {
         </div>
 
         {/* Video 2 Section */}
-        <div className="border-t-2 pt-4">
-          <h3 className="text-lg font-semibold mb-4">Video 2</h3>
+        <div className="admin-section">
+          <h3 className="admin-section-title">Vidéo 2</h3>
 
           <div className="flex flex-col gap-5 md:flex-row">
             <FormField
@@ -294,6 +299,7 @@ const HomepageForm = ({ homepage }: HomepageFormProps) => {
               name="video2TitleFr"
               render={({ field }) => (
                 <FormItem className="w-full">
+                  <FieldLabel required>Titre (français)</FieldLabel>
                   <FormControl>
                     <Input
                       placeholder="Titre vidéo 2 (Français)"
@@ -310,6 +316,7 @@ const HomepageForm = ({ homepage }: HomepageFormProps) => {
               name="video2TitleAr"
               render={({ field }) => (
                 <FormItem className="w-full">
+                  <FieldLabel>Titre (arabe)</FieldLabel>
                   <FormControl>
                     <Input
                       placeholder="العنوان الثاني (اختياري)"
@@ -330,6 +337,7 @@ const HomepageForm = ({ homepage }: HomepageFormProps) => {
               name="video2IframeLink"
               render={({ field }) => (
                 <FormItem className="w-full">
+                  <FieldLabel required>Lien iframe</FieldLabel>
                   <FormControl>
                     <Input
                       placeholder="Lien iframe vidéo 2 (embed link)"
@@ -349,6 +357,7 @@ const HomepageForm = ({ homepage }: HomepageFormProps) => {
               name="video2Thumbnail"
               render={({ field }) => (
                 <FormItem className="w-full">
+                  <FieldLabel required>Miniature</FieldLabel>
                   <FormControl className="h-72">
                     <VideoFileUploader
                       onFieldChange={field.onChange}
@@ -363,9 +372,11 @@ const HomepageForm = ({ homepage }: HomepageFormProps) => {
           </div>
         </div>
 
-        <SubmitButton isLoading={isLoading}>
-          Modifier la page d'accueil
-        </SubmitButton>
+        <FormActions
+          isLoading={isLoading}
+          submitLabel="Modifier la page d'accueil"
+          cancelHref="/darja-admin/pages-to-modify"
+        />
       </form>
     </Form>
   );

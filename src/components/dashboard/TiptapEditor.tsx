@@ -3,6 +3,7 @@
 import { useEffect } from 'react';
 import { useEditor, EditorContent } from '@tiptap/react';
 import { isSameEditorContent } from './tiptap-sync';
+import { cleanPastedHtml } from './tiptap-paste';
 import StarterKit from '@tiptap/starter-kit';
 import Link from '@tiptap/extension-link';
 import {
@@ -15,17 +16,19 @@ import {
   Strikethrough,
   Undo,
 } from 'lucide-react';
-import { Button } from '../ui/button';
+import { AdminButton } from './admin-ui';
 import TextAlign from '@tiptap/extension-text-align';
 
 const TiptapEditor = ({
   content,
   onChange,
   dir = 'ltr',
+  label,
 }: {
   content?: string;
   onChange: (content?: string) => void;
   dir?: 'ltr' | 'rtl';
+  label: string;
 }) => {
   const editor = useEditor({
     extensions: [
@@ -41,10 +44,13 @@ const TiptapEditor = ({
     immediatelyRender: false,
     editorProps: {
       attributes: {
-        class:
-          'prose prose-sm sm:prose-base dark:prose-invert text-white focus:outline-none max-w-full min-h-[150px] p-4 bg-gray-800  ',
+        class: 'prose prose-sm sm:prose-base',
         dir,
+        role: 'textbox',
+        'aria-multiline': 'true',
+        'aria-label': label,
       },
+      transformPastedHTML: cleanPastedHtml,
     },
     onUpdate: ({ editor }) => {
       // an empty editor is stored as '', not '<p></p>'
@@ -69,95 +75,74 @@ const TiptapEditor = ({
     return null;
   }
 
+  const tools = [
+    {
+      name: 'Gras',
+      icon: Bold,
+      active: editor.isActive('bold'),
+      run: () => editor.chain().focus().toggleBold().run(),
+    },
+    {
+      name: 'Italique',
+      icon: Italic,
+      active: editor.isActive('italic'),
+      run: () => editor.chain().focus().toggleItalic().run(),
+    },
+    {
+      name: 'Barré',
+      icon: Strikethrough,
+      active: editor.isActive('strike'),
+      run: () => editor.chain().focus().toggleStrike().run(),
+    },
+    {
+      name: 'Liste à puces',
+      icon: List,
+      active: editor.isActive('bulletList'),
+      run: () => editor.chain().focus().toggleBulletList().run(),
+    },
+    {
+      name: 'Liste numérotée',
+      icon: ListOrdered,
+      active: editor.isActive('orderedList'),
+      run: () => editor.chain().focus().toggleOrderedList().run(),
+    },
+    {
+      name: 'Citation',
+      icon: Quote,
+      active: editor.isActive('blockquote'),
+      run: () => editor.chain().focus().toggleBlockquote().run(),
+    },
+    {
+      name: 'Annuler',
+      icon: Undo,
+      run: () => editor.chain().focus().undo().run(),
+    },
+    {
+      name: 'Rétablir',
+      icon: Redo,
+      run: () => editor.chain().focus().redo().run(),
+    },
+  ];
+
   return (
-    <div className="w-full border border-gray-700 rounded-xl">
-      <div className="p-2 flex gap-1 flex-wrap">
-        <Button
-          type="button"
-          variant="ghost"
-          size="sm"
-          onClick={() => editor.chain().focus().toggleBold().run()}
-          className={
-            editor.isActive('bold') ? 'bg-gray-700' : 'hover:bg-gray-700'
-          }
-        >
-          <Bold className="h-4 w-4" />
-        </Button>
-        <Button
-          type="button"
-          variant="ghost"
-          size="sm"
-          onClick={() => editor.chain().focus().toggleItalic().run()}
-          className={
-            editor.isActive('italic') ? 'bg-gray-700' : 'hover:bg-gray-700'
-          }
-        >
-          <Italic className="h-4 w-4" />
-        </Button>
-        <Button
-          type="button"
-          variant="ghost"
-          size="sm"
-          onClick={() => editor.chain().focus().toggleStrike().run()}
-          className={
-            editor.isActive('strike') ? 'bg-gray-700' : 'hover:bg-gray-700'
-          }
-        >
-          <Strikethrough className="h-4 w-4" />
-        </Button>
-        <Button
-          type="button"
-          variant="ghost"
-          size="sm"
-          onClick={() => editor.chain().focus().toggleBulletList().run()}
-          className={
-            editor.isActive('bulletList') ? 'bg-gray-700' : 'hover:bg-gray-700'
-          }
-        >
-          <List className="h-4 w-4" />
-        </Button>
-        <Button
-          type="button"
-          variant="ghost"
-          size="sm"
-          onClick={() => editor.chain().focus().toggleOrderedList().run()}
-          className={
-            editor.isActive('orderedList') ? 'bg-gray-700' : 'hover:bg-gray-700'
-          }
-        >
-          <ListOrdered className="h-4 w-4" />
-        </Button>
-        <Button
-          type="button"
-          variant="ghost"
-          size="sm"
-          onClick={() => editor.chain().focus().toggleBlockquote().run()}
-          className={
-            editor.isActive('blockquote') ? 'bg-gray-700' : 'hover:bg-gray-700'
-          }
-        >
-          <Quote className="h-4 w-4" />
-        </Button>
-        <Button
-          type="button"
-          variant="ghost"
-          size="sm"
-          onClick={() => editor.chain().focus().undo().run()}
-          className={'hover:bg-gray-700'}
-        >
-          <Undo className="h-4 w-4" />
-        </Button>
-        <Button
-          type="button"
-          variant="ghost"
-          size="sm"
-          onClick={() => editor.chain().focus().redo().run()}
-          className={'hover:bg-gray-700'}
-        >
-          <Redo className="h-4 w-4" />
-        </Button>
+    <div className="admin-editor">
+      <div className="admin-editor-toolbar">
+        {tools.map(({ name, icon: Icon, active, run }) => (
+          <AdminButton
+            key={name}
+            type="button"
+            variant="ghost"
+            size="icon"
+            title={name}
+            aria-label={name}
+            aria-pressed={active}
+            onClick={run}
+          >
+            <Icon className="h-4 w-4" aria-hidden="true" />
+          </AdminButton>
+        ))}
       </div>
-      <EditorContent editor={editor} className="rounded-xl" />
+      <EditorContent editor={editor} />
     </div>
   );
 };

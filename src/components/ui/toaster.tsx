@@ -29,7 +29,8 @@ export function Toaster() {
           </Toast>
         )
       })}
-      <ToastViewport />
+      {/* at the top, so it never sits on the save bar */}
+      <ToastViewport className="sm:bottom-auto sm:top-0" />
     </ToastProvider>
   )
 }

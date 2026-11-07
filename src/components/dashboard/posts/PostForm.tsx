@@ -20,15 +20,20 @@ import { toast } from '@/components/hooks/use-toast';
 import { containsBlobUrl, uploadFilesOrThrow } from '@/lib/upload-helpers';
 import { MAX_SESSIONS, postFormSchema } from '@/lib/validator';
 import { fromFloatingUTC, toFloatingUTC } from '@/lib/post-sessions';
-import { Button } from '@/components/ui/button';
 import { createPost, updatePost } from '@/lib/actions/post.actions';
 import { FileUploader } from '../FileUploader';
-import SubmitButton from '../SubmitButton';
+import FormActions from '../FormActions';
+import {
+  AdminButton,
+  FieldHelp,
+  FieldLabel,
+  notifyInvalid,
+} from '../admin-ui';
 import TiptapEditor from '../TiptapEditor';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { fr } from 'date-fns/locale';
-import Image from 'next/image';
+import { CalendarDays } from 'lucide-react';
 import Dropdown from './DropDown';
 import { IArtist } from '@/lib/database/models/artist.model';
 import ArtistMultiSelect from './ArtistMultiSelect';
@@ -44,6 +49,32 @@ type PostFormProps = {
   post?: IPost;
   postId?: string;
 };
+
+// id comes from FormControl, so the label above focuses the input
+const DateTimeInput = ({
+  id,
+  value,
+  onChange,
+}: {
+  id?: string;
+  value?: Date | null;
+  onChange: (date: Date | null) => void;
+}) => (
+  <div className="input-field flex items-center gap-3">
+    <CalendarDays className="h-5 w-5 shrink-0" aria-hidden="true" />
+    <DatePicker
+      id={id}
+      locale={fr}
+      selected={value ?? null}
+      onChange={onChange}
+      showTimeSelect
+      timeCaption="Heure"
+      timeInputLabel="Heure :"
+      dateFormat="dd/MM/yyyy h:mm aa"
+      wrapperClassName="datePicker"
+    />
+  </div>
+);
 
 const PostForm = ({ type, post, postId }: PostFormProps) => {
   const [files, setFiles] = useState<File[]>([]);
@@ -165,6 +196,7 @@ const PostForm = ({ type, post, postId }: PostFormProps) => {
 
         if (newPost) {
           form.reset();
+          toast({ title: 'Poste créé' });
           router.push(`/darja-admin/posts`);
         }
       }
@@ -181,6 +213,7 @@ const PostForm = ({ type, post, postId }: PostFormProps) => {
 
         if (updatedPost) {
           form.reset();
+          toast({ title: 'Poste modifié' });
           router.push(`/darja-admin/posts`);
         }
       }
@@ -199,161 +232,213 @@ const PostForm = ({ type, post, postId }: PostFormProps) => {
   return (
     <Form {...form}>
       <form
-        onSubmit={form.handleSubmit(onSubmit)}
+        onSubmit={form.handleSubmit(onSubmit, notifyInvalid)}
         className="flex flex-col gap-5"
       >
-        <div className="flex flex-col gap-5 md:flex-row">
+        <div className="admin-section">
+          <h2 className="admin-section-title">Informations</h2>
+          <div className="flex flex-col gap-5 md:flex-row">
+            <FormField
+              control={form.control}
+              name="frenchTitle"
+              render={({ field }) => (
+                <FormItem className="w-full">
+                  <FieldLabel required>Titre (français)</FieldLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="Titre du poste en français"
+                      className="input-field"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="arabicTitle"
+              render={({ field }) => (
+                <FormItem className="w-full">
+                  <FieldLabel>Titre (arabe)</FieldLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="العنوان  باللغة العربية"
+                      className="input-field"
+                      {...field}
+                      dir="rtl"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+
+          <div className="flex flex-col gap-5 md:flex-row">
+            <FormField
+              control={form.control}
+              name="yearOfEdition"
+              render={({ field }) => (
+                <FormItem className="w-full">
+                  <FieldLabel required>Édition</FieldLabel>
+                  <FormControl>
+                    <EditionDropdown
+                      value={field.value}
+                      onChangeHandler={(value) => {
+                        field.onChange(value);
+                        // the chosen category may not exist in the new edition
+                        const current = form.getValues('postCategory');
+                        if (
+                          current &&
+                          isEditionYear(value) &&
+                          !isEditionCategory(value, current)
+                        ) {
+                          form.setValue('postCategory', '' as typeof current);
+                        }
+                      }}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="postCategory"
+              render={({ field }) => (
+                <FormItem className="w-full">
+                  <FieldLabel required>Catégorie</FieldLabel>
+                  <FormControl>
+                    <Dropdown
+                      edition={watchedEdition}
+                      value={field.value}
+                      onChangeHandler={(value) => field.onChange(value)}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+
+          {form.watch('postCategory') === 'autres' && (
+            <FormField
+              control={form.control}
+              name="subCategory"
+              render={({ field }) => (
+                <FormItem className="w-full">
+                  <FieldLabel>Sous-catégorie</FieldLabel>
+                  <FormControl>
+                    <SubCategoryDropdown
+                      value={field.value}
+                      onChangeHandler={(value) => field.onChange(value)}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          )}
+
           <FormField
             control={form.control}
-            name="frenchTitle"
+            name="artists"
             render={({ field }) => (
               <FormItem className="w-full">
+                <FieldLabel>Artistes</FieldLabel>
                 <FormControl>
-                  <Input
-                    placeholder="Titre du poste en français"
-                    className="input-field"
-                    {...field}
+                  <ArtistMultiSelect
+                    value={field.value}
+                    onChangeHandler={field.onChange}
+                    artists={pickerArtists}
                   />
                 </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="arabicTitle"
-            render={({ field }) => (
-              <FormItem className="w-full">
-                <FormControl>
-                  <Input
-                    placeholder="العنوان  باللغة العربية"
-                    className="input-field"
-                    {...field}
-                    dir="rtl"
-                  />
-                </FormControl>
+                <FieldHelp>
+                  La liste suit l&apos;édition choisie. Les artistes déjà
+                  sélectionnés restent affichés.
+                </FieldHelp>
                 <FormMessage />
               </FormItem>
             )}
           />
         </div>
-        {!hasSessionList && (
-        <div className="flex flex-col gap-5 md:flex-row">
-          <FormField
-            control={form.control}
-            name="startDateTime"
-            render={({ field }) => (
-              <FormItem className="w-full">
-                <FormControl>
-                  <div className="input-field flex justify-center items-center">
-                    <Image
-                      src="/assets/icons/calendar.svg"
-                      alt="calendar"
-                      width={24}
-                      height={24}
-                      className="filter-grey"
-                    />
-                    <p className="ml-3 whitespace-nowrap text-grey-600">
-                      Date de début:
-                    </p>
-                    <DatePicker
-                      locale={fr}
-                      selected={field.value}
-                      onChange={(date: Date | null) => field.onChange(date)}
-                      showTimeSelect
-                      timeInputLabel="Time:"
-                      dateFormat="dd/MM/yyyy h:mm aa"
-                      wrapperClassName="datePicker"
-                    />
-                  </div>
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
 
-          <FormField
-            control={form.control}
-            name="endDateTime"
-            render={({ field }) => (
-              <FormItem className="w-full">
-                <FormControl>
-                  <div className="input-field flex justify-center items-center">
-                    <Image
-                      src="/assets/icons/calendar.svg"
-                      alt="calendar"
-                      width={24}
-                      height={24}
-                      className="filter-grey"
-                    />
-                    <p className="ml-3 whitespace-nowrap text-grey-600">
-                      Date de fin:
-                    </p>
-                    <DatePicker
-                      locale={fr}
-                      selected={field.value}
-                      onChange={(date: Date | null) => field.onChange(date)}
-                      showTimeSelect
-                      timeInputLabel="Time:"
-                      dateFormat="dd/MM/yyyy h:mm aa"
-                      wrapperClassName="datePicker"
-                    />
-                  </div>
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </div>
-        )}
+        <div className="admin-section">
+          <h2 className="admin-section-title">Dates et séances</h2>
+          {!hasSessionList && (
+            <div className="flex flex-col gap-5 md:flex-row">
+              <FormField
+                control={form.control}
+                name="startDateTime"
+                render={({ field }) => (
+                  <FormItem className="w-full">
+                    <FieldLabel>Date de début</FieldLabel>
+                    <FormControl>
+                      <DateTimeInput
+                        value={field.value}
+                        onChange={(date) => field.onChange(date)}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
-        <div className="flex flex-col gap-3 rounded-xl border border-gray-300 p-4">
-          <div className="flex items-center justify-between gap-3">
-            <p className="font-semibold text-grey-600">Séances</p>
-            <Button
+              <FormField
+                control={form.control}
+                name="endDateTime"
+                render={({ field }) => (
+                  <FormItem className="w-full">
+                    <FieldLabel>Date de fin</FieldLabel>
+                    <FormControl>
+                      <DateTimeInput
+                        value={field.value}
+                        onChange={(date) => field.onChange(date)}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+          )}
+
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <div className="flex-1">
+              <h3 className="font-semibold">Séances</h3>
+              <p className="admin-help">
+                {hasSessionList
+                  ? 'Les séances remplacent les dates du poste. Un lieu vide reprend le lieu du poste.'
+                  : 'Pour un spectacle joué plusieurs fois, ajoutez une séance par représentation.'}
+              </p>
+            </div>
+            <AdminButton
               type="button"
-              variant="outline"
-              size="sm"
+              variant="secondary"
               onClick={addSession}
               disabled={sessionFields.fields.length >= MAX_SESSIONS}
             >
               Ajouter une séance
-            </Button>
+            </AdminButton>
           </div>
-          <p className="text-sm text-grey-600">
-            {hasSessionList
-              ? 'Les séances remplacent les dates du poste. Un lieu vide reprend le lieu du poste.'
-              : 'Pour un spectacle joué plusieurs fois, ajoutez une séance par représentation.'}
-          </p>
 
           {sessionFields.fields.map((item, index) => (
-            <div
-              key={item.id}
-              className="flex flex-col gap-3 rounded-lg bg-gray-50 p-3"
-            >
+            <div key={item.id} className="admin-subcard">
+              <p className="text-sm font-semibold">Séance {index + 1}</p>
               <div className="flex flex-col gap-3 md:flex-row">
                 <FormField
                   control={form.control}
                   name={`sessions.${index}.start`}
                   render={({ field }) => (
                     <FormItem className="w-full">
+                      <FieldLabel required>Début</FieldLabel>
                       <FormControl>
-                        <div className="input-field flex justify-center items-center">
-                          <p className="ml-3 whitespace-nowrap text-grey-600">
-                            Début :
-                          </p>
-                          <DatePicker
-                            locale={fr}
-                            selected={field.value ?? null}
-                            onChange={(date: Date | null) =>
-                              field.onChange(date ?? undefined)
-                            }
-                            showTimeSelect
-                            timeInputLabel="Time:"
-                            dateFormat="dd/MM/yyyy h:mm aa"
-                            wrapperClassName="datePicker"
-                          />
-                        </div>
+                        <DateTimeInput
+                          value={field.value}
+                          onChange={(date) => field.onChange(date ?? undefined)}
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -364,23 +449,12 @@ const PostForm = ({ type, post, postId }: PostFormProps) => {
                   name={`sessions.${index}.end`}
                   render={({ field }) => (
                     <FormItem className="w-full">
+                      <FieldLabel>Fin</FieldLabel>
                       <FormControl>
-                        <div className="input-field flex justify-center items-center">
-                          <p className="ml-3 whitespace-nowrap text-grey-600">
-                            Fin (facultatif) :
-                          </p>
-                          <DatePicker
-                            locale={fr}
-                            selected={field.value ?? null}
-                            onChange={(date: Date | null) =>
-                              field.onChange(date ?? undefined)
-                            }
-                            showTimeSelect
-                            timeInputLabel="Time:"
-                            dateFormat="dd/MM/yyyy h:mm aa"
-                            wrapperClassName="datePicker"
-                          />
-                        </div>
+                        <DateTimeInput
+                          value={field.value}
+                          onChange={(date) => field.onChange(date ?? undefined)}
+                        />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -393,9 +467,10 @@ const PostForm = ({ type, post, postId }: PostFormProps) => {
                   name={`sessions.${index}.venueFr`}
                   render={({ field }) => (
                     <FormItem className="w-full">
+                      <FieldLabel>Lieu de la séance (français)</FieldLabel>
                       <FormControl>
                         <Input
-                          placeholder="Lieu de la séance (facultatif)"
+                          placeholder="Facultatif"
                           className="input-field"
                           {...field}
                           value={field.value ?? ''}
@@ -410,6 +485,7 @@ const PostForm = ({ type, post, postId }: PostFormProps) => {
                   name={`sessions.${index}.venueAr`}
                   render={({ field }) => (
                     <FormItem className="w-full">
+                      <FieldLabel>Lieu de la séance (arabe)</FieldLabel>
                       <FormControl>
                         <Input
                           placeholder="مكان العرض (اختياري)"
@@ -424,33 +500,33 @@ const PostForm = ({ type, post, postId }: PostFormProps) => {
                   )}
                 />
               </div>
-              <div className="flex gap-2">
-                <Button
+              <div className="flex flex-wrap gap-2">
+                <AdminButton
                   type="button"
-                  variant="outline"
+                  variant="secondary"
                   size="sm"
                   disabled={index === 0}
                   onClick={() => sessionFields.move(index, index - 1)}
                 >
                   Monter
-                </Button>
-                <Button
+                </AdminButton>
+                <AdminButton
                   type="button"
-                  variant="outline"
+                  variant="secondary"
                   size="sm"
                   disabled={index === sessionFields.fields.length - 1}
                   onClick={() => sessionFields.move(index, index + 1)}
                 >
                   Descendre
-                </Button>
-                <Button
+                </AdminButton>
+                <AdminButton
                   type="button"
-                  variant="destructive"
+                  variant="danger"
                   size="sm"
                   onClick={() => sessionFields.remove(index)}
                 >
                   Supprimer
-                </Button>
+                </AdminButton>
               </div>
             </div>
           ))}
@@ -465,17 +541,145 @@ const PostForm = ({ type, post, postId }: PostFormProps) => {
           />
         </div>
 
-        <div className="flex flex-col gap-5 md:flex-row">
+        <div className="admin-section">
+          <h2 className="admin-section-title">Lieu</h2>
+          <div className="flex flex-col gap-5 md:flex-row">
+            <FormField
+              control={form.control}
+              name="location"
+              render={({ field }) => (
+                <FormItem className="w-full">
+                  <FieldLabel required>Lieu (français)</FieldLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="Lieu de l'événement"
+                      className="input-field"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="locationAr"
+              render={({ field }) => (
+                <FormItem className="w-full">
+                  <FieldLabel>Lieu (arabe)</FieldLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="مكان الحدث باللغة العربية"
+                      className="input-field"
+                      {...field}
+                      value={field.value ?? ''}
+                      dir="rtl"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+        </div>
+
+        <div className="admin-section">
+          <h2 className="admin-section-title">Textes</h2>
+          <div className="flex flex-col gap-5 lg:flex-row">
+            <FormField
+              control={form.control}
+              name="frenchText"
+              render={({ field }) => (
+                <FormItem className="w-full lg:w-1/2">
+                  <FieldLabel required>Texte (français)</FieldLabel>
+                  <FormControl>
+                    <TiptapEditor
+                      content={field.value}
+                      onChange={field.onChange}
+                      dir="ltr"
+                      label="Texte (français)"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="arabicText"
+              render={({ field }) => (
+                <FormItem className="w-full lg:w-1/2">
+                  <FieldLabel>Texte (arabe)</FieldLabel>
+                  <FormControl>
+                    <TiptapEditor
+                      content={field.value}
+                      onChange={field.onChange}
+                      dir="rtl"
+                      label="Texte (arabe)"
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+        </div>
+
+        <div className="admin-section">
+          <h2 className="admin-section-title">Liens</h2>
+          <div className="flex flex-col gap-5 md:flex-row">
+            <FormField
+              control={form.control}
+              name="url"
+              render={({ field }) => (
+                <FormItem className="w-full">
+                  <FieldLabel>Lien utile</FieldLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="Lien utile à partager"
+                      className="input-field"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <FormField
+              control={form.control}
+              name="videoSource"
+              render={({ field }) => (
+                <FormItem className="w-full">
+                  <FieldLabel>Source audio</FieldLabel>
+                  <FormControl>
+                    <Input
+                      placeholder="Lien de l'audio"
+                      className="input-field"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+        </div>
+
+        <div className="admin-section">
+          <h2 className="admin-section-title">Images</h2>
           <FormField
             control={form.control}
-            name="postCategory"
+            name="images"
             render={({ field }) => (
               <FormItem className="w-full">
+                <FieldLabel>Images du poste</FieldLabel>
                 <FormControl>
-                  <Dropdown
-                    edition={watchedEdition}
-                    value={field.value}
-                    onChangeHandler={(value) => field.onChange(value)}
+                  <FileUploader
+                    onFieldChange={field.onChange}
+                    imageUrls={field.value}
+                    setFiles={setFiles}
+                    reorderable
                   />
                 </FormControl>
                 <FormMessage />
@@ -485,24 +689,15 @@ const PostForm = ({ type, post, postId }: PostFormProps) => {
 
           <FormField
             control={form.control}
-            name="yearOfEdition"
+            name="thumbnailImage"
             render={({ field }) => (
               <FormItem className="w-full">
+                <FieldLabel>Miniature</FieldLabel>
                 <FormControl>
-                  <EditionDropdown
-                    value={field.value}
-                    onChangeHandler={(value) => {
-                      field.onChange(value);
-                      // the chosen category may not exist in the new edition
-                      const current = form.getValues('postCategory');
-                      if (
-                        current &&
-                        isEditionYear(value) &&
-                        !isEditionCategory(value, current)
-                      ) {
-                        form.setValue('postCategory', '' as typeof current);
-                      }
-                    }}
+                  <ThumbnailUploader
+                    imageUrl={field.value || ''}
+                    onFieldChange={field.onChange}
+                    setFile={setThumbnailFile}
                   />
                 </FormControl>
                 <FormMessage />
@@ -511,186 +706,11 @@ const PostForm = ({ type, post, postId }: PostFormProps) => {
           />
         </div>
 
-        <div className="flex flex-col gap-5 md:flex-row">
-          <FormField
-            control={form.control}
-            name="location"
-            render={({ field }) => (
-              <FormItem className="w-full">
-                <FormControl>
-                  <Input
-                    placeholder="Lieu de l'événement"
-                    className="input-field"
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="locationAr"
-            render={({ field }) => (
-              <FormItem className="w-full">
-                <FormControl>
-                  <Input
-                    placeholder="مكان الحدث باللغة العربية"
-                    className="input-field"
-                    {...field}
-                    value={field.value ?? ''}
-                    dir="rtl"
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </div>
-
-        {form.watch('postCategory') === 'autres' && (
-          <FormField
-            control={form.control}
-            name="subCategory"
-            render={({ field }) => (
-              <FormItem className="w-full">
-                <FormControl>
-                  <SubCategoryDropdown
-                    value={field.value}
-                    onChangeHandler={(value) => field.onChange(value)}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        )}
-
-        <FormField
-          control={form.control}
-          name="artists"
-          render={({ field }) => (
-            <FormItem className="w-full">
-              <FormControl>
-                <ArtistMultiSelect
-                  value={field.value}
-                  onChangeHandler={field.onChange}
-                  artists={pickerArtists}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
+        <FormActions
+          isLoading={isLoading}
+          submitLabel={type === 'Create' ? 'Créer le poste' : 'Modifier le poste'}
+          cancelHref="/darja-admin/posts"
         />
-
-        <div className="flex flex-col gap-5 md:flex-row">
-          <FormField
-            control={form.control}
-            name="frenchText"
-            render={({ field }) => (
-              <FormItem className="w-full">
-                <FormControl className="h-72">
-                  <TiptapEditor
-                    content={field.value}
-                    onChange={field.onChange}
-                    dir="ltr"
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="arabicText"
-            render={({ field }) => (
-              <FormItem className="w-full">
-                <FormControl className="h-72">
-                  <TiptapEditor
-                    content={field.value}
-                    onChange={field.onChange}
-                    dir="rtl"
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </div>
-        <div className="flex flex-col gap-5 md:flex-row">
-          <FormField
-            control={form.control}
-            name="url"
-            render={({ field }) => (
-              <FormItem className="w-full">
-                <FormControl>
-                  <Input
-                    placeholder="Lien util à partager"
-                    className="input-field"
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={form.control}
-            name="videoSource"
-            render={({ field }) => (
-              <FormItem className="w-full">
-                <FormControl>
-                  <Input
-                    placeholder="Source d'audio"
-                    className="input-field"
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </div>
-
-        <FormField
-          control={form.control}
-          name="images"
-          render={({ field }) => (
-            <FormItem className="w-full">
-              <FormControl className="h-72">
-                <FileUploader
-                  onFieldChange={field.onChange}
-                  imageUrls={field.value}
-                  setFiles={setFiles}
-                  reorderable
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <FormField
-          control={form.control}
-          name="thumbnailImage"
-          render={({ field }) => (
-            <FormItem className="w-full">
-              <FormControl className="h-72">
-                <ThumbnailUploader
-                  imageUrl={field.value || ''}
-                  onFieldChange={field.onChange}
-                  setFile={setThumbnailFile}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        <SubmitButton isLoading={isLoading}>
-          {type === 'Create' ? 'Créer Le Poste' : 'Modifier Le Poste'}
-        </SubmitButton>
       </form>
     </Form>
   );

@@ -1,8 +1,47 @@
 import { describe, expect, it } from 'vitest';
 import {
   buildArtistEditionsFilter,
+  filterArtistsByEdition,
   getArtistEditions,
 } from './artist-editions';
+
+describe('filterArtistsByEdition', () => {
+  const names = (artists: { name: string }[]) => artists.map((a) => a.name);
+
+  it('keeps only the artists of that edition, in the given order', () => {
+    const artists = [
+      { name: 'b', editions: ['2026'] },
+      { name: 'old', editions: ['2022', '2024'] },
+      { name: 'a', editions: ['2024', '2026'] },
+    ];
+    expect(names(filterArtistsByEdition(artists, '2026'))).toEqual(['b', 'a']);
+  });
+
+  it('reads unmigrated artists through their legacy value', () => {
+    const artists = [
+      { name: 'all', artistCategory: 'all' },
+      { name: 'both', artistCategory: 'both' },
+      { name: 'y2026', artistCategory: '2026' },
+      { name: 'y2024', artistCategory: '2024' },
+      { name: 'none' },
+    ];
+    expect(names(filterArtistsByEdition(artists, '2026'))).toEqual([
+      'all',
+      'y2026',
+    ]);
+  });
+
+  it('lets migrated editions win over a stale legacy value', () => {
+    const artists = [
+      { name: 'moved', editions: ['2024'], artistCategory: 'all' },
+    ];
+    expect(filterArtistsByEdition(artists, '2026')).toEqual([]);
+  });
+
+  it('handles an empty list', () => {
+    expect(filterArtistsByEdition([], '2026')).toEqual([]);
+  });
+});
 
 describe('getArtistEditions', () => {
   it('maps each legacy year', () => {

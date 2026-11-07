@@ -20,6 +20,14 @@ export function getArtistEditions(artist: ArtistEditionSource): EditionYear[] {
   return [];
 }
 
+// Keeps the given order. A legacy 'all' counts for every year, 'both' for none.
+export function filterArtistsByEdition<T extends ArtistEditionSource>(
+  artists: readonly T[],
+  year: EditionYear,
+): T[] {
+  return artists.filter((artist) => getArtistEditions(artist).includes(year));
+}
+
 // Mongo filter for "artist belongs to at least one of these years".
 // Migrated documents match on editions, the others on the old single value.
 export function buildArtistEditionsFilter(years: readonly string[] = []) {

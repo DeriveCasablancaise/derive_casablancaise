@@ -10,7 +10,7 @@ import {
 } from '@/lib/actions/partner.actions';
 import { DeleteConfirmation } from '../posts/DeleteConfirmation';
 import Link from 'next/link';
-import { Button } from '@/components/ui/button';
+import { AdminButton } from '../admin-ui';
 import Image from 'next/image';
 import { cn } from '@/lib/utils';
 import { EDITION_YEARS, type EditionYear } from '@/constants/editions';
@@ -93,7 +93,7 @@ const SortablePartnerRow = ({
             <div
               {...attributes}
               {...listeners}
-              className="cursor-grab active:cursor-grabbing text-gray-500 hover:text-gray-300 transition-colors"
+              className="cursor-grab active:cursor-grabbing text-gray-300 hover:text-gray-300 transition-colors"
             >
               <GripVertical size={20} />
             </div>
@@ -109,7 +109,7 @@ const SortablePartnerRow = ({
                   sizes="96px"
                 />
               ) : (
-                <div className="w-full h-full flex items-center justify-center text-gray-500 text-xs">
+                <div className="w-full h-full flex items-center justify-center text-gray-300 text-xs">
                   No logo
                 </div>
               )}
@@ -137,15 +137,16 @@ const SortablePartnerRow = ({
 
       {currentUserIsAdmin && (
         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">
-          <Button
+          <AdminButton
             asChild
-            className="bg-gray-800 bg-opacity-50 backdrop-blur-md shadow-lg rounded-md border border-gray-700 my-4 mx-2"
-            variant="outline"
+            variant="secondary"
+            size="sm"
+            className="my-4 mx-2"
           >
             <Link href={`/darja-admin/partners/${partner._id}/update`}>
               Modifier
             </Link>
-          </Button>
+          </AdminButton>
           <DeleteConfirmation postId={partner._id} onDelete={handleDelete} />
         </td>
       )}
@@ -236,8 +237,8 @@ const PartnersTable = ({ currentUserIsAdmin }: PartnersTableProps) => {
             className={cn(
               'px-4 py-2 rounded-md text-sm font-medium transition-all',
               selectedYear === year
-                ? 'bg-blue-600 text-white shadow-lg'
-                : 'text-gray-400 hover:text-gray-200',
+                ? 'admin-btn-primary shadow-lg'
+                : 'text-gray-300 hover:text-gray-100',
             )}
           >
             Édition {year}
@@ -314,7 +315,7 @@ const PartnersTable = ({ currentUserIsAdmin }: PartnersTableProps) => {
                     <tr>
                       <td
                         colSpan={4}
-                        className="px-6 py-10 text-center text-gray-500"
+                        className="px-6 py-10 text-center text-gray-300"
                       >
                         Aucun partenaire trouvé pour cette édition.
                       </td>

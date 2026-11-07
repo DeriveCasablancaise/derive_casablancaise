@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import type { KeyboardEvent, PointerEvent } from 'react';
-import { Button } from '@/components/ui/button';
+import { AdminButton } from './admin-ui';
 import {
   Dialog,
   DialogContent,
@@ -11,6 +11,7 @@ import {
 } from '@/components/ui/dialog';
 import {
   clampZoom,
+  hasUsableSize,
   initialCrop,
   MAX_ZOOM,
   MIN_ZOOM,
@@ -57,13 +58,28 @@ export function SquareCropper({
   const [zoom, setZoom] = useState(MIN_ZOOM);
   const [isBusy, setIsBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [canvas, setCanvas] = useState<HTMLCanvasElement | null>(null);
+  const [frameWidth, setFrameWidth] = useState(0);
+  const isReadable = hasUsableSize(width, height);
 
-  const canvasRef = useRef<HTMLCanvasElement>(null);
   const lastPointer = useRef<{ x: number; y: number } | null>(null);
 
+  // the dialog portal mounts the canvas after my first effects run, so a ref
+  // was still null there and nothing was drawn until the crop changed
   useEffect(() => {
-    const context = canvasRef.current?.getContext('2d');
-    if (!context) return;
+    if (!canvas) return;
+
+    const observer = new ResizeObserver(([entry]) =>
+      setFrameWidth(entry.contentRect.width),
+    );
+    observer.observe(canvas);
+    return () => observer.disconnect();
+  }, [canvas]);
+
+  // the crop is in source pixels, so a resize redraws it without changing it
+  useEffect(() => {
+    const context = canvas?.getContext('2d');
+    if (!context || frameWidth === 0 || !isReadable) return;
 
     const scale = FRAME / crop.size;
     const draw = () =>
@@ -92,7 +108,7 @@ export function SquareCropper({
     context.strokeStyle = '#ffffff';
     context.lineWidth = 2;
     context.strokeRect(FRAME_OFFSET, FRAME_OFFSET, FRAME, FRAME);
-  }, [crop, image, width, height]);
+  }, [canvas, frameWidth, isReadable, crop, image, width, height]);
 
   const applyZoom = (next: number) => {
     const clamped = clampZoom(next);
@@ -182,7 +198,7 @@ export function SquareCropper({
         </DialogDescription>
 
         <canvas
-          ref={canvasRef}
+          ref={setCanvas}
           width={STAGE}
           height={STAGE}
           role="img"
@@ -207,32 +223,43 @@ export function SquareCropper({
           <span className="w-12 text-right tabular-nums">{zoom} %</span>
         </label>
 
+        {!isReadable && (
+          <p role="alert" className="admin-error">
+            Cette image n&apos;a pas de dimensions lisibles : utilisez un fichier
+            JPEG, PNG ou WebP.
+          </p>
+        )}
+
         {error && (
-          <p role="alert" className="text-sm text-red-500">
+          <p role="alert" className="admin-error">
             {error}
           </p>
         )}
 
         <div className="flex flex-wrap justify-end gap-2">
-          <Button
+          <AdminButton
             type="button"
             variant="ghost"
             disabled={isBusy}
             onClick={reset}
           >
             Réinitialiser
-          </Button>
-          <Button
+          </AdminButton>
+          <AdminButton
             type="button"
-            variant="outline"
+            variant="secondary"
             disabled={isBusy}
             onClick={onCancel}
           >
             Annuler
-          </Button>
-          <Button type="button" disabled={isBusy} onClick={validate}>
+          </AdminButton>
+          <AdminButton
+            type="button"
+            disabled={isBusy || !isReadable}
+            onClick={validate}
+          >
             {isBusy ? 'Patientez…' : 'Valider'}
-          </Button>
+          </AdminButton>
         </div>
       </DialogContent>
     </Dialog>

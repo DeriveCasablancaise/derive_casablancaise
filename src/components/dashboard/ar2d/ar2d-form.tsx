@@ -16,7 +16,8 @@ import { useRouter } from 'next/navigation';
 import { useUploadThing } from '@/lib/uploadthing';
 import { toast } from '@/components/hooks/use-toast';
 import { containsBlobUrl, uploadFilesOrThrow } from '@/lib/upload-helpers';
-import SubmitButton from '../SubmitButton';
+import FormActions from '../FormActions';
+import { FieldLabel, notifyInvalid } from '../admin-ui';
 import TiptapEditor from '../TiptapEditor';
 import { VideoFileUploader } from './VideoFileUploader';
 import { ar2dFormSchema, derive2024FormSchema } from '@/lib/validator';
@@ -153,6 +154,7 @@ const Ar2dForm = ({ ar2d }: Ar2dFormProps) => {
       });
 
       if (result) {
+        toast({ title: 'Page enregistrée' });
         router.push('/darja-admin/ar2d');
       }
     } catch (error) {
@@ -170,12 +172,12 @@ const Ar2dForm = ({ ar2d }: Ar2dFormProps) => {
   return (
     <Form {...form}>
       <form
-        onSubmit={form.handleSubmit(onSubmit)}
+        onSubmit={form.handleSubmit(onSubmit, notifyInvalid)}
         className="flex flex-col gap-5"
       >
         {/* Hero Subtitles Section */}
-        <div className="border-t-2 pt-4">
-          <h3 className="text-lg font-semibold mb-4">
+        <div className="admin-section">
+          <h3 className="admin-section-title">
             Textes de description ( bloc 1 )
           </h3>
 
@@ -185,14 +187,13 @@ const Ar2dForm = ({ ar2d }: Ar2dFormProps) => {
               name="text1Fr"
               render={({ field }) => (
                 <FormItem className="w-full">
-                  <label className="text-sm font-medium">
-                    Texte en Français
-                  </label>
+                  <FieldLabel required>Texte (français)</FieldLabel>
                   <FormControl>
                     <TiptapEditor
                       content={field.value || ''}
                       onChange={field.onChange}
                       dir="ltr"
+                      label="Texte (français)"
                     />
                   </FormControl>
                   <FormMessage />
@@ -207,14 +208,13 @@ const Ar2dForm = ({ ar2d }: Ar2dFormProps) => {
               name="text1Ar"
               render={({ field }) => (
                 <FormItem className="w-full">
-                  <label className="text-sm font-medium">
-                    الترجمة (اختياري)
-                  </label>
+                  <FieldLabel>Texte (arabe)</FieldLabel>
                   <FormControl>
                     <TiptapEditor
                       content={field.value || ''}
                       onChange={field.onChange}
                       dir="rtl"
+                      label="Texte (arabe)"
                     />
                   </FormControl>
                   <FormMessage />
@@ -224,8 +224,8 @@ const Ar2dForm = ({ ar2d }: Ar2dFormProps) => {
           </div>
         </div>
 
-        <div className="border-t-2 pt-4">
-          <h3 className="text-lg font-semibold mb-4">
+        <div className="admin-section">
+          <h3 className="admin-section-title">
             Textes de description ( bloc 2 )
           </h3>
 
@@ -235,14 +235,13 @@ const Ar2dForm = ({ ar2d }: Ar2dFormProps) => {
               name="text2Fr"
               render={({ field }) => (
                 <FormItem className="w-full">
-                  <label className="text-sm font-medium">
-                    Texte en Français
-                  </label>
+                  <FieldLabel required>Texte (français)</FieldLabel>
                   <FormControl>
                     <TiptapEditor
                       content={field.value || ''}
                       onChange={field.onChange}
                       dir="ltr"
+                      label="Texte (français)"
                     />
                   </FormControl>
                   <FormMessage />
@@ -257,14 +256,13 @@ const Ar2dForm = ({ ar2d }: Ar2dFormProps) => {
               name="text2Ar"
               render={({ field }) => (
                 <FormItem className="w-full">
-                  <label className="text-sm font-medium">
-                    الترجمة (اختياري)
-                  </label>
+                  <FieldLabel>Texte (arabe)</FieldLabel>
                   <FormControl>
                     <TiptapEditor
                       content={field.value || ''}
                       onChange={field.onChange}
                       dir="rtl"
+                      label="Texte (arabe)"
                     />
                   </FormControl>
                   <FormMessage />
@@ -274,8 +272,8 @@ const Ar2dForm = ({ ar2d }: Ar2dFormProps) => {
           </div>
         </div>
 
-        <div className="border-t-2 pt-4">
-          <h3 className="text-lg font-semibold mb-4">
+        <div className="admin-section">
+          <h3 className="admin-section-title">
             Textes de description ( bloc 3 )
           </h3>
 
@@ -285,14 +283,13 @@ const Ar2dForm = ({ ar2d }: Ar2dFormProps) => {
               name="text3Fr"
               render={({ field }) => (
                 <FormItem className="w-full">
-                  <label className="text-sm font-medium">
-                    Texte en Français
-                  </label>
+                  <FieldLabel required>Texte (français)</FieldLabel>
                   <FormControl>
                     <TiptapEditor
                       content={field.value || ''}
                       onChange={field.onChange}
                       dir="ltr"
+                      label="Texte (français)"
                     />
                   </FormControl>
                   <FormMessage />
@@ -307,14 +304,13 @@ const Ar2dForm = ({ ar2d }: Ar2dFormProps) => {
               name="text3Ar"
               render={({ field }) => (
                 <FormItem className="w-full">
-                  <label className="text-sm font-medium">
-                    الترجمة (اختياري)
-                  </label>
+                  <FieldLabel>Texte (arabe)</FieldLabel>
                   <FormControl>
                     <TiptapEditor
                       content={field.value || ''}
                       onChange={field.onChange}
                       dir="rtl"
+                      label="Texte (arabe)"
                     />
                   </FormControl>
                   <FormMessage />
@@ -324,13 +320,14 @@ const Ar2dForm = ({ ar2d }: Ar2dFormProps) => {
           </div>
         </div>
 
-        <div className="border-t-2 pt-4">
-          <h3 className="text-lg font-semibold mb-4">Image de fond</h3>
+        <div className="admin-section">
+          <h3 className="admin-section-title">Image de fond</h3>
           <FormField
             control={form.control}
             name="backgroundImage"
             render={({ field }) => (
               <FormItem className="w-full">
+                <FieldLabel required>Image de fond</FieldLabel>
                 <FormControl className="h-72">
                   <BgImageUploader
                     onFieldChange={field.onChange}
@@ -344,13 +341,14 @@ const Ar2dForm = ({ ar2d }: Ar2dFormProps) => {
           />
         </div>
 
-        <div className="border-t-2 pt-4">
-          <h3 className="text-lg font-semibold mb-4">Images de gallerie</h3>
+        <div className="admin-section">
+          <h3 className="admin-section-title">Images de gallerie</h3>
           <FormField
             control={form.control}
             name="carouselImages"
             render={({ field }) => (
               <FormItem className="w-full">
+                <FieldLabel>Images de la galerie</FieldLabel>
                 <FormControl className="h-72">
                   <FileUploader
                     onFieldChange={field.onChange}
@@ -365,8 +363,8 @@ const Ar2dForm = ({ ar2d }: Ar2dFormProps) => {
         </div>
 
         {/* Video 1 Section */}
-        <div className="border-t-2 pt-4">
-          <h3 className="text-lg font-semibold mb-4">Video 1</h3>
+        <div className="admin-section">
+          <h3 className="admin-section-title">Vidéo 1</h3>
 
           <div className="flex flex-col gap-5 md:flex-row">
             <FormField
@@ -374,6 +372,7 @@ const Ar2dForm = ({ ar2d }: Ar2dFormProps) => {
               name="video1TitleFr"
               render={({ field }) => (
                 <FormItem className="w-full">
+                  <FieldLabel required>Titre (français)</FieldLabel>
                   <FormControl>
                     <Input
                       placeholder="Titre vidéo 1 (Français)"
@@ -390,6 +389,7 @@ const Ar2dForm = ({ ar2d }: Ar2dFormProps) => {
               name="video1TitleAr"
               render={({ field }) => (
                 <FormItem className="w-full">
+                  <FieldLabel>Titre (arabe)</FieldLabel>
                   <FormControl>
                     <Input
                       placeholder="العنوان الأول (اختياري)"
@@ -410,6 +410,7 @@ const Ar2dForm = ({ ar2d }: Ar2dFormProps) => {
               name="video1IframeLink"
               render={({ field }) => (
                 <FormItem className="w-full">
+                  <FieldLabel required>Lien iframe</FieldLabel>
                   <FormControl>
                     <Input
                       placeholder="Lien iframe vidéo 1 (embed link)"
@@ -429,6 +430,7 @@ const Ar2dForm = ({ ar2d }: Ar2dFormProps) => {
               name="video1Thumbnail"
               render={({ field }) => (
                 <FormItem className="w-full">
+                  <FieldLabel required>Miniature</FieldLabel>
                   <FormControl className="h-72">
                     <VideoFileUploader
                       onFieldChange={field.onChange}
@@ -444,8 +446,8 @@ const Ar2dForm = ({ ar2d }: Ar2dFormProps) => {
         </div>
 
         {/* Video 2 Section */}
-        <div className="border-t-2 pt-4">
-          <h3 className="text-lg font-semibold mb-4">Video 2</h3>
+        <div className="admin-section">
+          <h3 className="admin-section-title">Vidéo 2</h3>
 
           <div className="flex flex-col gap-5 md:flex-row">
             <FormField
@@ -453,6 +455,7 @@ const Ar2dForm = ({ ar2d }: Ar2dFormProps) => {
               name="video2TitleFr"
               render={({ field }) => (
                 <FormItem className="w-full">
+                  <FieldLabel required>Titre (français)</FieldLabel>
                   <FormControl>
                     <Input
                       placeholder="Titre vidéo 2 (Français)"
@@ -469,6 +472,7 @@ const Ar2dForm = ({ ar2d }: Ar2dFormProps) => {
               name="video2TitleAr"
               render={({ field }) => (
                 <FormItem className="w-full">
+                  <FieldLabel>Titre (arabe)</FieldLabel>
                   <FormControl>
                     <Input
                       placeholder="العنوان الثاني (اختياري)"
@@ -489,6 +493,7 @@ const Ar2dForm = ({ ar2d }: Ar2dFormProps) => {
               name="video2IframeLink"
               render={({ field }) => (
                 <FormItem className="w-full">
+                  <FieldLabel required>Lien iframe</FieldLabel>
                   <FormControl>
                     <Input
                       placeholder="Lien iframe vidéo 2 (embed link)"
@@ -508,6 +513,7 @@ const Ar2dForm = ({ ar2d }: Ar2dFormProps) => {
               name="video2Thumbnail"
               render={({ field }) => (
                 <FormItem className="w-full">
+                  <FieldLabel required>Miniature</FieldLabel>
                   <FormControl className="h-72">
                     <VideoFileUploader
                       onFieldChange={field.onChange}
@@ -522,8 +528,8 @@ const Ar2dForm = ({ ar2d }: Ar2dFormProps) => {
           </div>
         </div>
 
-        <div className="border-t-2 pt-4">
-          <h3 className="text-lg font-semibold mb-4">Video 3</h3>
+        <div className="admin-section">
+          <h3 className="admin-section-title">Vidéo 3</h3>
 
           <div className="flex flex-col gap-5 md:flex-row">
             <FormField
@@ -531,6 +537,7 @@ const Ar2dForm = ({ ar2d }: Ar2dFormProps) => {
               name="video3TitleFr"
               render={({ field }) => (
                 <FormItem className="w-full">
+                  <FieldLabel required>Titre (français)</FieldLabel>
                   <FormControl>
                     <Input
                       placeholder="Titre vidéo 3 (Français)"
@@ -547,6 +554,7 @@ const Ar2dForm = ({ ar2d }: Ar2dFormProps) => {
               name="video3TitleAr"
               render={({ field }) => (
                 <FormItem className="w-full">
+                  <FieldLabel>Titre (arabe)</FieldLabel>
                   <FormControl>
                     <Input
                       placeholder="العنوان الثالث (اختياري)"
@@ -567,6 +575,7 @@ const Ar2dForm = ({ ar2d }: Ar2dFormProps) => {
               name="video3IframeLink"
               render={({ field }) => (
                 <FormItem className="w-full">
+                  <FieldLabel required>Lien iframe</FieldLabel>
                   <FormControl>
                     <Input
                       placeholder="Lien iframe vidéo 3 (embed link)"
@@ -586,6 +595,7 @@ const Ar2dForm = ({ ar2d }: Ar2dFormProps) => {
               name="video3Thumbnail"
               render={({ field }) => (
                 <FormItem className="w-full">
+                  <FieldLabel required>Miniature</FieldLabel>
                   <FormControl className="h-72">
                     <VideoFileUploader
                       onFieldChange={field.onChange}
@@ -600,7 +610,11 @@ const Ar2dForm = ({ ar2d }: Ar2dFormProps) => {
           </div>
         </div>
 
-        <SubmitButton isLoading={isLoading}>Modifier la page AR2D</SubmitButton>
+        <FormActions
+          isLoading={isLoading}
+          submitLabel="Modifier la page AR2D"
+          cancelHref="/darja-admin/pages-to-modify"
+        />
       </form>
     </Form>
   );

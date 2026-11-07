@@ -8,7 +8,7 @@ import Link from 'next/link';
 import { useState } from 'react';
 import PartnersTable from './PartnersTable';
 import PartnerOrderManager from './PartnerOrderManager';
-import { Button } from '@/components/ui/button';
+import { AdminButton } from '../admin-ui';
 import { cn } from '@/lib/utils';
 
 interface PartnerStats {
@@ -85,15 +85,11 @@ const PartnersPage = ({
         )}
 
         {isAdmin && (
-          <Button
-            asChild
-            className="w-full p-4 bg-gray-800 bg-opacity-50 backdrop-blur-md shadow-lg rounded-xl  border border-gray-700 my-4"
-            variant="outline"
-          >
+          <AdminButton asChild className="w-full my-4">
             <Link href="/darja-admin/partners/create">
               Créer un nouveau partenaire
             </Link>
-          </Button>
+          </AdminButton>
         )}
       </main>
     </div>

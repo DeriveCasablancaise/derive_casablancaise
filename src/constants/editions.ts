@@ -140,6 +140,9 @@ export const EDITIONS: Record<EditionYear, Edition> = {
 
 export const EDITION_YEARS = Object.keys(EDITIONS) as EditionYear[];
 
+// the edition the home page shows; I change it when the next one opens
+export const CURRENT_EDITION_YEAR: EditionYear = '2026';
+
 export const isEditionYear = (x: unknown): x is EditionYear =>
   typeof x === 'string' && Object.prototype.hasOwnProperty.call(EDITIONS, x);
 

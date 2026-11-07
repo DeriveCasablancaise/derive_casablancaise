@@ -6,7 +6,7 @@ import { Search } from 'lucide-react';
 import { getAllPosts } from '@/lib/actions/post.actions';
 import { DeleteConfirmation } from './DeleteConfirmation';
 import Link from 'next/link';
-import { Button } from '@/components/ui/button';
+import { AdminButton } from '../admin-ui';
 import Image from 'next/image';
 import {
   EDITION_YEARS,
@@ -189,15 +189,16 @@ const PostsTable = ({ currentUserIsAdmin }: PostsTableProps) => {
 
                 {currentUserIsAdmin && (
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-300">
-                    <Button
+                    <AdminButton
                       asChild
-                      className=" bg-gray-800 bg-opacity-50 backdrop-blur-md shadow-lg rounded-md  border border-gray-700 my-4 mx-2"
-                      variant="outline"
+                      variant="secondary"
+                      size="sm"
+                      className="my-4 mx-2"
                     >
                       <Link href={`/darja-admin/posts/${post._id}/update`}>
                         Modifier
                       </Link>
-                    </Button>
+                    </AdminButton>
                     <DeleteConfirmation
                       postId={post._id}
                       onDelete={handleDelete}
