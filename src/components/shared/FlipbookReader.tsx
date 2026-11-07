@@ -31,8 +31,8 @@ import { cn } from '@/lib/utils';
 import {
   MAX_ZOOM,
   MIN_ZOOM,
-  clampPan,
   clampZoom,
+  keepCentreScroll,
   lastIndex,
   needsFallback,
   parsePageInput,
@@ -40,6 +40,7 @@ import {
   stepIndex,
   stepZoom,
   toggleZoom,
+  visiblePages,
 } from '@/lib/readerView';
 
 interface Props {
@@ -75,26 +76,33 @@ const BOOK_STYLE = {};
 const toolBtn =
   'inline-flex h-11 min-w-11 items-center justify-center rounded-md bg-white/15 px-2 text-white transition-colors hover:bg-white/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-orange disabled:opacity-40 disabled:hover:bg-white/15';
 
+const pagePath = (dir: string, index: number, suffix = '') =>
+  `${dir}/page-${String(index + 1).padStart(3, '0')}${suffix}.webp`;
+
 export default function FlipbookReader({ book, pdfHref, onClose }: Props) {
   const t = useTranslations('Layout');
   const locale = useLocale();
   const flipBook = useRef<any>(null);
   const overlayRef = useRef<HTMLDivElement>(null);
   const areaRef = useRef<HTMLDivElement>(null);
-  const bookWrapRef = useRef<HTMLDivElement>(null);
+  const zoomViewRef = useRef<HTMLDivElement>(null);
   const returnFocusRef = useRef<Element | null>(null);
   const [currentPage, setCurrentPage] = useState(0);
   const [pageInput, setPageInput] = useState('1');
   const [zoom, setZoom] = useState(MIN_ZOOM);
-  const [pan, setPan] = useState({ x: 0, y: 0 });
   const [dragging, setDragging] = useState(false);
   const [canFullscreen, setCanFullscreen] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [area, setArea] = useState({ w: 0, h: 0 });
 
-  const drag = useRef<{ x: number; y: number; px: number; py: number } | null>(
-    null,
-  );
+  const drag = useRef<{
+    x: number;
+    y: number;
+    left: number;
+    top: number;
+  } | null>(null);
+  // where the zoom view must scroll to once the new zoom is laid out
+  const pendingScroll = useRef<{ left: number; top: number } | null>(null);
   const tapStart = useRef({ x: 0, y: 0, t: 0 });
   const lastTap = useRef(0);
   // the page shown by the book, as last reported by its flip event
@@ -115,6 +123,7 @@ export default function FlipbookReader({ book, pdfHref, onClose }: Props) {
   const aspectRatio = book.height / book.width;
   const singlePage = isMobile || aspectRatio < 1;
   const spread = !singlePage;
+  const zoomed = zoom > MIN_ZOOM;
 
   // the book area is whatever the toolbar leaves, so it shrinks on short screens
   useLayoutEffect(() => {
@@ -163,6 +172,17 @@ export default function FlipbookReader({ book, pdfHref, onClose }: Props) {
 
   const pageCount = book.pages;
   const lastPage = lastIndex(pageCount, spread);
+  const shownPages = visiblePages(currentPage, pageCount, spread);
+  const shownCount = shownPages.length;
+
+  // compute book dimensions to fit the book area
+  const availW = area.w - PAD_X;
+  const availH = area.h - PAD_TOP - PAD_BOTTOM;
+  const maxW = singlePage
+    ? Math.min(availW, availH / aspectRatio, 1000)
+    : Math.min(availW / 2, availH / aspectRatio, 550);
+  const pageWidth = Math.max(120, Math.round(maxW));
+  const pageHeight = Math.round(pageWidth * aspectRatio);
 
   const settle = useCallback((index: number) => {
     pageRef.current = index;
@@ -180,9 +200,14 @@ export default function FlipbookReader({ book, pdfHref, onClose }: Props) {
       if (!pf) return;
       const target = snapIndex(index, pageCount, spread);
       window.clearTimeout(verifyTimer.current);
-      if (prefersReducedMotion) {
+      // the hidden book needs no animation while the zoom view is on screen
+      if (prefersReducedMotion || zoomed) {
         pendingRef.current = null;
         pf.turnToPage(target);
+        if (zoomed && needsFallback(pf.getCurrentPageIndex(), target)) {
+          setStartPage(target);
+          setBookKey((k) => k + 1);
+        }
         settle(target);
         return;
       }
@@ -201,7 +226,7 @@ export default function FlipbookReader({ book, pdfHref, onClose }: Props) {
         settle(target);
       }, FLIP_MS + 150);
     },
-    [pageCount, spread, prefersReducedMotion, settle],
+    [pageCount, spread, prefersReducedMotion, zoomed, settle],
   );
 
   const prevPage = useCallback(
@@ -263,24 +288,48 @@ export default function FlipbookReader({ book, pdfHref, onClose }: Props) {
     };
   }, []);
 
-  const applyZoom = useCallback((next: number) => {
-    const z = clampZoom(next);
-    const wrap = bookWrapRef.current;
-    const areaEl = areaRef.current;
-    setZoom(z);
-    if (z === MIN_ZOOM || !wrap || !areaEl) {
-      setPan({ x: 0, y: 0 });
-      return;
-    }
-    setPan((p) =>
-      clampPan(
-        p,
-        z,
-        { w: wrap.offsetWidth, h: wrap.offsetHeight },
-        { w: areaEl.clientWidth, h: areaEl.clientHeight },
-      ),
-    );
-  }, []);
+  const applyZoom = useCallback(
+    (next: number) => {
+      const z = clampZoom(next);
+      const el = zoomViewRef.current;
+      const padX = PAD_X / 2;
+      pendingScroll.current = {
+        left: keepCentreScroll({
+          scroll: el?.scrollLeft ?? 0,
+          view: el?.clientWidth ?? area.w,
+          from: shownCount * pageWidth * zoom,
+          to: shownCount * pageWidth * z,
+          padStart: padX,
+          padEnd: padX,
+        }),
+        top: keepCentreScroll({
+          scroll: el?.scrollTop ?? 0,
+          view: el?.clientHeight ?? area.h,
+          from: pageHeight * zoom,
+          to: pageHeight * z,
+          padStart: PAD_TOP,
+          padEnd: PAD_BOTTOM,
+        }),
+      };
+      setZoom(z);
+    },
+    [area, pageWidth, pageHeight, shownCount, zoom],
+  );
+
+  // sizes are explicit, so the new scroll range exists as soon as React commits
+  useLayoutEffect(() => {
+    const el = zoomViewRef.current;
+    const target = pendingScroll.current;
+    pendingScroll.current = null;
+    if (!el || !target) return;
+    el.scrollLeft = target.left;
+    el.scrollTop = target.top;
+  }, [zoom]);
+
+  // a new page starts at its top
+  useLayoutEffect(() => {
+    if (zoomViewRef.current) zoomViewRef.current.scrollTop = 0;
+  }, [currentPage]);
 
   const toggleFullscreen = useCallback(() => {
     if (document.fullscreenElement) {
@@ -296,9 +345,11 @@ export default function FlipbookReader({ book, pdfHref, onClose }: Props) {
       if (!typing && !e.ctrlKey && !e.metaKey && !e.altKey) {
         switch (e.key) {
           case 'ArrowLeft':
+            e.preventDefault();
             prevPage();
             break;
           case 'ArrowRight':
+            e.preventDefault();
             nextPage();
             break;
           case 'Home':
@@ -368,34 +419,50 @@ export default function FlipbookReader({ book, pdfHref, onClose }: Props) {
     goTo(index);
   };
 
-  // taps (any zoom level) and pan (zoomed only). While zoomed a transparent
-  // layer sits over the book, so the flip library never sees the drag.
+  // taps (any zoom level) and mouse drag-to-pan (zoomed only). Touch and pen
+  // pan through the native scroll of the zoom view.
   const onPointerDown = (e: ReactPointerEvent<HTMLDivElement>) => {
+    const view = zoomViewRef.current;
+    if (view) {
+      const box = view.getBoundingClientRect();
+      // a press on a scrollbar belongs to the browser
+      if (
+        e.clientX - box.left >= view.clientWidth ||
+        e.clientY - box.top >= view.clientHeight
+      ) {
+        tapStart.current = { x: 0, y: 0, t: 0 };
+        return;
+      }
+    }
     tapStart.current = { x: e.clientX, y: e.clientY, t: Date.now() };
-    if (zoom > MIN_ZOOM) {
+    if (view && e.pointerType === 'mouse' && e.button === 0) {
       e.currentTarget.setPointerCapture(e.pointerId);
-      drag.current = { x: e.clientX, y: e.clientY, px: pan.x, py: pan.y };
+      drag.current = {
+        x: e.clientX,
+        y: e.clientY,
+        left: view.scrollLeft,
+        top: view.scrollTop,
+      };
       setDragging(true);
     }
   };
 
   const onPointerMove = (e: ReactPointerEvent<HTMLDivElement>) => {
     const d = drag.current;
-    const wrap = bookWrapRef.current;
-    if (!d || !wrap) return;
-    setPan(
-      clampPan(
-        { x: d.px + e.clientX - d.x, y: d.py + e.clientY - d.y },
-        zoom,
-        { w: wrap.offsetWidth, h: wrap.offsetHeight },
-        { w: area.w, h: area.h },
-      ),
-    );
+    const view = zoomViewRef.current;
+    if (!d || !view) return;
+    view.scrollLeft = d.left - (e.clientX - d.x);
+    view.scrollTop = d.top - (e.clientY - d.y);
+  };
+
+  // a cancelled pointer is a touch the browser took over to scroll, never a tap
+  const onPointerCancel = () => {
+    drag.current = null;
+    setDragging(false);
   };
 
   const onPointerUp = (e: ReactPointerEvent<HTMLDivElement>) => {
-    drag.current = null;
-    setDragging(false);
+    onPointerCancel();
     const s = tapStart.current;
     const now = Date.now();
     const isTap =
@@ -410,40 +477,29 @@ export default function FlipbookReader({ book, pdfHref, onClose }: Props) {
     }
   };
 
-  // compute book dimensions to fit the book area
-  const availW = area.w - PAD_X;
-  const availH = area.h - PAD_TOP - PAD_BOTTOM;
-  const maxW = singlePage
-    ? Math.min(availW, availH / aspectRatio, 1000)
-    : Math.min(availW / 2, availH / aspectRatio, 550);
-  const pageWidth = Math.max(120, Math.round(maxW));
-  const pageHeight = Math.round(pageWidth * aspectRatio);
-
   // stable children: new ones make react-pageflip rebuild the book on every flip
   const pageEls = useMemo(
     () =>
-      Array.from({ length: book.pages }, (_, i) => {
-        const num = String(i + 1).padStart(3, '0');
-        return (
-          <div key={i} className="bg-white">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={`${book.dir}/page-${num}.webp`}
-              alt={`Page ${i + 1}`}
-              width={book.width}
-              height={book.height}
-              loading={i < 4 ? 'eager' : 'lazy'}
-              draggable={false}
-              className="h-full w-full object-contain"
-            />
-          </div>
-        );
-      }),
+      Array.from({ length: book.pages }, (_, i) => (
+        <div key={i} className="bg-white">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={pagePath(book.dir, i)}
+            alt={`Page ${i + 1}`}
+            width={book.width}
+            height={book.height}
+            loading={i < 4 ? 'eager' : 'lazy'}
+            draggable={false}
+            className="h-full w-full object-contain"
+          />
+        </div>
+      )),
     [book],
   );
 
   const label = (key: string) => t(`Reader.${key}`);
-  const zoomed = zoom > MIN_ZOOM;
+  const zoomPageWidth = Math.round(pageWidth * zoom);
+  const zoomPageHeight = Math.round(pageHeight * zoom);
 
   return (
     <div
@@ -473,26 +529,18 @@ export default function FlipbookReader({ book, pdfHref, onClose }: Props) {
         onPointerDown={onPointerDown}
         onPointerMove={onPointerMove}
         onPointerUp={onPointerUp}
-        onPointerCancel={onPointerUp}
+        onPointerCancel={onPointerCancel}
         style={{
           paddingTop: PAD_TOP,
           paddingBottom: PAD_BOTTOM,
-          touchAction: zoomed ? 'none' : undefined,
         }}
         className="relative flex min-h-0 w-full flex-1 items-center justify-center overflow-hidden"
       >
         {area.w > 0 && (
+          // hidden rather than unmounted: the book keeps its page while zoomed
           <div
-            ref={bookWrapRef}
-            style={{
-              transform: `translate(${pan.x}px, ${pan.y}px) scale(${zoom})`,
-            }}
-            className={cn(
-              'origin-center',
-              !prefersReducedMotion &&
-                !dragging &&
-                'transition-transform duration-150',
-            )}
+            aria-hidden={zoomed || undefined}
+            style={{ visibility: zoomed ? 'hidden' : undefined }}
           >
             <HTMLFlipBook
               key={bookKey}
@@ -528,11 +576,51 @@ export default function FlipbookReader({ book, pdfHref, onClose }: Props) {
         )}
         {zoomed && (
           <div
+            ref={zoomViewRef}
+            style={{ touchAction: 'pan-x pan-y' }}
             className={cn(
-              'absolute inset-0 z-10',
+              'absolute inset-0 z-10 select-none overflow-auto',
               dragging ? 'cursor-grabbing' : 'cursor-grab',
             )}
-          />
+          >
+            {/* auto margins centre what fits, and overflow stays reachable */}
+            <div className="flex min-h-full w-max min-w-full">
+              <div
+                className="m-auto flex shrink-0"
+                style={{
+                  padding: `${PAD_TOP}px ${PAD_X / 2}px ${PAD_BOTTOM}px`,
+                }}
+              >
+                {shownPages.map((i) => (
+                  <div
+                    key={i}
+                    className="relative shrink-0 bg-white"
+                    style={{ width: zoomPageWidth, height: zoomPageHeight }}
+                  >
+                    {/* the 1100px image stays underneath while the sharp one loads */}
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={pagePath(book.dir, i)}
+                      alt={book.zoomWidth ? '' : `Page ${i + 1}`}
+                      draggable={false}
+                      className="absolute inset-0 h-full w-full"
+                    />
+                    {book.zoomWidth && (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img
+                        src={pagePath(book.dir, i)}
+                        srcSet={`${pagePath(book.dir, i)} ${book.width}w, ${pagePath(book.dir, i, '@3x')} ${book.zoomWidth}w`}
+                        sizes={`${zoomPageWidth}px`}
+                        alt={`Page ${i + 1}`}
+                        draggable={false}
+                        className="absolute inset-0 h-full w-full"
+                      />
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
         )}
       </div>
 

@@ -2,11 +2,6 @@ export const MIN_ZOOM = 1;
 export const MAX_ZOOM = 3;
 export const ZOOM_STEP = 0.25;
 
-interface Size {
-  w: number;
-  h: number;
-}
-
 // keeps zoom inside the range and on the 25% grid
 export function clampZoom(z: number): number {
   if (!Number.isFinite(z)) return MIN_ZOOM;
@@ -23,21 +18,40 @@ export function toggleZoom(z: number): number {
   return z > MIN_ZOOM ? MIN_ZOOM : 2;
 }
 
-// The book is scaled around its centre, so it can move by half of what
-// the scaled book exceeds the view by, per axis. Smaller than the view: no pan.
-export function clampPan(
-  pan: { x: number; y: number },
-  zoom: number,
-  content: Size,
-  view: Size,
-): { x: number; y: number } {
-  const limit = (c: number, v: number) => Math.max(0, (c * zoom - v) / 2);
-  const lx = limit(content.w, view.w);
-  const ly = limit(content.h, view.h);
-  return {
-    x: Math.min(lx, Math.max(-lx, pan.x)) + 0,
-    y: Math.min(ly, Math.max(-ly, pan.y)) + 0,
-  };
+// One axis of the zoom view. The pages (from -> to px) sit between fixed paddings
+// and are centred while they fit. Returns the scroll that keeps the point at the
+// centre of the view in place, clamped to what can actually be scrolled.
+export function keepCentreScroll({
+  scroll,
+  view,
+  from,
+  to,
+  padStart = 0,
+  padEnd = 0,
+}: {
+  scroll: number;
+  view: number;
+  from: number;
+  to: number;
+  padStart?: number;
+  padEnd?: number;
+}): number {
+  const start = (size: number) =>
+    Math.max(0, (view - (size + padStart + padEnd)) / 2) + padStart;
+  const point = (scroll + view / 2 - start(from)) / from;
+  const max = Math.max(0, to + padStart + padEnd - view);
+  return Math.min(max, Math.max(0, point * to + start(to) - view / 2));
+}
+
+// the pages on screen for a book index: the cover and a last odd page stay alone
+export function visiblePages(
+  index: number,
+  total: number,
+  spread: boolean,
+): number[] {
+  const i = snapIndex(index, total, spread);
+  if (!spread || i === 0 || i + 1 >= total) return [i];
+  return [i, i + 1];
 }
 
 // "go to page" input: 1-based text in, 0-based index out, clamped. null if not a number

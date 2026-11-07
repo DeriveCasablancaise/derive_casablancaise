@@ -28,7 +28,6 @@ interface VideoCardProps {
   ariaLabel: string;
   sizes: string;
   featured?: boolean;
-  className?: string;
   onOpen: () => void;
 }
 
@@ -39,7 +38,6 @@ const VideoCard = ({
   ariaLabel,
   sizes,
   featured = false,
-  className,
   onOpen,
 }: VideoCardProps) => (
   <motion.div
@@ -47,7 +45,7 @@ const VideoCard = ({
     initial="hidden"
     whileInView="show"
     viewport={{ once: true, amount: 0.3 }}
-    className={cn('flex flex-col items-center w-full', className)}
+    className="flex flex-col items-center w-full"
   >
     <button
       type="button"
@@ -170,8 +168,8 @@ const ProgramLanding = ({ homepage, banner = null }: ProgramLandingProps) => {
       {(showTeaser || showAfterMovie) && (
         <div
           className={cn(
-            'grid grid-cols-1 items-center gap-8 mx-auto mt-16 lg:mt-24 mb-8 md:mb-10 xl:mb-12 px-4',
-            showBoth ? 'lg:grid-cols-3 max-w-[1200px]' : 'max-w-3xl',
+            'grid grid-cols-1 items-start gap-8 mx-auto mt-16 lg:mt-24 mb-8 md:mb-10 xl:mb-12 px-4',
+            showBoth ? 'lg:grid-cols-[1.25fr_1fr] max-w-[1100px]' : 'max-w-3xl',
           )}
         >
           {showTeaser && (
@@ -181,11 +179,10 @@ const ProgramLanding = ({ homepage, banner = null }: ProgramLandingProps) => {
               ariaLabel={t('playVideo', { title: teaser.title })}
               sizes={
                 showBoth
-                  ? '(min-width: 1024px) 800px, 100vw'
+                  ? '(min-width: 1024px) 580px, 100vw'
                   : '(min-width: 768px) 768px, 100vw'
               }
               featured
-              className={showBoth ? 'lg:col-span-2' : undefined}
               onOpen={() => setIsTeaseModalOpen(true)}
             />
           )}
@@ -196,10 +193,9 @@ const ProgramLanding = ({ homepage, banner = null }: ProgramLandingProps) => {
               ariaLabel={t('playVideo', { title: afterMovie.title })}
               sizes={
                 showBoth
-                  ? '(min-width: 1024px) 400px, 100vw'
+                  ? '(min-width: 1024px) 465px, 100vw'
                   : '(min-width: 768px) 768px, 100vw'
               }
-              className={showBoth ? 'lg:col-span-1' : undefined}
               onOpen={() => setIsAfterMovieModalOpen(true)}
             />
           )}

@@ -7,7 +7,8 @@ import {
   stepIndex,
   needsFallback,
   toggleZoom,
-  clampPan,
+  keepCentreScroll,
+  visiblePages,
   parsePageInput,
 } from './readerView';
 
@@ -32,24 +33,57 @@ describe('zoom', () => {
   });
 });
 
-describe('clampPan', () => {
-  const content = { w: 400, h: 300 };
-  const view = { w: 800, h: 600 };
-
-  it('does not pan when the scaled book fits the view', () => {
-    expect(clampPan({ x: 50, y: -50 }, 1, content, view)).toEqual({ x: 0, y: 0 });
+describe('keepCentreScroll', () => {
+  it('keeps the centre point when zooming in from a fitting page', () => {
+    // 400 centred in 800: the view centre is the page centre, 1200 / 2 - 400
+    expect(keepCentreScroll({ scroll: 0, view: 800, from: 400, to: 1200 })).toBe(200);
   });
 
-  it('limits the pan to half the overflow', () => {
-    // 400 * 3 = 1200 vs 800 -> 200 ; 300 * 3 = 900 vs 600 -> 150
-    expect(clampPan({ x: 999, y: -999 }, 3, content, view)).toEqual({
-      x: 200,
-      y: -150,
-    });
+  it('keeps an off-centre point while both sizes overflow', () => {
+    // centre at 1000 of 2000 becomes 1500 of 3000
+    expect(keepCentreScroll({ scroll: 600, view: 800, from: 2000, to: 3000 })).toBe(1100);
+    // the point at a quarter of the page stays at a quarter
+    expect(keepCentreScroll({ scroll: 100, view: 800, from: 2000, to: 4000 })).toBe(600);
   });
 
-  it('keeps a pan that is already inside the bounds', () => {
-    expect(clampPan({ x: 10, y: 20 }, 3, content, view)).toEqual({ x: 10, y: 20 });
+  it('counts the paddings around the pages', () => {
+    // pad 50: centre 500 is 450 into the 1000 page, so 900 into the 2000 one
+    expect(
+      keepCentreScroll({
+        scroll: 100,
+        view: 800,
+        from: 1000,
+        to: 2000,
+        padStart: 50,
+        padEnd: 50,
+      }),
+    ).toBe(550);
+  });
+
+  it('stays inside the scrollable range', () => {
+    // scrolled to the end of 2000, zooming out to 1000
+    expect(keepCentreScroll({ scroll: 1200, view: 800, from: 2000, to: 1000 })).toBe(200);
+    expect(keepCentreScroll({ scroll: 0, view: 800, from: 2000, to: 3000 })).toBe(200);
+    // the new size fits the view: nothing to scroll
+    expect(keepCentreScroll({ scroll: 500, view: 800, from: 1500, to: 600 })).toBe(0);
+  });
+});
+
+describe('visiblePages', () => {
+  it('shows one page in the single-page layout', () => {
+    expect(visiblePages(1, 2, false)).toEqual([1]);
+    expect(visiblePages(4, 10, false)).toEqual([4]);
+  });
+
+  it('shows two pages in a spread, the cover alone', () => {
+    expect(visiblePages(0, 10, true)).toEqual([0]);
+    expect(visiblePages(1, 10, true)).toEqual([1, 2]);
+    expect(visiblePages(2, 10, true)).toEqual([1, 2]);
+  });
+
+  it('keeps a last odd page alone and a last pair together', () => {
+    expect(visiblePages(9, 10, true)).toEqual([9]);
+    expect(visiblePages(9, 11, true)).toEqual([9, 10]);
   });
 });
 

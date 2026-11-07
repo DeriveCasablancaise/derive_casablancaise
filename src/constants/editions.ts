@@ -30,6 +30,8 @@ export interface ProgrammeBook {
   pages: number;
   width: number;
   height: number;
+  // width of the page-NNN@3x.webp images used above 100% zoom
+  zoomWidth?: number;
 }
 
 export interface Edition {
@@ -111,6 +113,7 @@ export const EDITIONS: Record<EditionYear, Edition> = {
       pages: 2,
       width: 1100,
       height: 778,
+      zoomWidth: 3300,
     },
     // the labels of the programme grid, in the order they first appear
     categories: [
