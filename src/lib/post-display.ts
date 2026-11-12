@@ -24,17 +24,18 @@ export const defaultEndDate = <T extends Date | string>(
 
 export const formatPostDates = (
   start: Date | string,
-  end: Date | string | undefined,
+  end: Date | string | null | undefined,
   isArabic: boolean,
 ) => {
   const locale = isArabic ? arMA : fr;
   const startDate = toWallClock(start);
-  const endDate = toWallClock(defaultEndDate(start, end)!);
+  const endDate = toWallClock(defaultEndDate(start, end ?? undefined)!);
 
   const day = (date: Date) => format(date, 'PPP', { locale });
   const time = (date: Date) => format(date, 'HH:mm', { locale });
 
-  if (startDate.getTime() === endDate.getTime()) {
+  // an empty end, or one not after the start, shows only the start
+  if (endDate.getTime() <= startDate.getTime()) {
     return `${day(startDate)} ${time(startDate)}`;
   }
   if (isSameDay(startDate, endDate)) {
@@ -66,4 +67,23 @@ export const getPostFields = (post: any, locale: string) => {
     text: pickLocalized(post.arabicText, post.frenchText, wantArabic, true),
     location: pickLocalized(post.locationAr, post.location, wantArabic),
   };
+};
+
+// letters and digits only, no accents, no case, so "Hélène & Co." matches "helene co"
+const nameWords = (value: string) =>
+  value
+    .normalize('NFD')
+    // Latin accents and Arabic short vowels
+    .replace(/[̀-ًͯ-ٰٟ]/g, '')
+    .toLowerCase()
+    .replace(/[^a-z0-9ء-ي٠-٩]+/g, ' ')
+    .split(/\s+/)
+    .filter((word) => word && !['et', 'and', 'و'].includes(word))
+    .sort()
+    .join(' ');
+
+// true when the artist line would only repeat the title
+export const artistLineRepeatsTitle = (title: string, names: string[]) => {
+  const fromNames = nameWords(names.join(' '));
+  return fromNames !== '' && fromNames === nameWords(title);
 };

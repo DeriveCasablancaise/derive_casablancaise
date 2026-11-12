@@ -1,5 +1,6 @@
 import { afterEach, describe, expect, it } from 'vitest';
 import {
+  artistLineRepeatsTitle,
   defaultEndDate,
   formatPostDates,
   getPostFields,
@@ -118,5 +119,40 @@ describe('getPostFields', () => {
 
   it('stays French in the French locale', () => {
     expect(getPostFields(post, 'fr').title.value).toBe('Titre');
+  });
+});
+
+describe('formatPostDates without a real end', () => {
+  const before = new Date(Date.UTC(2026, 11, 5, 19, 0));
+
+  it('shows only the start for an empty, equal or earlier end', () => {
+    process.env.TZ = 'UTC';
+    for (const end of [undefined, null, start, before]) {
+      expect(formatPostDates(start, end, false)).toBe('5 décembre 2026 20:30');
+    }
+  });
+});
+
+describe('artistLineRepeatsTitle', () => {
+  it('ignores case, accents and punctuation', () => {
+    expect(artistLineRepeatsTitle('Hélène Dupont', ['helene dupont'])).toBe(true);
+    expect(artistLineRepeatsTitle('Hélène  Dupont.', ['HELENE-DUPONT'])).toBe(true);
+  });
+
+  it('matches several names in any order, with "et" or "&"', () => {
+    expect(
+      artistLineRepeatsTitle('Ali Ben & Sara Kay', ['Sara Kay', 'Ali Ben']),
+    ).toBe(true);
+    expect(artistLineRepeatsTitle('Ali Ben et Sara Kay', ['Ali Ben', 'Sara Kay'])).toBe(true);
+  });
+
+  it('keeps the line when it says something else', () => {
+    expect(artistLineRepeatsTitle('Ciel', ['Ali Ben'])).toBe(false);
+    expect(artistLineRepeatsTitle('Ali Ben', ['Ali Ben', 'Sara Kay'])).toBe(false);
+    expect(artistLineRepeatsTitle('Ciel', [])).toBe(false);
+  });
+
+  it('works on Arabic names', () => {
+    expect(artistLineRepeatsTitle('علي بن', ['علي بن'])).toBe(true);
   });
 });

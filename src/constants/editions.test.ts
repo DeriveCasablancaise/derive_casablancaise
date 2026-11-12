@@ -7,6 +7,8 @@ import {
   isEditionCategory,
   isEditionYear,
   postHref,
+  resolveCategory,
+  storedCategoryKeys,
 } from './editions';
 
 describe('editions registry', () => {
@@ -30,15 +32,10 @@ describe('editions registry', () => {
     expect(e.translationNamespace).toBe('Derive2026');
   });
 
-  it('reuses 2024 images for 2026 and leaves exposition to the placeholder', () => {
+  it('gives 2026 images only to categories that have their own', () => {
     const images = getEdition('2026').categoryImages!;
-    const y2024 = getEdition('2024').categoryImages!;
-    expect(images.danse).toBe(y2024.danse);
-    expect(images.theatre).toBe(y2024.theatre);
-    expect(images.lectures).toBe(y2024.lectures);
-    expect(images.cinema).toBe(y2024.cinema);
-    expect(images.concert).toBe(y2024.musique);
     expect(images.exposition).toBeUndefined();
+    expect(images.performances).toBeUndefined();
     for (const k of Object.keys(images)) {
       expect(getEdition('2026').categories).toContain(k);
     }
@@ -67,17 +64,47 @@ describe('editions registry', () => {
     expect(getEdition('2024').categories).toEqual(original);
   });
 
-  it('lists the programme categories for 2026, all known', () => {
+  it('lists 2026 in the 2024 order with the new names', () => {
     const list = getEdition('2026').categories;
     expect(list).toEqual([
       'danse',
-      'lectures',
-      'cinema',
-      'exposition',
       'theatre',
-      'concert',
+      'musique',
+      'performances',
+      'cinema',
+      'ateliers',
+      'exposition',
     ]);
-    for (const k of list) expect(CATEGORIES[k]).toBeDefined();
+    expect(list.map((k) => CATEGORIES[k].fr)).toEqual([
+      'Danse',
+      'Théâtre',
+      'Musique',
+      'Performances',
+      'Cinéma',
+      'Ateliers',
+      'Expositions',
+    ]);
+    expect(CATEGORIES.exposition.ar).toBe('معارض');
+    expect(CATEGORIES.performances.ar).toBe('عروض أدائية');
+  });
+
+  it('reads old 2026 keys under their new category, in 2026 only', () => {
+    expect(resolveCategory('2026', 'concert')).toBe('musique');
+    expect(resolveCategory('2026', 'lectures')).toBe('performances');
+    expect(resolveCategory('2026', 'danse')).toBe('danse');
+    expect(resolveCategory('2024', 'lectures')).toBe('lectures');
+    expect(resolveCategory('2022', 'musique')).toBe('musique');
+    expect(storedCategoryKeys('2026', 'musique')).toEqual(['musique', 'concert']);
+    expect(storedCategoryKeys('2026', 'performances')).toEqual([
+      'performances',
+      'lectures',
+    ]);
+    expect(storedCategoryKeys('2024', 'lectures')).toEqual(['lectures']);
+  });
+
+  it('keeps the 2024 labels', () => {
+    expect(CATEGORIES.musique.fr).toBe('Musique');
+    expect(CATEGORIES.lectures.fr).toBe('Lectures');
   });
 
   it('isEditionCategory checks the list of the edition', () => {

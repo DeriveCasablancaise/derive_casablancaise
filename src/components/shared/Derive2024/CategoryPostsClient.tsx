@@ -22,12 +22,7 @@ import {
   type CategoryKey,
   type EditionYear,
 } from '@/constants/editions';
-import {
-  extraSessionsLabel,
-  formatCardSessions,
-  hasSessions,
-  sessionsForCard,
-} from '@/lib/post-sessions';
+import { formatCardDays, hasSessions } from '@/lib/post-sessions';
 
 
 const SubCategories = {
@@ -38,34 +33,28 @@ const SubCategories = {
 
 type SubCategoryKey = keyof typeof SubCategories;
 
-// only posts with a session list get the line, older cards stay as they were
-const SessionLine = ({
+// every day of the post, in order; older editions only show it for session lists
+const DateLine = ({
   post,
   isArabic,
-  day,
+  edition,
 }: {
   post: IPost;
   isArabic: boolean;
-  day?: string;
+  edition: EditionYear;
 }) => {
-  if (!hasSessions(post)) return null;
-  const { shown, extra } = sessionsForCard(post, { day });
+  if (edition !== '2026' && !hasSessions(post)) return null;
+  const text = formatCardDays(post, isArabic);
+  if (!text) return null;
   return (
-    // "now" differs between server and browser clocks, hence the warning opt-out
     <p
       dir={isArabic ? 'rtl' : 'ltr'}
-      suppressHydrationWarning
       className={cn(
         'text-white text-sm',
         isArabic ? 'arabic-subtitle-regular' : 'latin-subtitle-regular',
       )}
     >
-      {formatCardSessions(shown, isArabic)}
-      {extra > 0 && (
-        <span className="ms-2 opacity-80">
-          {extraSessionsLabel(extra, isArabic)}
-        </span>
-      )}
+      {text}
     </p>
   );
 };
@@ -230,7 +219,11 @@ const CategoryPostsClient: React.FC<CategoryPostsClientProps> = ({
                           ? post.arabicTitle
                           : post.frenchTitle}
                       </h3>
-                      <SessionLine post={post} isArabic={isArabic} />
+                      <DateLine
+                        post={post}
+                        isArabic={isArabic}
+                        edition={edition}
+                      />
                     </div>
                   </Link>
                 </motion.div>

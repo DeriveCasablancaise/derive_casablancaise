@@ -3,7 +3,14 @@ import { getPostsByCategory } from '@/lib/actions/post.actions';
 import { getLocale } from 'next-intl/server';
 import CategoryPostsClient from '@/components/shared/Derive2024/CategoryPostsClient';
 import Contact from '@/components/shared/contact';
-import { isEditionCategory, type EditionYear } from '@/constants/editions';
+import { redirect } from 'next/navigation';
+import {
+  categoryHref,
+  isCategoryKey,
+  isEditionCategory,
+  resolveCategory,
+  type EditionYear,
+} from '@/constants/editions';
 
 interface EditionCategoryPageProps {
   categoryId: string;
@@ -16,6 +23,14 @@ const EditionCategoryPage = async ({
 }: EditionCategoryPageProps) => {
   const locale = await getLocale();
   const isArabic = locale === 'ar';
+
+  // an old 2026 key (concert, lectures) goes to its new category page
+  if (isCategoryKey(categoryId)) {
+    const target = resolveCategory(edition, categoryId);
+    if (target !== categoryId) {
+      redirect(`/${locale}${categoryHref(edition, target)}`);
+    }
+  }
 
   // Validate category against the edition's own list
   if (!isEditionCategory(edition, categoryId)) {

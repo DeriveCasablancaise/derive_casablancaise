@@ -9,8 +9,10 @@ export const CATEGORIES = {
   conference: { fr: 'Conférences', ar: 'مؤتمر' },
   ateliers: { fr: 'Ateliers', ar: 'ورش عمل' },
   autres: { fr: 'En Marge...', ar: 'أخرى' },
-  // 2026 labels, as written in the organisers' programme
-  exposition: { fr: 'Exposition', ar: 'معرض' },
+  // 2026 only
+  exposition: { fr: 'Expositions', ar: 'معارض' },
+  performances: { fr: 'Performances', ar: 'عروض أدائية' },
+  // old 2026 key, kept so stored posts stay valid; shown as musique
   concert: { fr: 'Concert', ar: 'حفل موسيقي' },
 } as const;
 
@@ -115,23 +117,24 @@ export const EDITIONS: Record<EditionYear, Edition> = {
       height: 778,
       zoomWidth: 3300,
     },
-    // the labels of the programme grid, in the order they first appear
+    // the 2024 order; performances takes the place of lectures,
+    // expositions the place of "En Marge..."
     categories: [
       'danse',
-      'lectures',
-      'cinema',
-      'exposition',
       'theatre',
-      'concert',
+      'musique',
+      'performances',
+      'cinema',
       'ateliers',
+      'exposition',
     ],
-    // reuses the 2024 pictures; exposition has none and gets the placeholder tile
+    // a category without its own picture gets the plain brand tile
     categoryImages: {
       danse: '/assets/categories/2026/danse.jpeg',
-      lectures: '/assets/categories/2026/lectures.jpg',
-      cinema: '/assets/categories/2026/cinema.png',
       theatre: '/assets/categories/2026/theatre.jpg',
-      concert: '/assets/categories/2026/concert.webp',
+      musique: '/assets/categories/2026/concert.webp',
+      performances: '/assets/categories/2026/lectures.jpg',
+      cinema: '/assets/categories/2026/cinema.png',
       ateliers: '/assets/categories/2026/ateliers.jpeg',
       exposition: '/assets/categories/2026/expositions.jpg',
     },
@@ -178,6 +181,32 @@ export const isEditionCategory = (
   x: string,
 ): x is CategoryKey =>
   (EDITIONS[year].categories as readonly string[]).includes(x);
+
+// old keys still stored on some 2026 posts, read as their new category
+// until they are re-categorised by hand
+export const CATEGORY_ALIASES: Partial<
+  Record<EditionYear, Partial<Record<CategoryKey, CategoryKey>>>
+> = {
+  '2026': { concert: 'musique', lectures: 'performances' },
+};
+
+// the category a post is shown under in its edition
+export const resolveCategory = (
+  year: EditionYear,
+  key: CategoryKey,
+): CategoryKey => CATEGORY_ALIASES[year]?.[key] ?? key;
+
+// every stored key that shows under this category, for queries
+export const storedCategoryKeys = (
+  year: EditionYear,
+  key: CategoryKey,
+): CategoryKey[] => {
+  const aliases = CATEGORY_ALIASES[year] ?? {};
+  const old = (Object.keys(aliases) as CategoryKey[]).filter(
+    (k) => aliases[k] === key,
+  );
+  return [key, ...old];
+};
 
 export const categoryHref = (year: EditionYear, categoryId: string) =>
   `${editionHref(year)}/${categoryId}`;
