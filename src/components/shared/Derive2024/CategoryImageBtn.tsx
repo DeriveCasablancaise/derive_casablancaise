@@ -5,7 +5,6 @@ import { motion } from 'framer-motion';
 import Image from 'next/image';
 import { useLocale } from 'next-intl';
 import { cn } from '@/lib/utils';
-import { ImagePlaceholder } from '../ImageFallback';
 import {
   categoryHref,
   type CategoryKey,
@@ -64,10 +63,12 @@ export const CategoryImageButton: React.FC<CategoryImageButtonProps> = ({
           sizes="(max-width: 768px) 50vw, (max-width: 1024px) 25vw, 20vw"
         />
       ) : (
-        // brand tile when a category has no picture yet
-        <ImagePlaceholder />
+        // no picture of its own: a plain tile, never another image
+        <div aria-hidden="true" className="absolute inset-0 bg-brand-chrome" />
       )}
-      <div className="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-all duration-300" />
+      {imageUrl && (
+        <div className="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-all duration-300" />
+      )}
       <div className="absolute inset-0 flex items-center justify-center">
         <h3
           className={cn(
@@ -99,14 +100,23 @@ export const CategoryImageButton: React.FC<CategoryImageButtonProps> = ({
         isSelected ? 'ring-4 ring-[#00b0db] ring-offset-2' : 'hover:shadow-xl',
       )}
     >
-      <Image
-        src={imageUrl || '/placeholder.svg'}
-        alt={isArabic ? categoryName.ar : categoryName.fr}
-        fill
-        className="object-cover transition-transform duration-300 group-hover:scale-110"
-        sizes="(max-width: 768px) 50vw, (max-width: 1024px) 25vw, 20vw"
-      />
-      <div className="absolute inset-0 bg-black/50 flex items-center justify-center transition-opacity duration-300">
+      {imageUrl ? (
+        <Image
+          src={imageUrl}
+          alt={isArabic ? categoryName.ar : categoryName.fr}
+          fill
+          className="object-cover transition-transform duration-300 group-hover:scale-110"
+          sizes="(max-width: 768px) 50vw, (max-width: 1024px) 25vw, 20vw"
+        />
+      ) : (
+        <div aria-hidden="true" className="absolute inset-0 bg-brand-chrome" />
+      )}
+      <div
+        className={cn(
+          'absolute inset-0 flex items-center justify-center transition-opacity duration-300',
+          imageUrl && 'bg-black/50',
+        )}
+      >
         <h3
           className={cn(
             'text-white text-center px-4 py-2 font-semibold',

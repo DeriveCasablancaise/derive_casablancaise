@@ -1,11 +1,10 @@
 import { describe, expect, it } from 'vitest';
 import {
-  extraSessionsLabel,
-  formatCardSessions,
+  formatCardDays,
   getPostSessions,
-  groupPostsByDay,
+  postsOnDay,
   sessionSpan,
-  sessionsForCard,
+  sortByFirstSession,
 } from '@/lib/post-sessions';
 import { postFormSchema } from '@/lib/validator';
 
@@ -57,67 +56,87 @@ describe('getPostSessions', () => {
   });
 });
 
-describe('groupPostsByDay', () => {
-  it('keeps a post without sessions on its own day', () => {
-    const days = groupPostsByDay([single]);
-    expect(days.map((d) => d.day)).toEqual(['2026-11-12']);
-    expect(days[0].entries[0].post).toBe(single);
+// three sessions on two days, like Ciel
+const ciel = {
+  _id: 'ciel3',
+  startDateTime: at('2026-12-04T18:00:00'),
+  sessions: [
+    { start: at('2026-12-05T19:00:00') },
+    { start: at('2026-12-04T21:00:00') },
+    { start: at('2026-12-04T18:00:00') },
+  ],
+};
+
+describe('one post, one card', () => {
+  it('gives one list item for a post with 3 sessions on 2 days', () => {
+    expect(sortByFirstSession([ciel])).toHaveLength(1);
   });
 
-  it('puts a post with two sessions on two days under both days', () => {
-    const days = groupPostsByDay([twoDays]);
-    expect(days.map((d) => d.day)).toEqual(['2026-11-12', '2026-11-13']);
-    expect(days.every((d) => d.entries.length === 1)).toBe(true);
-  });
-
-  it('shows a post once per day with all its times that day', () => {
-    const days = groupPostsByDay([sameDay]);
-    expect(days).toHaveLength(1);
-    expect(days[0].entries).toHaveLength(1);
-    expect(days[0].entries[0].sessions.map((s) => s.start)).toEqual([
-      at('2026-11-12T17:00:00'),
-      at('2026-11-12T21:00:00'),
-    ]);
-  });
-
-  it('sorts a day by that day’s first start', () => {
-    const [day] = groupPostsByDay([single, sameDay, twoDays]);
-    expect(day.entries.map((e) => e.post._id)).toEqual([
-      'ciel',
-      'twoDays',
+  it('drops a post that comes twice in the input', () => {
+    expect(sortByFirstSession([ciel, single, ciel]).map((p) => p._id)).toEqual([
       'single',
+      'ciel3',
     ]);
+  });
+
+  it('orders by first session, then by start date without sessions', () => {
+    const late = { _id: 'late', startDateTime: at('2026-11-12T23:00:00') };
+    expect(
+      sortByFirstSession([late, ciel, single, sameDay]).map((p) => p._id),
+    ).toEqual(['ciel', 'single', 'late', 'ciel3']);
+  });
+
+  it('shows the post once in each of its days, and nowhere else', () => {
+    const posts = [ciel, single];
+    expect(postsOnDay(posts, '2026-12-04').map((p) => p._id)).toEqual(['ciel3']);
+    expect(postsOnDay(posts, '2026-12-05').map((p) => p._id)).toEqual(['ciel3']);
+    expect(postsOnDay(posts, '2026-12-06')).toEqual([]);
   });
 });
 
-describe('sessionsForCard and the "+N" count', () => {
-  it('has no extra for a post without sessions', () => {
-    expect(sessionsForCard(single, { now: at('2026-01-01T00:00:00') }).extra).toBe(0);
+describe('formatCardDays', () => {
+  const days = (...isos: string[]) => ({
+    sessions: isos.map((iso) => ({ start: at(iso) })),
   });
 
-  it('shows the first session not yet over, plus the others', () => {
-    const card = sessionsForCard(twoDays, { now: at('2026-11-12T20:00:00') });
-    expect(card.shown.map((s) => s.start)).toEqual([at('2026-11-13T20:00:00')]);
-    expect(card.extra).toBe(1);
+  it('writes one, two and three days', () => {
+    expect(formatCardDays(days('2026-12-04T18:00:00', '2026-12-04T21:00:00'), false)).toBe(
+      '4 décembre',
+    );
+    expect(formatCardDays(days('2026-12-05T19:00:00', '2026-12-04T18:00:00'), false)).toBe(
+      '4 et 5 décembre',
+    );
+    expect(
+      formatCardDays(
+        days('2026-12-02T18:00:00', '2026-12-05T18:00:00', '2026-12-03T18:00:00'),
+        false,
+      ),
+    ).toBe('2, 3 et 5 décembre');
   });
 
-  it('falls back to the first session once all are over', () => {
-    const card = sessionsForCard(twoDays, { now: at('2027-01-01T00:00:00') });
-    expect(card.shown[0].start).toEqual(at('2026-11-12T18:00:00'));
+  it('puts each month after its last day', () => {
+    expect(formatCardDays(days('2026-11-30T18:00:00', '2026-12-01T18:00:00'), false)).toBe(
+      '30 novembre et 1er décembre',
+    );
   });
 
-  it('shows every time of the listed day', () => {
-    const card = sessionsForCard(sameDay, { day: '2026-11-12' });
-    expect(card.shown).toHaveLength(2);
-    expect(card.extra).toBe(0);
-    expect(formatCardSessions(card.shown, false)).toBe('12 nov. · 17:00, 21:00');
+  it('adds the time for a single session only', () => {
+    expect(formatCardDays({ startDateTime: at('2026-12-03T19:00:00') }, false)).toBe(
+      '3 décembre, 19h00',
+    );
+    expect(formatCardDays(ciel, false)).toBe('4 et 5 décembre');
   });
 
-  it('labels the extra sessions in both languages', () => {
-    expect(extraSessionsLabel(0, false)).toBe('');
-    expect(extraSessionsLabel(1, false)).toBe('+1 séance');
-    expect(extraSessionsLabel(3, false)).toBe('+3 séances');
-    expect(extraSessionsLabel(3, true)).toBe('+3 عروض');
+  it('joins Arabic days with و', () => {
+    const text = formatCardDays(ciel, true);
+    expect(text).toMatch(/^4 و5 \S+$/);
+    expect(formatCardDays({ startDateTime: at('2026-12-03T19:00:00') }, true)).toMatch(
+      /^3 \S+، 19:00$/,
+    );
+  });
+
+  it('is empty without any date', () => {
+    expect(formatCardDays({}, false)).toBe('');
   });
 });
 
@@ -140,6 +159,12 @@ describe('postFormSchema sessions', () => {
   };
   const parse = (sessions: unknown) =>
     postFormSchema.safeParse({ ...base, sessions });
+
+  it('accepts an empty end, for the post and for a session', () => {
+    expect(postFormSchema.safeParse({ ...base, endDateTime: null }).success).toBe(true);
+    expect(parse([{ start: at('2026-11-12T21:00:00') }]).success).toBe(true);
+    expect(parse([{ start: at('2026-11-12T21:00:00'), end: null }]).success).toBe(true);
+  });
 
   it('accepts a post without sessions or with an empty list', () => {
     expect(parse(undefined).success).toBe(true);

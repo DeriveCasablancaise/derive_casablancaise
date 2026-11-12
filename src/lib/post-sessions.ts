@@ -76,65 +76,72 @@ export const sessionSpan = (sessions: PostSession[]) => {
   };
 };
 
-export interface DayEntry<T> {
-  post: T;
-  sessions: PostSession[];
-}
-
-// a post shows once per day it plays, under every such day, sorted by that day's first start
-export const groupPostsByDay = <T extends SessionSource>(posts: T[]) => {
-  const days = new Map<string, DayEntry<T>[]>();
-
-  for (const post of posts) {
-    const perDay = new Map<string, PostSession[]>();
-    for (const session of getPostSessions(post)) {
-      const key = dayKey(session.start);
-      perDay.set(key, [...(perDay.get(key) ?? []), session]);
-    }
-    perDay.forEach((sessions, key) => {
-      days.set(key, [...(days.get(key) ?? []), { post, sessions }]);
-    });
-  }
-
-  return Array.from(days.entries())
-    .sort(([a], [b]) => a.localeCompare(b))
-    .map(([day, entries]) => ({
-      day,
-      entries: entries.sort((a, b) => byStart(a.sessions[0], b.sessions[0])),
-    }));
+const firstStart = (post: SessionSource) => {
+  const [first] = getPostSessions(post);
+  return first ? time(first.start) : Number.POSITIVE_INFINITY;
 };
 
-// in a day list: that day's sessions; elsewhere: the first session not yet over
-export const sessionsForCard = (
-  post: SessionSource,
-  options: { day?: string; now?: Date } = {},
+// one entry per post, ordered by its first session (or its start date)
+export const sortByFirstSession = <T extends SessionSource & { _id?: unknown }>(
+  posts: T[],
 ) => {
-  const all = getPostSessions(post);
-  if (all.length === 0) return { shown: [], extra: 0 };
-
-  let shown: PostSession[];
-  if (options.day) {
-    shown = all.filter((s) => dayKey(s.start) === options.day);
-  } else {
-    const now = time(options.now ?? toFloatingUTC(new Date())!);
-    shown = [all.find((s) => time(s.end ?? s.start) >= now) ?? all[0]];
-  }
-  return { shown, extra: all.length - shown.length };
+  const seen = new Set<string>();
+  const unique = posts.filter((post) => {
+    if (post._id === undefined) return true;
+    const id = String(post._id);
+    if (seen.has(id)) return false;
+    seen.add(id);
+    return true;
+  });
+  return unique.sort((a, b) => firstStart(a) - firstStart(b));
 };
 
-export const extraSessionsLabel = (extra: number, isArabic: boolean) => {
-  if (extra <= 0) return '';
-  if (isArabic) return extra === 1 ? '+1 عرض' : `+${extra} عروض`;
-  return extra === 1 ? '+1 séance' : `+${extra} séances`;
+// the posts playing on a day, each once however many sessions it has that day
+export const postsOnDay = <T extends SessionSource & { _id?: unknown }>(
+  posts: T[],
+  day: string,
+) =>
+  sortByFirstSession(
+    posts.filter((post) =>
+      getPostSessions(post).some((s) => dayKey(s.start) === day),
+    ),
+  );
+
+const joinList = (items: string[], isArabic: boolean) => {
+  if (items.length <= 1) return items.join('');
+  const head = items.slice(0, -1).join(isArabic ? '، ' : ', ');
+  const last = items[items.length - 1];
+  return isArabic ? `${head} و${last}` : `${head} et ${last}`;
 };
 
-// "12 nov. · 18:00, 21:00" for sessions of one day
-export const formatCardSessions = (sessions: PostSession[], isArabic: boolean) => {
+// "4 décembre", "4 et 5 décembre", "2, 3 et 5 décembre"; the time only for a single session
+export const formatCardDays = (post: SessionSource, isArabic: boolean) => {
+  const sessions = getPostSessions(post);
   if (sessions.length === 0) return '';
   const locale = isArabic ? arMA : fr;
-  const day = format(fromFloatingUTC(sessions[0].start)!, 'd MMM', { locale });
-  const times = sessions
-    .map((s) => format(fromFloatingUTC(s.start)!, 'HH:mm', { locale }))
-    .join(', ');
-  return `${day} · ${times}`;
+  const dates = sessions.map((s) => fromFloatingUTC(s.start)!);
+
+  const days: Date[] = [];
+  for (const date of dates) {
+    const prev = days[days.length - 1];
+    if (!prev || prev.toDateString() !== date.toDateString()) {
+      days.push(date);
+    }
+  }
+
+  const dayNumber = (date: Date) =>
+    !isArabic && date.getDate() === 1 ? '1er' : String(date.getDate());
+  // the month goes after the last day of each month
+  const items = days.map((date, index) => {
+    const next = days[index + 1];
+    const monthEnds = !next || next.getMonth() !== date.getMonth();
+    return monthEnds
+      ? `${dayNumber(date)} ${format(date, 'MMMM', { locale })}`
+      : dayNumber(date);
+  });
+
+  const text = joinList(items, isArabic);
+  if (sessions.length !== 1) return text;
+  const hour = format(dates[0], isArabic ? 'HH:mm' : "HH'h'mm", { locale });
+  return isArabic ? `${text}، ${hour}` : `${text}, ${hour}`;
 };

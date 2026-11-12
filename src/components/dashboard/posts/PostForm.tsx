@@ -12,7 +12,7 @@ import {
 import { Input } from '@/components/ui/input';
 import * as z from 'zod';
 import { IPost } from '@/lib/database/models/post.model';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { postDefaultValues } from '@/constants';
 import { useRouter } from 'next/navigation';
 import { useUploadThing } from '@/lib/uploadthing';
@@ -42,7 +42,11 @@ import { getArtistEditions } from '@/lib/artist-editions';
 import SubCategoryDropdown from './SubcategoryDropdown';
 import { ThumbnailUploader } from './ThumbnailUploader';
 import EditionDropdown from './EditionDropdown';
-import { isEditionCategory, isEditionYear } from '@/constants/editions';
+import {
+  isEditionCategory,
+  isEditionYear,
+  resolveCategory,
+} from '@/constants/editions';
 
 type PostFormProps = {
   type: 'Create' | 'Update';
@@ -55,10 +59,13 @@ const DateTimeInput = ({
   id,
   value,
   onChange,
+  clearable = false,
 }: {
   id?: string;
   value?: Date | null;
   onChange: (date: Date | null) => void;
+  // end dates may be emptied
+  clearable?: boolean;
 }) => (
   <div className="input-field flex items-center gap-3">
     <CalendarDays className="h-5 w-5 shrink-0" aria-hidden="true" />
@@ -72,6 +79,7 @@ const DateTimeInput = ({
       timeInputLabel="Heure :"
       dateFormat="dd/MM/yyyy h:mm aa"
       wrapperClassName="datePicker"
+      isClearable={clearable}
     />
   </div>
 );
@@ -86,6 +94,10 @@ const PostForm = ({ type, post, postId }: PostFormProps) => {
     post && type === 'Update'
       ? {
           ...post,
+          // an old 2026 key (concert, lectures) is offered as its new category
+          postCategory: isEditionYear(post.yearOfEdition)
+            ? resolveCategory(post.yearOfEdition, post.postCategory)
+            : post.postCategory,
           startDateTime: fromFloatingUTC(post.startDateTime),
           endDateTime: fromFloatingUTC(post.endDateTime),
           sessions: (post.sessions ?? []).map((session) => ({
@@ -145,7 +157,13 @@ const PostForm = ({ type, post, postId }: PostFormProps) => {
       getArtistEditions(artist).includes(watchedEdition)
   );
 
+  // a second click before the button greys out, or after a save while the
+  // page changes, must not save again
+  const savingRef = useRef(false);
+
   async function onSubmit(values: z.infer<typeof postFormSchema>) {
+    if (savingRef.current) return;
+    savingRef.current = true;
     setIsLoading(true);
 
     try {
@@ -172,7 +190,7 @@ const PostForm = ({ type, post, postId }: PostFormProps) => {
       }
 
       const finalStart = toFloatingUTC(values.startDateTime);
-      const finalEnd = toFloatingUTC(values.endDateTime);
+      const finalEnd = toFloatingUTC(values.endDateTime ?? undefined);
 
       const payload = {
         ...values,
@@ -194,6 +212,7 @@ const PostForm = ({ type, post, postId }: PostFormProps) => {
       if (type === 'Create') {
         const newPost = await createPost(payload);
 
+        if (!newPost) savingRef.current = false;
         if (newPost) {
           form.reset();
           toast({ title: 'Poste créé' });
@@ -203,6 +222,7 @@ const PostForm = ({ type, post, postId }: PostFormProps) => {
 
       if (type === 'Update') {
         if (!postId) {
+          savingRef.current = false;
           router.back();
           return;
         }
@@ -211,6 +231,7 @@ const PostForm = ({ type, post, postId }: PostFormProps) => {
           post: { ...payload, _id: postId },
         });
 
+        if (!updatedPost) savingRef.current = false;
         if (updatedPost) {
           form.reset();
           toast({ title: 'Poste modifié' });
@@ -218,6 +239,7 @@ const PostForm = ({ type, post, postId }: PostFormProps) => {
         }
       }
     } catch (error) {
+      savingRef.current = false;
       console.error('Error saving the post', error);
       toast({
         variant: 'destructive',
@@ -225,7 +247,8 @@ const PostForm = ({ type, post, postId }: PostFormProps) => {
         description: error instanceof Error ? error.message : undefined,
       });
     } finally {
-      setIsLoading(false);
+      // after a save the button stays disabled until the list opens
+      if (!savingRef.current) setIsLoading(false);
     }
   }
 
@@ -378,7 +401,7 @@ const PostForm = ({ type, post, postId }: PostFormProps) => {
                     <FormControl>
                       <DateTimeInput
                         value={field.value}
-                        onChange={(date) => field.onChange(date)}
+                        onChange={(date) => field.onChange(date ?? undefined)}
                       />
                     </FormControl>
                     <FormMessage />
@@ -395,7 +418,8 @@ const PostForm = ({ type, post, postId }: PostFormProps) => {
                     <FormControl>
                       <DateTimeInput
                         value={field.value}
-                        onChange={(date) => field.onChange(date)}
+                        onChange={(date) => field.onChange(date ?? undefined)}
+                        clearable
                       />
                     </FormControl>
                     <FormMessage />
@@ -454,6 +478,7 @@ const PostForm = ({ type, post, postId }: PostFormProps) => {
                         <DateTimeInput
                           value={field.value}
                           onChange={(date) => field.onChange(date ?? undefined)}
+                          clearable
                         />
                       </FormControl>
                       <FormMessage />

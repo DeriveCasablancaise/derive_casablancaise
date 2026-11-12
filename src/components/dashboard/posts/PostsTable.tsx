@@ -9,7 +9,10 @@ import Link from 'next/link';
 import { AdminButton } from '../admin-ui';
 import Image from 'next/image';
 import {
+  CATEGORIES,
   EDITION_YEARS,
+  isCategoryKey,
+  resolveCategory,
   type CategoryKey,
   type EditionYear,
 } from '@/constants/editions';
@@ -173,7 +176,11 @@ const PostsTable = ({ currentUserIsAdmin }: PostsTableProps) => {
 
                 <td className="px-6 py-4 whitespace-nowrap">
                   <div className="text-sm text-gray-300 capitalize">
-                    {post.postCategory}
+                    {isCategoryKey(post.postCategory)
+                      ? CATEGORIES[
+                          resolveCategory(post.yearOfEdition, post.postCategory)
+                        ].fr
+                      : post.postCategory}
                   </div>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">

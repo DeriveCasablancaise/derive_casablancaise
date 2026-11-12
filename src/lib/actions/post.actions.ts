@@ -11,11 +11,14 @@ import { parseInput } from '../parse-input';
 import { sanitizeFields } from '../sanitize';
 import { postFormSchema } from '../validator';
 import { defaultEndDate } from '../post-display';
-import { sessionSpan } from '../post-sessions';
+import { sessionSpan, sortByFirstSession } from '../post-sessions';
 import { locales } from '@/config';
 import {
   categoryHref,
+  isCategoryKey,
   postHref,
+  resolveCategory,
+  storedCategoryKeys,
   type EditionYear,
 } from '@/constants/editions';
 
@@ -26,9 +29,10 @@ const revalidatePostPaths = (post: {
   postCategory: string;
 }) => {
   for (const locale of locales) {
-    revalidatePath(
-      `/${locale}${categoryHref(post.yearOfEdition, post.postCategory)}`,
-    );
+    const category = isCategoryKey(post.postCategory)
+      ? resolveCategory(post.yearOfEdition, post.postCategory)
+      : post.postCategory;
+    revalidatePath(`/${locale}${categoryHref(post.yearOfEdition, category)}`);
     revalidatePath(
       `/${locale}${postHref(post.yearOfEdition, String(post._id))}`,
     );
@@ -43,7 +47,10 @@ const toPostFields = (data: ReturnType<typeof postFormSchema.parse>) => {
     return {
       fields: {
         ...rest,
-        endDateTime: defaultEndDate(rest.startDateTime, rest.endDateTime),
+        endDateTime: defaultEndDate(
+          rest.startDateTime,
+          rest.endDateTime ?? undefined,
+        ),
       },
       sessions: undefined,
     };
@@ -242,7 +249,9 @@ export async function getRelatedPosts({
       .limit(3)
       .lean();
 
-    return JSON.parse(JSON.stringify(relatedPosts));
+    return sortByFirstSession(
+      JSON.parse(JSON.stringify(relatedPosts)) as IPost[],
+    );
   } catch (error) {
     console.error('Error Getting Related Posts', error);
     handleError(error);
@@ -305,12 +314,18 @@ export async function getPostsByCategory(
 
     if (yearOfEdition) {
       condition.yearOfEdition = yearOfEdition;
+      // old keys of this edition show under their new category
+      if (isCategoryKey(category)) {
+        condition.postCategory = {
+          $in: storedCategoryKeys(yearOfEdition, category),
+        };
+      }
     }
 
-    const postsQuery = Post.find(condition).sort({ startDateTime: 1 });
-    const posts = await postsQuery;
+    const posts = await Post.find(condition).sort({ startDateTime: 1 });
 
-    return JSON.parse(JSON.stringify(posts));
+    // one card per post, whatever its number of sessions
+    return sortByFirstSession(JSON.parse(JSON.stringify(posts)) as IPost[]);
   } catch (error) {
     console.error('Error fetching posts by category:', error);
     handleError(error);

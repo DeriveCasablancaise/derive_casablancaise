@@ -7,8 +7,14 @@ import { ParentLink } from '@/components/shared/ParentLink';
 import ImageGallery from '@/components/shared/Derive2024/PostGallery';
 import Artist from '@/lib/database/models/artist.model';
 import SoundCloudEmbed from '@/components/shared/SoundCloudEmbed';
-import { categoryHref, type EditionYear } from '@/constants/editions';
 import {
+  categoryHref,
+  isCategoryKey,
+  resolveCategory,
+  type EditionYear,
+} from '@/constants/editions';
+import {
+  artistLineRepeatsTitle,
   formatPostDates,
   getPostFields,
   pickLocalized,
@@ -95,6 +101,15 @@ const PostPageBody = async ({
     isArabic,
   );
 
+  const artistNames: string[] = (artists ?? []).map((artist: any) =>
+    isArabic ? artist.arabicName : artist.frenchName,
+  );
+  const showArtists =
+    artistNames.length > 0 && !artistLineRepeatsTitle(title.value, artistNames);
+  const backCategory = isCategoryKey(post.postCategory)
+    ? resolveCategory(edition, post.postCategory)
+    : post.postCategory;
+
   const galleryImages = [
     ...(post.thumbnailImage ? [post.thumbnailImage] : []),
     ...(post.images || []),
@@ -108,7 +123,7 @@ const PostPageBody = async ({
           <ParentLink
             label={isArabic ? 'العودة' : 'Retour'}
             className="px-4 mb-4"
-            href={`/${locale}${categoryHref(edition, post.postCategory)}`}
+            href={`/${locale}${categoryHref(edition, backCategory)}`}
           />
 
           {/* Title */}
@@ -121,8 +136,8 @@ const PostPageBody = async ({
             {title.value}
           </h1>
 
-          {/* Artists */}
-          {artists && artists.length > 0 && (
+          {/* Artists, hidden when they only repeat the title */}
+          {showArtists && (
             <div className="px-4 py-2">
               <div
                 className={cn(

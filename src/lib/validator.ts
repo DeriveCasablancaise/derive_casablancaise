@@ -47,7 +47,8 @@ export const postFormSchema = z
       message: "Veuillez choisir l'année d'édition",
     }),
     startDateTime: z.date().optional(),
-    endDateTime: z.date().optional(),
+    // the end may stay empty, the start alone is shown then
+    endDateTime: z.date().nullish(),
     sessions: sessionsSchema,
     location: z.string().min(3, "Veuillez rentrer le lieu de l'événement. "),
     locationAr: z.string().optional(),
