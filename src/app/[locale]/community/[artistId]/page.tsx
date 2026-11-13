@@ -1,7 +1,8 @@
 import { RelatedArtists } from '@/components/shared/artists/RelatedArtists';
 import Contact from '@/components/shared/contact';
 import ImageGallery from '@/components/shared/Derive2024/PostGallery';
-import { ParentLink } from '@/components/shared/ParentLink';
+import { ArtistBackLink } from '@/components/shared/artists/ArtistBackLink';
+import { artistBackHref } from '@/lib/artists-page';
 import ClientWrapper from '@/components/shared/PostWrapper';
 import {
   getArtistById,
@@ -33,10 +34,10 @@ const page = async ({ params: { artistId } }: ArtistProps) => {
     <div className="overflow-hidden">
       <ClientWrapper>
         <div className=" mx-auto  py-8 pt-[20vh] pb-16">
-          <ParentLink
-            label={isArabic ? 'العودة' : 'Retour'}
+          <ArtistBackLink
+            label={isArabic ? 'رجوع' : 'Retour'}
             className="px-4 mb-4"
-            href="/#dynamic-slider"
+            fallbackHref={artistBackHref(locale, getArtistEditions(artist))}
           />
 
           {/* Title */}

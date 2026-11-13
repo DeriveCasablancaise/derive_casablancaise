@@ -1,11 +1,16 @@
 'use client';
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { cn, landingSlideUp } from '@/lib/utils';
 import { useLocale, useTranslations } from 'next-intl';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { motion, useInView } from 'framer-motion';
-import { parseEditionParam } from '@/constants/editions';
+import {
+  artistsHeading,
+  parseEditionSelection,
+  serializeEditionSelection,
+  toggleEdition,
+} from '@/lib/artists-page';
 import { IArtist } from '@/lib/database/models/artist.model';
 import { getAllArtists } from '@/lib/actions/artists.actions';
 import { FallbackImage } from './ImageFallback';
@@ -32,68 +37,58 @@ const ArtistCategories = {
 
 type ArtistCategoryKey = keyof typeof ArtistCategories;
 
-// the filter allows several years, so the parameter can repeat; invalid values are dropped
-const readEditions = (values: string[]) =>
-  new Set(
-    values
-      .map(parseEditionParam)
-      .filter((year): year is ArtistCategoryKey => year !== null)
-  );
-
 const ArtistsSection = () => {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  const editionValues = searchParams.getAll('edition');
-  const editionKey = editionValues.join(',');
+  const editionKey = searchParams.getAll('edition').join(',');
+
+  // the URL is the only state, so the browser back arrow restores the tabs
+  const canonical = serializeEditionSelection(
+    parseEditionSelection(editionKey ? [editionKey] : [])
+  );
+  // keyed on the canonical value so rewriting the URL does not refetch
+  const selection = useMemo(() => parseEditionSelection([canonical]), [canonical]);
+  const selectedCategories = new Set<ArtistCategoryKey>(selection);
 
   const [artists, setArtists] = useState<IArtist[]>([]);
-  const [selectedCategories, setSelectedCategories] = useState<
-    Set<ArtistCategoryKey>
-  >(() => readEditions(editionValues));
   const locale = useLocale();
   const isArabic = locale === 'ar';
   const t = useTranslations('ArtistsPage');
+  const tEdition = useTranslations('HomePage.Community');
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, margin: '-100px' });
 
-  const handleCategoryToggle = (category: ArtistCategoryKey) => {
-    const newCategories = new Set(selectedCategories);
-    if (newCategories.has(category)) {
-      newCategories.delete(category);
-    } else {
-      newCategories.add(category);
-    }
-    setSelectedCategories(newCategories);
-
+  const writeSelection = (value: string) => {
     const params = new URLSearchParams(searchParams.toString());
-    params.delete('edition');
-    newCategories.forEach((year) => params.append('edition', year));
-    const query = params.toString();
-    router.replace(query ? `${pathname}?${query}` : pathname, {
-      scroll: false,
-    });
+    params.set('edition', value);
+    router.replace(`${pathname}?${params.toString()}`, { scroll: false });
   };
 
-  // the URL can change while this stays mounted (the Community menu link)
+  // a missing, repeated or unknown parameter is rewritten to the one we show
   useEffect(() => {
-    setSelectedCategories((prev) => {
-      const fromUrl = readEditions(editionKey ? editionKey.split(',') : []);
-      const same =
-        fromUrl.size === prev.size &&
-        Array.from(fromUrl).every((year) => prev.has(year));
-      return same ? prev : fromUrl;
-    });
-  }, [editionKey]);
+    if (editionKey !== canonical) writeSelection(canonical);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [editionKey, canonical]);
+
+  const handleCategoryToggle = (category: ArtistCategoryKey) => {
+    writeSelection(serializeEditionSelection(toggleEdition(selection, category)));
+  };
+
+  const heading = artistsHeading(selection, new Date());
+  const headingText =
+    heading.kind === 'edition'
+      ? tEdition('headingEdition', { year: heading.year })
+      : heading.kind === 'past'
+      ? tEdition('heading')
+      : t('heading');
 
   useEffect(() => {
     let cancelled = false;
     const fetchArtists = async () => {
       try {
         // an empty selection means every artist
-        const fetchedArtists = await getAllArtists(
-          Array.from(selectedCategories)
-        );
+        const fetchedArtists = await getAllArtists(selection);
 
         if (fetchedArtists && !cancelled) {
           setArtists(fetchedArtists);
@@ -107,7 +102,7 @@ const ArtistsSection = () => {
     return () => {
       cancelled = true;
     };
-  }, [selectedCategories]);
+  }, [selection]);
 
   return (
     <ClientWrapper>
@@ -122,7 +117,7 @@ const ArtistsSection = () => {
               isArabic ? 'arabic-title-bold' : 'latin-title-bold'
             )}
           >
-            {t('heading')}
+            {headingText}
           </motion.h2>
 
           {/* Category Filter */}
