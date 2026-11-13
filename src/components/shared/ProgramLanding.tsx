@@ -1,13 +1,10 @@
 'use client';
 
 import { cn, convertYouTubeToEmbed } from '@/lib/utils';
-import { motion } from 'framer-motion';
 import React, { useState } from 'react';
 import SubHeader from './SubHeader';
 import { useLocale, useTranslations } from 'next-intl';
-import Image from 'next/image';
-import { PlayCircleIcon } from 'lucide-react';
-import { fadeIn } from '@/variants';
+import VideoCard from './VideoCard';
 import TeaserModal from './TeaserModal';
 import { IHomepage } from '@/lib/database/models/homepage.model';
 import AfterMovieModal from './AfterMovieModal';
@@ -20,77 +17,6 @@ interface ProgramLandingProps {
   homepage: IHomepage;
   banner?: BannerView | null;
 }
-
-interface VideoCardProps {
-  title: string;
-  titleIsArabic: boolean;
-  thumbnail: string;
-  ariaLabel: string;
-  sizes: string;
-  featured?: boolean;
-  onOpen: () => void;
-}
-
-const VideoCard = ({
-  title,
-  titleIsArabic,
-  thumbnail,
-  ariaLabel,
-  sizes,
-  featured = false,
-  onOpen,
-}: VideoCardProps) => (
-  <motion.div
-    variants={fadeIn('up', 0.1)}
-    initial="hidden"
-    whileInView="show"
-    viewport={{ once: true, amount: 0.3 }}
-    className="flex flex-col items-center w-full"
-  >
-    <button
-      type="button"
-      onClick={onOpen}
-      aria-label={ariaLabel}
-      className="relative block w-full rounded-lg shadow-md cursor-pointer group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-title focus-visible:ring-offset-2"
-    >
-      <Image
-        src={thumbnail}
-        width={1200}
-        height={675}
-        sizes={sizes}
-        alt={title}
-        className="w-full h-auto object-contain rounded-lg"
-      />
-      <span className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent rounded-lg" />
-      <span className="absolute inset-0 flex items-center justify-center">
-        <motion.span
-          initial={{ scale: 0.8, opacity: 0.8 }}
-          whileHover={{ scale: 1.1, opacity: 1 }}
-          transition={{ type: 'spring', stiffness: 400, damping: 10 }}
-          className="block bg-white/20 backdrop-blur-md rounded-full p-6"
-        >
-          <PlayCircleIcon
-            className={cn(
-              'text-brand-title',
-              featured
-                ? 'h-20 w-20 md:h-24 md:w-24'
-                : 'h-16 w-16 md:h-20 md:w-20',
-            )}
-          />
-        </motion.span>
-      </span>
-    </button>
-    <h2
-      className={cn(
-        'mt-4 text-center font-bold text-brand-title',
-        featured ? 'text-lg md:text-xl' : 'text-base md:text-lg',
-        titleIsArabic ? 'arabic-subtitle-bold' : 'latin-subtitle-bold',
-      )}
-    >
-      {title}
-    </h2>
-  </motion.div>
-);
 
 const ProgramLanding = ({ homepage, banner = null }: ProgramLandingProps) => {
   const [isTeaseModalOpen, setIsTeaseModalOpen] = useState<boolean>(false);
@@ -172,7 +98,7 @@ const ProgramLanding = ({ homepage, banner = null }: ProgramLandingProps) => {
         <div
           className={cn(
             'grid grid-cols-1 items-start gap-8 mx-auto mt-16 lg:mt-24 mb-8 md:mb-10 xl:mb-12 px-4',
-            showBoth ? 'lg:grid-cols-[1fr_1fr] max-w-[1100px]' : 'max-w-3xl',
+            showBoth ? 'lg:grid-cols-2 max-w-[1100px]' : 'max-w-3xl',
           )}
         >
           {showTeaser && (
@@ -182,10 +108,9 @@ const ProgramLanding = ({ homepage, banner = null }: ProgramLandingProps) => {
               ariaLabel={t('playVideo', { title: teaser.title })}
               sizes={
                 showBoth
-                  ? '(min-width: 1024px) 465px, 100vw'
+                  ? '(min-width: 1024px) 534px, 100vw'
                   : '(min-width: 768px) 768px, 100vw'
               }
-              featured
               onOpen={() => setIsTeaseModalOpen(true)}
             />
           )}
@@ -196,7 +121,7 @@ const ProgramLanding = ({ homepage, banner = null }: ProgramLandingProps) => {
               ariaLabel={t('playVideo', { title: afterMovie.title })}
               sizes={
                 showBoth
-                  ? '(min-width: 1024px) 465px, 100vw'
+                  ? '(min-width: 1024px) 534px, 100vw'
                   : '(min-width: 768px) 768px, 100vw'
               }
               onOpen={() => setIsAfterMovieModalOpen(true)}

@@ -14,10 +14,11 @@ import { usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import LocaleSwitcher from './locale-switcher-select';
 
-// orange at rest, burnt orange on hover, focus, active page and open menu
+// one orange band: lighter tint on hover, focus and open menu, the active page only gets a white bar
 const itemClass =
-  'w-full h-full flex justify-center items-center border-white text-white bg-brand-chrome transition-colors hover:bg-brand-chrome-active focus-within:bg-brand-chrome-active data-[state=open]:bg-brand-chrome-active';
-const activeClass = 'bg-brand-chrome-active';
+  'w-full h-full flex justify-center items-center border-white text-white bg-brand-chrome transition-colors hover:bg-brand-chrome-hover focus-within:bg-brand-chrome-hover has-[[data-state=open]]:bg-brand-chrome-hover';
+// inset shadow so the bar does not change the cell height
+const activeClass = 'shadow-[inset_0_-3px_0_0_#fff]';
 // white ring, drawn inside so it shows on both oranges
 const focusRing =
   'focus:outline-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-white focus-visible:-outline-offset-4';
@@ -113,7 +114,7 @@ const DesktopNav = () => {
                   href={hrefFor(deriveNav)}
                   active={isCurrent(deriveNav)}
                   className={cn(
-                    'flex items-center justify-start text-xl transition-colors text-white hover:bg-brand-chrome-active focus-visible:bg-brand-chrome-active data-[active]:bg-brand-chrome-active font-extrabold px-8 py-2 w-full',
+                    'flex items-center justify-start text-xl transition-colors text-white bg-brand-chrome hover:bg-brand-chrome-hover focus-visible:bg-brand-chrome-hover data-[active]:shadow-[inset_0_-3px_0_0_#fff] font-extrabold px-8 py-2 w-full',
                     focusRing,
                     isArabic
                       ? 'arabic-subtitle-regular'

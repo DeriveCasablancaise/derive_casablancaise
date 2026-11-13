@@ -25,6 +25,7 @@ const config = {
           title: 'var(--brand-title)',
           chrome: 'var(--brand-chrome)',
           'chrome-active': 'var(--brand-chrome-active)',
+          'chrome-hover': 'var(--brand-chrome-hover)',
         },
         border: 'hsl(var(--border))',
         input: 'hsl(var(--input))',

@@ -8,8 +8,7 @@ import { Plus_Jakarta_Sans } from 'next/font/google';
 import TeaserModal from './TeaserModal';
 import AfterMovieModal from './AfterMovieModal';
 import { fadeIn } from '@/variants';
-import { PlayCircleIcon } from 'lucide-react';
-import Image from 'next/image';
+import VideoCard from './VideoCard';
 import { getLandingView, type LandingData } from '@/lib/landing';
 import { LandingFlow, type BackgroundFit } from './LandingFlow';
 
@@ -24,7 +23,7 @@ interface DeriveLandingProps {
   layout?: 'anchored' | 'flow';
   // flow only. pan: a tall collage scrolls through the frame instead of being cropped to its middle
   backgroundFit?: BackgroundFit;
-  // data: the editable heading of the landing (2026). translation: the fixed one (2022, 2024)
+  // data: the editable heading of the landing (2026). translation: no heading (2022, 2024)
   headingSource?: 'data' | 'translation';
 }
 
@@ -125,7 +124,7 @@ const DeriveLanding = ({
 }: DeriveLandingProps) => {
   const locale = useLocale();
   const isArabic = locale === 'ar';
-  const t = useTranslations('Layout.Landing');
+  const tVideos = useTranslations('HomeVideos');
   const [isTeaseModalOpen, setIsTeaseModalOpen] = useState<boolean>(false);
   const [isAfterMovieModalOpen, setIsAfterMovieModalOpen] =
     useState<boolean>(false);
@@ -134,14 +133,17 @@ const DeriveLanding = ({
     getLandingView(data, isArabic);
 
   const isFlow = layout === 'flow';
-  // the 2026 heading is editable and can be empty, the others keep the fixed one
+  // the 2026 heading is editable and can be empty; 2022 and 2024 show no heading, only the titled videos.
+  // I skip it when it repeats a video title, so the same text never shows above and under a card
+  const sameText = (a?: string, b?: string) =>
+    (a ?? '').trim().toLowerCase() === (b ?? '').trim().toLowerCase();
   const heading =
-    headingSource === 'data' && isFlow
-      ? videosHeading && {
-          text: videosHeading.text,
-          arabic: videosHeading.rtl,
-        }
-      : { text: t('videosHeading'), arabic: isArabic };
+    headingSource === 'data' &&
+    isFlow &&
+    videosHeading &&
+    !videos.some((v) => sameText(v.title, videosHeading.text))
+      ? { text: videosHeading.text, arabic: videosHeading.rtl }
+      : null;
 
   return (
     <>
@@ -181,63 +183,37 @@ const DeriveLanding = ({
               </h2>
             </motion.div>
           )}
-          <div className="flex flex-col lg:flex-row justify-center items-start mx-auto my-8 md:my-10 xl:my-12 max-w-4xl gap-8 px-4">
-            {videos.map(({ n, thumbnail, title }) => (
-              <div
-                key={n}
-                className={cn(
-                  'flex flex-col items-center w-full lg:w-1/2',
-                  n === 2 && 'mt-8 lg:mt-0',
-                )}
-              >
-                <motion.div
-                  variants={fadeIn('up', 0.1)}
-                  initial="hidden"
-                  whileInView="show"
-                  viewport={{ once: true, amount: 0.3 }}
-                  className="relative flex justify-center items-center shadow-md cursor-pointer group w-full"
-                  onClick={() =>
+          <div
+            className={cn(
+              'grid grid-cols-1 items-start gap-8 mx-auto mb-8 md:mb-10 xl:mb-12 px-4',
+              heading ? 'mt-8 md:mt-10 xl:mt-12' : 'mt-24 lg:mt-48',
+              videos.length > 1
+                ? 'lg:grid-cols-2 max-w-[1100px]'
+                : 'max-w-3xl',
+            )}
+          >
+            {videos.map(({ n, thumbnail, title }) => {
+              const label = title?.trim();
+              return (
+                <VideoCard
+                  key={n}
+                  title={label}
+                  titleIsArabic={isArabic}
+                  thumbnail={thumbnail}
+                  ariaLabel={tVideos('playVideo', { title: label || `${n}` })}
+                  sizes={
+                    videos.length > 1
+                      ? '(min-width: 1024px) 534px, 100vw'
+                      : '(min-width: 768px) 768px, 100vw'
+                  }
+                  onOpen={() =>
                     n === 1
                       ? setIsTeaseModalOpen(true)
                       : setIsAfterMovieModalOpen(true)
                   }
-                >
-                  <Image
-                    src={thumbnail}
-                    width={600}
-                    height={600}
-                    alt="tease_thumbnail"
-                    className="w-full object-contain rounded-lg"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#094142]/50 via-transparent to-transparent rounded-lg"></div>
-                  <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 flex items-center justify-center">
-                    <motion.div
-                      initial={{ scale: 0.8, opacity: 0.8 }}
-                      whileHover={{ scale: 1.1, opacity: 1 }}
-                      transition={{
-                        type: 'spring',
-                        stiffness: 400,
-                        damping: 10,
-                      }}
-                      className="bg-white/20 backdrop-blur-md rounded-full p-6"
-                    >
-                      <PlayCircleIcon className="h-16 w-16 md:h-20 md:w-20 text-brand-title" />
-                    </motion.div>
-                  </div>
-                </motion.div>
-                <motion.div
-                  initial={{ y: 20, opacity: 0 }}
-                  whileInView={{ y: 0, opacity: 1 }}
-                  transition={{ delay: 0.2 }}
-                  className={cn(
-                    'mt-4 text-center text-base md:text-lg font-bold text-[#094142]',
-                    isArabic ? 'arabic-subtitle-bold' : 'latin-subtitle-bold',
-                  )}
-                >
-                  {title}
-                </motion.div>
-              </div>
-            ))}
+                />
+              );
+            })}
           </div>
         </>
       )}
