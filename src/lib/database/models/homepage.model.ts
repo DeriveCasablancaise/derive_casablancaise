@@ -17,6 +17,7 @@ export interface IHomepage extends Document {
   video2TitleAr?: string;
 
   backgroundImage: string;
+  backgroundImageCredit?: string;
 
   createdAt: Date;
   updatedAt: Date;
@@ -70,6 +71,7 @@ const HomepageSchema = new Schema(
       type: String,
       required: true,
     },
+    backgroundImageCredit: { type: String, default: '' },
   },
   {
     timestamps: true,

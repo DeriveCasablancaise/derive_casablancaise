@@ -6,8 +6,22 @@ import {
   type EditionYear,
 } from '@/constants/editions';
 import { isSafeBannerUrl } from '@/lib/banner';
+import { cleanCredit, MAX_CREDIT_LENGTH } from '@/lib/photo-credits';
 
 export const MAX_SESSIONS = 10;
+
+// a photo credit: tags stripped, spaces collapsed, then checked for length
+const creditText = z.preprocess(
+  (value) => cleanCredit(value),
+  z
+    .string()
+    .max(MAX_CREDIT_LENGTH, `Crédit : ${MAX_CREDIT_LENGTH} caractères maximum`),
+);
+
+const imageCreditsSchema = z
+  .array(z.object({ url: z.string().max(2048), credit: creditText }))
+  .max(200)
+  .default([]);
 
 const sessionSchema = z.object({
   start: z.date({ message: 'Veuillez choisir la date de la séance' }),
@@ -38,6 +52,7 @@ export const postFormSchema = z
     arabicText: z.string().optional(),
     images: z.array(z.string()).default([]),
     thumbnailImage: z.string().optional(),
+    imageCredits: imageCreditsSchema,
     videoSource: z.string().optional(),
     postCategory: z.enum(CATEGORY_KEYS, {
       message: 'Veuillez Choisir Une Catégorie',
@@ -92,6 +107,7 @@ export const artistFormSchema = z.object({
     .string()
     .min(3, 'Le texte doit consister de 3 caractères ou plus.'),
   images: z.array(z.string()).default([]),
+  imageCredits: imageCreditsSchema,
   videoSource: z.string().optional(),
   editions: z
     .array(z.custom<EditionYear>(isEditionYear))
@@ -115,6 +131,7 @@ export const homepageFormSchema = z.object({
   video2TitleAr: z.string().optional(),
 
   backgroundImage: z.string().min(1, 'Background image is required'),
+  backgroundImageCredit: creditText,
 });
 
 export const derive2024FormSchema = z.object({
@@ -171,6 +188,7 @@ export const derive2026FormSchema = z
     video2TitleAr: z.string().optional(),
 
     backgroundImage: z.string().optional(),
+    backgroundImageCredit: creditText,
 
     videosHeadingFr: plainText(80).optional(),
     videosHeadingAr: plainText(80).optional(),

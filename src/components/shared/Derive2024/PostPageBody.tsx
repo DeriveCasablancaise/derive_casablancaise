@@ -176,6 +176,8 @@ const PostPageBody = async ({
                 <ImageGallery
                   images={galleryImages}
                   alt={title.value}
+                  credits={post.imageCredits}
+                  isArabic={isArabic}
                 />
               </div>
               {/* Event Details - Responsive Layout */}

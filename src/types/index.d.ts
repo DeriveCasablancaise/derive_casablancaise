@@ -59,6 +59,7 @@ export type CreatePostParams = {
   arabicText?: string;
   images: string[];
   thumbnailImage?: string;
+  imageCredits?: { url: string; credit: string }[];
   videoSource?: string;
   startDateTime?: Date;
   endDateTime?: Date;
@@ -80,6 +81,7 @@ export type UpdatePostParams = {
     arabicText?: string;
     images: string[];
     thumbnailImage?: string;
+    imageCredits?: { url: string; credit: string }[];
     videoSource?: string;
     startDateTime?: Date;
     endDateTime?: Date;
@@ -104,6 +106,7 @@ export type CreateArtistParams = {
   frenchText: string;
   arabicText: string;
   images: string[];
+  imageCredits?: { url: string; credit: string }[];
   videoSource?: string;
   editions: EditionYear[];
   isInHomepage: boolean;
@@ -118,6 +121,7 @@ export type UpdateArtistParams = {
     frenchText: string;
     arabicText: string;
     images: string[];
+    imageCredits?: { url: string; credit: string }[];
     videoSource?: string;
     editions: EditionYear[];
     isInHomepage: boolean;

@@ -9,6 +9,7 @@ import { Types } from 'mongoose';
 import Artist from '../database/models/artist.model';
 import { parseInput } from '../parse-input';
 import { artistFormSchema } from '../validator';
+import { keepCredits } from '../photo-credits';
 import { buildArtistEditionsFilter } from '../artist-editions';
 import type { EditionYear } from '@/constants/editions';
 import { DUPLICATE_ARTIST_MESSAGE, findDuplicateArtist } from '../artist-name';
@@ -35,6 +36,7 @@ export async function createArtist(artist: CreateArtistParams) {
 
   // texts are plain text (Textarea) and rendered escaped, so no sanitizeHtml
   const data = parseInput(artistFormSchema, artist);
+  data.imageCredits = keepCredits(data.imageCredits, data.images);
 
   try {
     await connectToDatabase();
@@ -56,6 +58,7 @@ export async function updateArtist({ artist }: UpdateArtistParams) {
   const { _id, ...input } = artist;
   if (!Types.ObjectId.isValid(_id)) throw new Error('Invalid data');
   const data = parseInput(artistFormSchema, input);
+  data.imageCredits = keepCredits(data.imageCredits, data.images);
 
   try {
     await connectToDatabase();

@@ -10,6 +10,8 @@ import {
   type CategoryKey,
   type EditionYear,
 } from '@/constants/editions';
+import { PhotoCredit } from '../PhotoCredit';
+import { altWithCredit } from '@/lib/photo-credits';
 
 
 interface CategoryImageButtonProps {
@@ -17,6 +19,7 @@ interface CategoryImageButtonProps {
   categoryName: { fr: string; ar: string };
   // undefined renders a plain tile, same size
   imageUrl?: string;
+  imageCredit?: string;
   isSelected: boolean;
   isArabic: boolean;
   onClick: (category: CategoryKey) => void;
@@ -31,6 +34,7 @@ export const CategoryImageButton: React.FC<CategoryImageButtonProps> = ({
   categoryKey,
   categoryName,
   imageUrl,
+  imageCredit,
   isSelected,
   isArabic,
   onClick,
@@ -40,6 +44,14 @@ export const CategoryImageButton: React.FC<CategoryImageButtonProps> = ({
   edition,
 }) => {
   const locale = useLocale();
+  const imageAlt = altWithCredit(
+    isArabic ? categoryName.ar : categoryName.fr,
+    imageCredit,
+    isArabic,
+  );
+  const credit = imageUrl && (
+    <PhotoCredit credit={imageCredit} isArabic={isArabic} />
+  );
 
   const buttonContent = (
     <motion.div
@@ -57,7 +69,7 @@ export const CategoryImageButton: React.FC<CategoryImageButtonProps> = ({
       {imageUrl ? (
         <Image
           src={imageUrl}
-          alt={isArabic ? categoryName.ar : categoryName.fr}
+          alt={imageAlt}
           fill
           className="object-cover transition-transform duration-300 group-hover:scale-110"
           sizes="(max-width: 768px) 50vw, (max-width: 1024px) 25vw, 20vw"
@@ -81,6 +93,7 @@ export const CategoryImageButton: React.FC<CategoryImageButtonProps> = ({
           {isArabic ? categoryName.ar : categoryName.fr}
         </h3>
       </div>
+      {credit}
     </motion.div>
   );
 
@@ -103,7 +116,7 @@ export const CategoryImageButton: React.FC<CategoryImageButtonProps> = ({
       {imageUrl ? (
         <Image
           src={imageUrl}
-          alt={isArabic ? categoryName.ar : categoryName.fr}
+          alt={imageAlt}
           fill
           className="object-cover transition-transform duration-300 group-hover:scale-110"
           sizes="(max-width: 768px) 50vw, (max-width: 1024px) 25vw, 20vw"
@@ -128,6 +141,7 @@ export const CategoryImageButton: React.FC<CategoryImageButtonProps> = ({
           {isArabic ? categoryName.ar : categoryName.fr}
         </h3>
       </div>
+      {credit}
     </button>
   );
 };

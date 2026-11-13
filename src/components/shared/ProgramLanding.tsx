@@ -108,7 +108,9 @@ const ProgramLanding = ({ homepage, banner = null }: ProgramLandingProps) => {
   );
 
   // a video needs both its link and its thumbnail to be shown
-  const showTeaser = Boolean(video1EmbedLink && homepage.video1Thumbnail?.trim());
+  const showTeaser = Boolean(
+    video1EmbedLink && homepage.video1Thumbnail?.trim(),
+  );
   const showAfterMovie = Boolean(
     video2EmbedLink && homepage.video2Thumbnail?.trim(),
   );
@@ -155,6 +157,7 @@ const ProgramLanding = ({ homepage, banner = null }: ProgramLandingProps) => {
         <LandingFlow
           texts={texts}
           backgroundImage={backgroundImage}
+          backgroundImageCredit={homepage.backgroundImageCredit}
           isArabic={isArabicLocale}
           topSpace={{ base: '60vh', lg: '15vh' }}
           flushTop
@@ -169,7 +172,7 @@ const ProgramLanding = ({ homepage, banner = null }: ProgramLandingProps) => {
         <div
           className={cn(
             'grid grid-cols-1 items-start gap-8 mx-auto mt-16 lg:mt-24 mb-8 md:mb-10 xl:mb-12 px-4',
-            showBoth ? 'lg:grid-cols-[1.25fr_1fr] max-w-[1100px]' : 'max-w-3xl',
+            showBoth ? 'lg:grid-cols-[1fr_1fr] max-w-[1100px]' : 'max-w-3xl',
           )}
         >
           {showTeaser && (
@@ -179,7 +182,7 @@ const ProgramLanding = ({ homepage, banner = null }: ProgramLandingProps) => {
               ariaLabel={t('playVideo', { title: teaser.title })}
               sizes={
                 showBoth
-                  ? '(min-width: 1024px) 580px, 100vw'
+                  ? '(min-width: 1024px) 465px, 100vw'
                   : '(min-width: 768px) 768px, 100vw'
               }
               featured

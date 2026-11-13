@@ -11,6 +11,8 @@ import type { IPost } from '@/lib/database/models/post.model';
 import { useRouter } from 'next/navigation';
 import ClientWrapper from '../PostWrapper';
 import { FallbackImage } from '../ImageFallback';
+import { PhotoCredit } from '../PhotoCredit';
+import { altWithCredit, creditFor } from '@/lib/photo-credits';
 import { ParentLink } from '@/components/shared/ParentLink';
 import SubCategorySelector from './SubcategorySelector';
 import {
@@ -202,10 +204,25 @@ const CategoryPostsClient: React.FC<CategoryPostsClientProps> = ({
                     <div className="absolute inset-0 flex justify-center items-center overflow-hidden">
                       <FallbackImage
                         src={post.thumbnailImage || post.images?.[0]}
-                        alt={post.frenchTitle}
+                        alt={altWithCredit(
+                          post.frenchTitle,
+                          creditFor(
+                            post.imageCredits,
+                            post.thumbnailImage || post.images?.[0],
+                          ),
+                          isArabic,
+                        )}
                         className="object-cover transition-transform duration-700 ease-out group-hover:scale-110"
                       />
                     </div>
+                    <PhotoCredit
+                      credit={creditFor(
+                        post.imageCredits,
+                        post.thumbnailImage || post.images?.[0],
+                      )}
+                      isArabic={isArabic}
+                      position="top-end"
+                    />
                     <div className="absolute bottom-0 left-0 right-0 p-2">
                       <h3
                         className={cn(

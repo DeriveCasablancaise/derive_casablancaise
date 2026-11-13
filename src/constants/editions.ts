@@ -45,6 +45,9 @@ export interface Edition {
   // key order is the tile order
   categories: readonly CategoryKey[];
   categoryImages: Partial<Record<CategoryKey, string>> | undefined;
+  // photo credit of each category image, empty shows nothing
+  categoryImageCredits?: Partial<Record<CategoryKey, string>>;
+  poster?: { src: string; credit?: string };
   // last day of the festival, YYYY-MM-DD in Casablanca time
   endDate?: string;
 }
@@ -75,6 +78,16 @@ export const EDITIONS: Record<EditionYear, Edition> = {
       ateliers: '/assets/categories/2022/ateliers.jpg',
       autres: '/assets/categories/2022/en-marge.jpg',
     },
+    categoryImageCredits: {
+      danse: '',
+      theatre: '',
+      musique: '',
+      lectures: '',
+      cinema: '',
+      conference: '',
+      ateliers: '',
+      autres: '',
+    },
   },
   '2024': {
     year: '2024',
@@ -100,6 +113,16 @@ export const EDITIONS: Record<EditionYear, Edition> = {
       conference: '/assets/categories/conférences.jpg',
       ateliers: '/assets/categories/ateliers.jpg',
       autres: '/assets/categories/en-marge.jpeg',
+    },
+    categoryImageCredits: {
+      danse: '',
+      theatre: '',
+      musique: '',
+      lectures: '',
+      cinema: '',
+      conference: '',
+      ateliers: '',
+      autres: '',
     },
   },
   '2026': {
@@ -138,6 +161,16 @@ export const EDITIONS: Record<EditionYear, Edition> = {
       ateliers: '/assets/categories/2026/ateliers.jpeg',
       exposition: '/assets/categories/2026/expositions.jpg',
     },
+    categoryImageCredits: {
+      danse: '',
+      theatre: '',
+      musique: '',
+      performances: '',
+      cinema: '',
+      ateliers: '',
+      exposition: '',
+    },
+    poster: { src: '/images/affiche-2026.jpg', credit: '' },
   },
 };
 

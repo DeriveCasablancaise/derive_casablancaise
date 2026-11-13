@@ -6,6 +6,7 @@ import { generateClientDropzoneAccept } from 'uploadthing/client';
 import { convertFileToUrl } from '@/lib/utils';
 import { AdminButton } from './admin-ui';
 import { ImageDropzone } from './ImageDropzone';
+import { CreditInput } from './CreditInput';
 
 type SingleImageUploaderProps = {
   onFieldChange: (url: string) => void;
@@ -14,6 +15,9 @@ type SingleImageUploaderProps = {
   title: string;
   hint: string;
   previewAlt: string;
+  // the credit field shows only when onCreditChange is given
+  credit?: string;
+  onCreditChange?: (credit: string) => void;
 };
 
 export function SingleImageUploader({
@@ -23,6 +27,8 @@ export function SingleImageUploader({
   title,
   hint,
   previewAlt,
+  credit = '',
+  onCreditChange,
 }: SingleImageUploaderProps) {
   const onDrop = useCallback(
     (acceptedFiles: File[]) => {
@@ -73,6 +79,9 @@ export function SingleImageUploader({
             alt={previewAlt}
             className="admin-preview-image"
           />
+          {onCreditChange && (
+            <CreditInput value={credit} onChange={onCreditChange} />
+          )}
         </div>
       )}
     </div>

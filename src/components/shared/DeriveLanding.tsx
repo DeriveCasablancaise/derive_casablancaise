@@ -150,6 +150,7 @@ const DeriveLanding = ({
           <LandingFlow
             texts={texts}
             backgroundImage={backgroundImage}
+            backgroundImageCredit={data.backgroundImageCredit}
             isArabic={isArabic}
             fit={backgroundFit}
           />

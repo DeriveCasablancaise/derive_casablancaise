@@ -39,6 +39,7 @@ const HomepageForm = ({ homepage }: HomepageFormProps) => {
     textFr: '',
     textAr: '',
     backgroundImage: '',
+    backgroundImageCredit: '',
     video1Thumbnail: '',
     video1IframeLink: '',
     video1TitleFr: '',
@@ -63,6 +64,7 @@ const HomepageForm = ({ homepage }: HomepageFormProps) => {
         textFr: homepage.textFr || '',
         textAr: homepage.textAr || '',
         backgroundImage: homepage.backgroundImage || '',
+        backgroundImageCredit: homepage.backgroundImageCredit || '',
         video1Thumbnail: homepage.video1Thumbnail || '',
         video1IframeLink: homepage.video1IframeLink || '',
         video1TitleFr: homepage.video1TitleFr || '',
@@ -198,6 +200,12 @@ const HomepageForm = ({ homepage }: HomepageFormProps) => {
                     onFieldChange={field.onChange}
                     imageUrl={field.value || ''}
                     setFile={setBgImageFile}
+                    credit={form.watch('backgroundImageCredit')}
+                    onCreditChange={(credit) =>
+                      form.setValue('backgroundImageCredit', credit, {
+                        shouldDirty: true,
+                      })
+                    }
                   />
                 </FormControl>
                 <FormMessage />

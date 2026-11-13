@@ -2,6 +2,8 @@
 import { useScroll, useTransform, motion } from 'framer-motion';
 import { useLocale, useTranslations } from 'next-intl';
 import { FallbackImage } from './ImageFallback';
+import { PhotoCredit } from './PhotoCredit';
+import { altWithCredit, creditFor } from '@/lib/photo-credits';
 import Link from 'next/link';
 import React, { useRef } from 'react';
 import { cn } from '@/lib/utils';
@@ -34,6 +36,7 @@ const SlidingImages = ({ artists, currentEdition }: SlidingImagesProps) => {
       className={cn(
         'flex flex-col relative bg-[#E9EAEB] lg:mt-12 2xl:mt-48 z-[1] ',
       )}
+      id="dynamic-slider"
     >
       <div className="w-full hidden lg:flex lg:mb-[3vw] py-4 xl:py-8 text-start bg-[#E9EAEB]">
         <h2
@@ -114,9 +117,18 @@ const ArtistSliderInstance = ({
         >
           <div className={cn('relative size-full overflow-hidden')}>
             <FallbackImage
-              alt={'image'}
+              alt={altWithCredit(
+                isArabic ? artist.arabicName : artist.frenchName,
+                creditFor(artist.imageCredits, artist.images?.[0]),
+                isArabic,
+              )}
               src={artist.images?.[0]}
               className="object-contain object-center"
+            />
+            <PhotoCredit
+              credit={creditFor(artist.imageCredits, artist.images?.[0])}
+              isArabic={isArabic}
+              position="top-end"
             />
             <div
               dir={isArabic ? 'rtl' : 'ltr'}

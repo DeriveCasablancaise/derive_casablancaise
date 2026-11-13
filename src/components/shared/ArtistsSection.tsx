@@ -9,6 +9,8 @@ import { parseEditionParam } from '@/constants/editions';
 import { IArtist } from '@/lib/database/models/artist.model';
 import { getAllArtists } from '@/lib/actions/artists.actions';
 import { FallbackImage } from './ImageFallback';
+import { PhotoCredit } from './PhotoCredit';
+import { altWithCredit, creditFor } from '@/lib/photo-credits';
 import Link from 'next/link';
 import ClientWrapper from './PostWrapper';
 
@@ -182,8 +184,20 @@ const ArtistsSection = () => {
                   <div className="relative overflow-hidden aspect-square">
                     <FallbackImage
                       src={artist.images?.[0]}
-                      alt={isArabic ? artist.arabicName : artist.frenchName}
+                      alt={altWithCredit(
+                        isArabic ? artist.arabicName : artist.frenchName,
+                        creditFor(artist.imageCredits, artist.images?.[0]),
+                        isArabic,
+                      )}
                       className="object-contain object-center"
+                    />
+                    <PhotoCredit
+                      credit={creditFor(
+                        artist.imageCredits,
+                        artist.images?.[0],
+                      )}
+                      isArabic={isArabic}
+                      position="top-end"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-[#094142]/90 via-transparent to-transparent" />
                     <div className="absolute bottom-0 left-0 right-0 p-2 text-white">

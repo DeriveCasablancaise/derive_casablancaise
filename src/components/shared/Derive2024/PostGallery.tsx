@@ -4,18 +4,28 @@ import { useState } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { FallbackImage, ImagePlaceholder } from '../ImageFallback';
+import { PhotoCredit } from '../PhotoCredit';
+import {
+  altWithCredit,
+  creditFor,
+  type ImageCredit,
+} from '@/lib/photo-credits';
 
 interface ImageGalleryProps {
   images: string[];
   alt: string;
   // artist pages: every photo whole in a true square, on the dark green frame
   contain?: boolean;
+  credits?: ImageCredit[];
+  isArabic?: boolean;
 }
 
 const ImageGallery: React.FC<ImageGalleryProps> = ({
   images,
   alt,
   contain,
+  credits,
+  isArabic = false,
 }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
 
@@ -24,18 +34,33 @@ const ImageGallery: React.FC<ImageGalleryProps> = ({
     : 'relative aspect-square max-h-[600px] overflow-hidden';
 
   // fill ignores the parent's padding, so the frame comes from an inset wrapper
-  const mainImage = (src: string, imageAlt: string, coverClass: string) =>
-    contain ? (
-      <div className="absolute inset-2">
-        <FallbackImage
-          src={src}
-          alt={imageAlt}
-          className="object-contain object-center"
+  // every slide carries its own credit, on the image and in its alt
+  const mainImage = (src: string, baseAlt: string, coverClass: string) => {
+    const credit = creditFor(credits, src);
+    const imageAlt = altWithCredit(baseAlt, credit, isArabic);
+    return (
+      <>
+        {contain ? (
+          <div className="absolute inset-2">
+            <FallbackImage
+              src={src}
+              alt={imageAlt}
+              className="object-contain object-center"
+            />
+          </div>
+        ) : (
+          <FallbackImage src={src} alt={imageAlt} className={coverClass} />
+        )}
+        <PhotoCredit
+          credit={credit}
+          isArabic={isArabic}
+          className={
+            contain ? cn('bottom-3', isArabic ? 'left-3' : 'right-3') : undefined
+          }
         />
-      </div>
-    ) : (
-      <FallbackImage src={src} alt={imageAlt} className={coverClass} />
+      </>
     );
+  };
 
   const nextImage = () => {
     setCurrentIndex((prevIndex) => (prevIndex + 1) % images.length);
