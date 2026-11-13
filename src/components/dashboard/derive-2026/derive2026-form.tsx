@@ -182,6 +182,12 @@ const Derive2026Form = ({ derive2026 }: Derive2026FormProps) => {
                     onFieldChange={field.onChange}
                     imageUrl={field.value || ''}
                     setFile={setBgImageFile}
+                    credit={form.watch('backgroundImageCredit')}
+                    onCreditChange={(credit) =>
+                      form.setValue('backgroundImageCredit', credit, {
+                        shouldDirty: true,
+                      })
+                    }
                   />
                 </FormControl>
                 <FormMessage />

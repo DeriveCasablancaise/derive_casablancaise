@@ -17,6 +17,7 @@ const ProgramSection = ({ edition }: ProgramSectionProps) => {
     translationNamespace,
     categories,
     categoryImages,
+    categoryImageCredits,
     programmePdf,
     programmeBook,
   } = getEdition(edition);
@@ -71,6 +72,7 @@ const ProgramSection = ({ edition }: ProgramSectionProps) => {
                     categoryKey={category}
                     categoryName={CATEGORIES[category]}
                     imageUrl={categoryImages?.[category]}
+                    imageCredit={categoryImageCredits?.[category]}
                     isSelected={false}
                     isArabic={isArabic}
                     onClick={() => {}} // Not used in navigation mode

@@ -10,6 +10,7 @@ import { Types } from 'mongoose';
 import { parseInput } from '../parse-input';
 import { sanitizeFields } from '../sanitize';
 import { postFormSchema } from '../validator';
+import { keepCredits } from '../photo-credits';
 import { defaultEndDate } from '../post-display';
 import { sessionSpan, sortByFirstSession } from '../post-sessions';
 import { locales } from '@/config';
@@ -42,7 +43,15 @@ const revalidatePostPaths = (post: {
 
 // with sessions, start/end become their overall span so date sorts still hold
 const toPostFields = (data: ReturnType<typeof postFormSchema.parse>) => {
-  const { sessions, ...rest } = data;
+  const { sessions, ...input } = data;
+  // credits of removed images are dropped, the thumbnail keeps its own
+  const rest = {
+    ...input,
+    imageCredits: keepCredits(input.imageCredits, [
+      ...input.images,
+      input.thumbnailImage,
+    ]),
+  };
   if (!sessions || sessions.length === 0) {
     return {
       fields: {

@@ -5,6 +5,7 @@ import {
   type CategoryKey,
   type EditionYear,
 } from '@/constants/editions';
+import type { ImageCredit } from '@/lib/photo-credits';
 
 // one performance; an empty venue means the post's own location
 export interface IPostSession {
@@ -23,6 +24,8 @@ export interface IPost extends Document {
   arabicText?: string;
   images: string[];
   thumbnailImage?: string;
+  // the thumbnail's credit is in here too, under its URL
+  imageCredits?: ImageCredit[];
   videoSource?: string;
   startDateTime: Date;
   endDateTime?: Date;
@@ -62,6 +65,11 @@ const PostSchema = new Schema({
   thumbnailImage: {
     type: String,
     required: false,
+  },
+  // photo credits keyed by image URL, empty on older documents
+  imageCredits: {
+    type: [{ _id: false, url: String, credit: String }],
+    default: [],
   },
   videoSource: {
     type: String,

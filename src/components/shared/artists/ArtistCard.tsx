@@ -2,6 +2,8 @@
 
 import { motion } from 'framer-motion';
 import { FallbackImage } from '../ImageFallback';
+import { PhotoCredit } from '../PhotoCredit';
+import { altWithCredit, creditFor } from '@/lib/photo-credits';
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
 import { IArtist } from '@/lib/database/models/artist.model';
@@ -21,6 +23,8 @@ export const ArtistCard = ({
   locale,
   isInView,
 }: ArtistCardProps) => {
+  const name = isArabic ? artist.arabicName : artist.frenchName;
+  const credit = creditFor(artist.imageCredits, artist.images?.[0]);
   return (
     <motion.div
       key={artist._id}
@@ -39,10 +43,11 @@ export const ArtistCard = ({
         <div className="absolute inset-2">
           <FallbackImage
             src={artist.images?.[0]}
-            alt={isArabic ? artist.arabicName : artist.frenchName}
+            alt={altWithCredit(name, credit, isArabic)}
             className="object-contain object-center"
           />
         </div>
+        <PhotoCredit credit={credit} isArabic={isArabic} position="top-end" />
         <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/60 to-transparent">
           <h3
             className={cn(

@@ -36,13 +36,14 @@ const page = async ({ params: { artistId } }: ArtistProps) => {
           <ParentLink
             label={isArabic ? 'العودة' : 'Retour'}
             className="px-4 mb-4"
+            href="/#dynamic-slider"
           />
 
           {/* Title */}
           <h1
             className={cn(
               'text-xl lg:text-3xl mb-8 text-brand-title px-4',
-              isArabic ? 'arabic-title-bold text-right' : 'latin-title-light'
+              isArabic ? 'arabic-title-bold text-right' : 'latin-title-light',
             )}
           >
             {isArabic ? artist.arabicName : artist.frenchName}
@@ -54,13 +55,15 @@ const page = async ({ params: { artistId } }: ArtistProps) => {
               images={artist.images}
               alt={isArabic ? artist.arabicName : artist.frenchName}
               contain
+              credits={artist.imageCredits}
+              isArabic={isArabic}
             />
             <p
               className={cn(
                 'max-w-none flex flex-col items-center gap-8 px-4 whitespace-pre-line',
                 isArabic
                   ? 'text-right arabic-subtitle-regular'
-                  : 'latin-subtitle-regular'
+                  : 'latin-subtitle-regular',
               )}
             >
               {isArabic ? artist.arabicText : artist.frenchText}

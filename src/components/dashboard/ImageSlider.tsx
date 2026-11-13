@@ -1,12 +1,16 @@
 import { useState } from 'react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { AdminButton } from './admin-ui';
+import { CreditInput } from './CreditInput';
 
 type ImageSliderProps = {
   images: string[];
   onRemove: (index: number) => void;
   onMove?: (from: number, to: number) => void;
   onRecrop?: (index: number) => void;
+  // credit of the image shown, shown only when onCreditChange is given
+  creditFor?: (url: string) => string;
+  onCreditChange?: (url: string, credit: string) => void;
 };
 
 export const ImageSlider = ({
@@ -14,6 +18,8 @@ export const ImageSlider = ({
   onRemove,
   onMove,
   onRecrop,
+  creditFor,
+  onCreditChange,
 }: ImageSliderProps) => {
   const [selectedIndex, setCurrentIndex] = useState(0);
   // removing the last image would otherwise leave the index past the end
@@ -122,6 +128,12 @@ export const ImageSlider = ({
         alt={`Aperçu de l'image ${currentIndex + 1} sur ${images.length}`}
         className="admin-preview-image"
       />
+      {onCreditChange && currentImage && (
+        <CreditInput
+          value={creditFor?.(currentImage) ?? ''}
+          onChange={(credit) => onCreditChange(currentImage, credit)}
+        />
+      )}
     </div>
   );
 };

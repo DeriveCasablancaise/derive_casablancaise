@@ -1,6 +1,7 @@
 import { Schema, Document, model, models } from 'mongoose';
 import type { EditionYear } from '@/constants/editions';
 import { EDITION_YEARS } from '@/lib/artist-editions';
+import type { ImageCredit } from '@/lib/photo-credits';
 
 // Interface for the Artist document
 export interface IArtist extends Document {
@@ -10,6 +11,7 @@ export interface IArtist extends Document {
   frenchText: string;
   arabicText: string;
   images: string[];
+  imageCredits?: ImageCredit[];
   videoSource?: string;
   editions: EditionYear[];
   /** @deprecated use getArtistEditions */
@@ -39,6 +41,11 @@ const ArtistSchema = new Schema({
   },
   images: {
     type: [String],
+    default: [],
+  },
+  // photo credits keyed by image URL, empty on older documents
+  imageCredits: {
+    type: [{ _id: false, url: String, credit: String }],
     default: [],
   },
   videoSource: {

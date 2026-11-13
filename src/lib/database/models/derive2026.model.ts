@@ -23,6 +23,7 @@ export interface IDerive2026 extends Document {
   video2TitleAr?: string;
 
   backgroundImage: string;
+  backgroundImageCredit?: string;
 
   videosHeadingFr?: string;
   videosHeadingAr?: string;
@@ -51,6 +52,7 @@ const Derive2026Schema = new Schema(
     video2TitleFr: text,
     video2TitleAr: text,
     backgroundImage: text,
+    backgroundImageCredit: text,
     videosHeadingFr: text,
     videosHeadingAr: text,
   },

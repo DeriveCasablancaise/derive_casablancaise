@@ -8,6 +8,7 @@ import { revalidatePath } from 'next/cache';
 import { parseInput } from '../parse-input';
 import { sanitizeFields } from '../sanitize';
 import { homepageFormSchema } from '../validator';
+import { cleanCredit } from '../photo-credits';
 
 export interface UpdateHomepageParams {
   homepage: Partial<IHomepage> & { _id?: string };
@@ -29,6 +30,7 @@ const DEFAULTS = {
   video2TitleFr: 'Aftermovie Dérive Casablancaise 2024',
   video2TitleAr: 'إعلان دعائي لـلمنعطف البيضاوي 2024',
   backgroundImage: '/desc-bg.png',
+  backgroundImageCredit: '',
 };
 
 // Get homepage data
@@ -58,6 +60,10 @@ export async function updateHomepage({ homepage }: UpdateHomepageParams) {
     homepageFormSchema,
     sanitizeFields(input, ['textFr', 'textAr']),
   );
+  // no image, no credit
+  data.backgroundImageCredit = data.backgroundImage
+    ? cleanCredit(data.backgroundImageCredit)
+    : '';
 
   try {
     await connectToDatabase();

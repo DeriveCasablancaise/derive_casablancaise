@@ -28,6 +28,7 @@ import { createArtist, updateArtist } from '@/lib/actions/artists.actions';
 import { Checkbox } from '@/components/ui/checkbox';
 import { FORMAT_ERROR } from '@/lib/square-crop';
 import { useSquareCrop } from '../useSquareCrop';
+import { keepCredits, moveCredit, remapCredits } from '@/lib/photo-credits';
 
 type ArtistFormProps = {
   type: 'Create' | 'Update';
@@ -76,6 +77,11 @@ const ArtistForm = ({ type, artist, artistId }: ArtistFormProps) => {
         ),
         { shouldDirty: true, shouldValidate: true },
       );
+      form.setValue(
+        'imageCredits',
+        moveCredit(form.getValues('imageCredits'), url, newUrl),
+        { shouldDirty: true },
+      );
       toast({
         title: 'Image recadrée',
         description: "Enregistrez l'artiste pour conserver ce cadrage.",
@@ -100,10 +106,17 @@ const ArtistForm = ({ type, artist, artistId }: ArtistFormProps) => {
         throw new Error('Image invalide, veuillez la téléverser à nouveau');
       }
 
+      // credits typed on a preview follow it to its uploaded URL
+      const imageCredits = keepCredits(
+        remapCredits(values.imageCredits, values.images, uploadedImageUrls),
+        uploadedImageUrls,
+      );
+
       if (type === 'Create') {
         const newArtist = await createArtist({
           ...values,
           images: uploadedImageUrls,
+          imageCredits,
         });
 
         if (showFieldError(newArtist)) return;
@@ -122,7 +135,12 @@ const ArtistForm = ({ type, artist, artistId }: ArtistFormProps) => {
         }
 
         const updatedArtist = await updateArtist({
-          artist: { ...values, images: uploadedImageUrls, _id: artistId },
+          artist: {
+            ...values,
+            images: uploadedImageUrls,
+            imageCredits,
+            _id: artistId,
+          },
         });
 
         if (showFieldError(updatedArtist)) return;
@@ -355,6 +373,12 @@ const ArtistForm = ({ type, artist, artistId }: ArtistFormProps) => {
                       })
                     }
                     onRecrop={handleRecrop}
+                    credits={form.watch('imageCredits')}
+                    onCreditsChange={(credits) =>
+                      form.setValue('imageCredits', credits, {
+                        shouldDirty: true,
+                      })
+                    }
                     formatsHint="JPG, PNG, WebP, HEIC (8 Mo maximum)"
                   />
                 </FormControl>

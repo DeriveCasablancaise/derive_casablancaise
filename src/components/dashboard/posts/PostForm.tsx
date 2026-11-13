@@ -43,6 +43,12 @@ import SubCategoryDropdown from './SubcategoryDropdown';
 import { ThumbnailUploader } from './ThumbnailUploader';
 import EditionDropdown from './EditionDropdown';
 import {
+  creditFor,
+  keepCredits,
+  remapCredits,
+  setCredit,
+} from '@/lib/photo-credits';
+import {
   isEditionCategory,
   isEditionYear,
   resolveCategory,
@@ -189,6 +195,16 @@ const PostForm = ({ type, post, postId }: PostFormProps) => {
         throw new Error('Image invalide, veuillez la téléverser à nouveau');
       }
 
+      // credits typed on a preview follow it to its uploaded URL
+      const imageCredits = keepCredits(
+        remapCredits(
+          values.imageCredits,
+          [...values.images, values.thumbnailImage],
+          [...uploadedImageUrls, uploadedThumbnailUrl],
+        ),
+        [...uploadedImageUrls, uploadedThumbnailUrl],
+      );
+
       const finalStart = toFloatingUTC(values.startDateTime);
       const finalEnd = toFloatingUTC(values.endDateTime ?? undefined);
 
@@ -203,6 +219,7 @@ const PostForm = ({ type, post, postId }: PostFormProps) => {
         })),
         images: uploadedImageUrls,
         thumbnailImage: uploadedThumbnailUrl,
+        imageCredits,
       };
 
       if (containsBlobUrl(payload)) {
@@ -705,6 +722,12 @@ const PostForm = ({ type, post, postId }: PostFormProps) => {
                     imageUrls={field.value}
                     setFiles={setFiles}
                     reorderable
+                    credits={form.watch('imageCredits')}
+                    onCreditsChange={(credits) =>
+                      form.setValue('imageCredits', credits, {
+                        shouldDirty: true,
+                      })
+                    }
                   />
                 </FormControl>
                 <FormMessage />
@@ -723,6 +746,19 @@ const PostForm = ({ type, post, postId }: PostFormProps) => {
                     imageUrl={field.value || ''}
                     onFieldChange={field.onChange}
                     setFile={setThumbnailFile}
+                    credit={creditFor(form.watch('imageCredits'), field.value)}
+                    onCreditChange={(credit) =>
+                      field.value &&
+                      form.setValue(
+                        'imageCredits',
+                        setCredit(
+                          form.getValues('imageCredits'),
+                          field.value,
+                          credit,
+                        ),
+                        { shouldDirty: true },
+                      )
+                    }
                   />
                 </FormControl>
                 <FormMessage />

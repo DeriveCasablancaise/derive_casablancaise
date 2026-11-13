@@ -11,6 +11,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Plus_Jakarta_Sans } from 'next/font/google';
 import { fadeIn } from '@/variants';
 import Image from 'next/image';
+import { PhotoCredit } from './PhotoCredit';
 
 const jakarta = Plus_Jakarta_Sans({
   weight: ['600', '700', '800'],
@@ -22,6 +23,7 @@ export type BackgroundFit = 'cover' | 'pan';
 interface LandingFlowProps {
   texts: { n: number; html: string; rtl: boolean }[];
   backgroundImage: string;
+  backgroundImageCredit?: string;
   isArabic: boolean;
   fit?: BackgroundFit;
   // empty image area above the first block, below lg and from lg
@@ -44,6 +46,7 @@ interface LandingFlowProps {
 export const LandingFlow = ({
   texts,
   backgroundImage,
+  backgroundImageCredit,
   isArabic,
   fit = 'cover',
   topSpace = { base: '4rem', lg: '70vh' },
@@ -146,6 +149,14 @@ export const LandingFlow = ({
             </motion.div>
           </div>
         </div>
+      )}
+      {hasImage && (
+        // above the blocks, in the bottom end corner of the section
+        <PhotoCredit
+          credit={backgroundImageCredit}
+          isArabic={isArabic}
+          className="bottom-2 z-30 md:bottom-3"
+        />
       )}
       <div
         style={

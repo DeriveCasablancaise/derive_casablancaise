@@ -9,6 +9,7 @@ import { parseInput } from '../parse-input';
 import { sanitizeFields } from '../sanitize';
 import { derive2026FormSchema } from '../validator';
 import { DERIVE_2026_DEFAULTS } from '../derive2026-defaults';
+import { cleanCredit } from '../photo-credits';
 
 export interface UpdateDerive2026Params {
   derive2026: Partial<IDerive2026> & { _id?: string };
@@ -48,6 +49,10 @@ export async function updateDerive2026({ derive2026 }: UpdateDerive2026Params) {
       'text3Ar',
     ]),
   );
+  // no image, no credit
+  data.backgroundImageCredit = data.backgroundImage
+    ? cleanCredit(data.backgroundImageCredit)
+    : '';
 
   try {
     await connectToDatabase();

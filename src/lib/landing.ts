@@ -16,6 +16,7 @@ export interface LandingData {
   video2TitleFr?: string;
   video2TitleAr?: string;
   backgroundImage?: string;
+  backgroundImageCredit?: string;
   videosHeadingFr?: string;
   videosHeadingAr?: string;
 }

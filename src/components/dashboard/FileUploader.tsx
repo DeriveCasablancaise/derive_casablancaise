@@ -6,6 +6,11 @@ import { generateClientDropzoneAccept } from 'uploadthing/client';
 import { convertFileToUrl } from '@/lib/utils';
 import { ImageDropzone } from './ImageDropzone';
 import { ImageSlider } from './ImageSlider';
+import {
+  creditFor,
+  setCredit,
+  type ImageCredit,
+} from '@/lib/photo-credits';
 
 type FileUploaderProps = {
   onFieldChange: (urls: string[]) => void;
@@ -18,6 +23,9 @@ type FileUploaderProps = {
   onFilesRejected?: () => void;
   onRecrop?: (url: string) => void;
   formatsHint?: string;
+  // keyed by URL, so reordering or removing an image keeps credits in place
+  credits?: ImageCredit[];
+  onCreditsChange?: (credits: ImageCredit[]) => void;
 };
 
 export function FileUploader({
@@ -29,6 +37,8 @@ export function FileUploader({
   onFilesRejected,
   onRecrop,
   formatsHint = 'SVG, PNG, JPG',
+  credits,
+  onCreditsChange,
 }: FileUploaderProps) {
   // files always follow the order of their blob previews in imageUrls
   const fileByPreview = useRef(new Map<string, File>());
@@ -119,6 +129,11 @@ export function FileUploader({
             onRemove={removeImage}
             onMove={reorderable ? moveImage : undefined}
             onRecrop={onRecrop && ((index) => onRecrop(imageUrls[index]))}
+            creditFor={(url) => creditFor(credits, url)}
+            onCreditChange={
+              onCreditsChange &&
+              ((url, credit) => onCreditsChange(setCredit(credits, url, credit)))
+            }
           />
         </div>
       )}
