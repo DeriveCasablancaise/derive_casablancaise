@@ -33,6 +33,8 @@
     --brand-chrome: #dc3201;
     /* hover, active and open states in the chrome, same burnt orange as the titles, white text 5.52:1 */
     --brand-chrome-active: #bb3e05;
+    /* navbar hover and open menu: brand-chrome under 12% white */
+    --brand-chrome-hover: #e04b1f;
     --chart-1: 12 76% 61%;
     --chart-2: 173 58% 39%;
     --chart-3: 197 37% 24%;

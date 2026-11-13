@@ -48,7 +48,7 @@ const Nav = ({ setIsActive }: NavProps) => {
               <Link
                 href={hrefFor(key)}
                 aria-current={isCurrent(key) ? 'page' : undefined}
-                className="flex flex-wrap overflow-hidden rounded-md px-2 transition-colors hover:bg-brand-chrome-active focus:outline-none focus-visible:bg-brand-chrome-active focus-visible:outline focus-visible:outline-2 focus-visible:outline-white aria-[current=page]:bg-brand-chrome-active"
+                className="flex flex-wrap overflow-hidden rounded-md px-2 transition-colors hover:bg-brand-chrome-hover focus:outline-none focus-visible:bg-brand-chrome-hover focus-visible:outline focus-visible:outline-2 focus-visible:outline-white aria-[current=page]:shadow-[inset_0_-3px_0_0_#fff]"
               >
                 <motion.div
                   variants={perspective}
