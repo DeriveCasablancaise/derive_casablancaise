@@ -46,7 +46,6 @@ const SlidingImages = ({ artists, currentEdition }: SlidingImagesProps) => {
           )}
         >
           <Link
-            // the past wording names no edition, so it opens the unfiltered page
             href={
               currentEdition
                 ? `/${locale}/community?edition=${currentEdition}`
@@ -125,11 +124,11 @@ const ArtistSliderInstance = ({
               src={artist.images?.[0]}
               className="object-contain object-center"
             />
-            <PhotoCredit
+            {/* <PhotoCredit
               credit={creditFor(artist.imageCredits, artist.images?.[0])}
               isArabic={isArabic}
               position="top-end"
-            />
+            /> */}
             <div
               dir={isArabic ? 'rtl' : 'ltr'}
               className={cn(
