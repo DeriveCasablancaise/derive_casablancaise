@@ -10,6 +10,11 @@ import {
   keepCentreScroll,
   visiblePages,
   parsePageInput,
+  isSinglePage,
+  renderOrder,
+  fitScale,
+  renderScale,
+  MAX_CANVAS_PIXELS,
 } from './readerView';
 
 describe('zoom', () => {
@@ -159,5 +164,44 @@ describe('needsFallback', () => {
   it('is true when the book cannot report a page', () => {
     expect(needsFallback(undefined, 0)).toBe(true);
     expect(needsFallback(null, 2)).toBe(true);
+  });
+});
+
+describe('isSinglePage', () => {
+  it('shows landscape pages alone and portrait pages as spreads on desktop', () => {
+    expect(isSinglePage(1100, 778, false)).toBe(true);
+    expect(isSinglePage(595, 842, false)).toBe(false);
+    expect(isSinglePage(595, 842, true)).toBe(true);
+  });
+});
+
+describe('renderOrder', () => {
+  it('starts with the shown spread, then its neighbours', () => {
+    expect(renderOrder(3, 10, true)).toEqual([3, 4, 5, 6, 1, 2]);
+    expect(renderOrder(0, 10, true)).toEqual([0, 1, 2]);
+  });
+
+  it('steps by one page in the single-page layout', () => {
+    expect(renderOrder(0, 2, false)).toEqual([0, 1]);
+    expect(renderOrder(4, 10, false)).toEqual([4, 5, 3]);
+    expect(renderOrder(0, 1, false)).toEqual([0]);
+  });
+});
+
+describe('render scale', () => {
+  it('fits a page inside its box', () => {
+    expect(fitScale(1100, 778, 550, 600)).toBe(0.5);
+    expect(fitScale(100, 200, 500, 200)).toBe(1);
+  });
+
+  it('keeps the asked scale while the canvas is small enough', () => {
+    expect(renderScale(1000, 700, 2)).toBe(2);
+  });
+
+  it('lowers the scale just enough to stay under the pixel cap', () => {
+    const s = renderScale(1000, 1000, 6);
+    expect(s).toBe(4);
+    expect(Math.floor(1000 * s) * Math.floor(1000 * s)).toBeLessThanOrEqual(MAX_CANVAS_PIXELS);
+    expect(renderScale(100, 100, 50, 10_000)).toBe(1);
   });
 });
