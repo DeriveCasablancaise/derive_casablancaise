@@ -130,9 +130,7 @@ export const EDITIONS: Record<EditionYear, Edition> = {
     routeBase: 'derive-2026',
     translationNamespace: 'Derive2026',
     endDate: '2026-12-05',
-    // placeholder: still the 2024 programme until the 2026 PDF is provided
     programmePdf: '/programme-2026.pdf',
-    // from public/programme/2026/manifest.json
     programmeBook: {
       dir: '/programme/2026',
       pages: 2,
