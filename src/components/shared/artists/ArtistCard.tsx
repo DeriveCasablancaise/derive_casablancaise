@@ -3,6 +3,7 @@
 import { motion } from 'framer-motion';
 import { FallbackImage } from '../ImageFallback';
 import { PhotoCredit } from '../PhotoCredit';
+import { Scrim, textOnImageClass } from '../FitImage';
 import { altWithCredit, creditFor } from '@/lib/photo-credits';
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
@@ -48,10 +49,12 @@ export const ArtistCard = ({
           />
         </div>
         <PhotoCredit credit={credit} isArabic={isArabic} position="top-end" />
-        <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/60 to-transparent">
+        <Scrim />
+        <div className="absolute bottom-0 left-0 right-0 p-4">
           <h3
             className={cn(
-              'text-white text-lg mb-1 font-semibold',
+              textOnImageClass,
+              'text-lg mb-1 font-semibold',
               isArabic ? 'arabic-subtitle-regular' : 'latin-subtitle-regular'
             )}
           >

@@ -7,6 +7,7 @@ import { motion, useInView } from 'framer-motion';
 import { CategoryImageButton } from './Derive2024/CategoryImageBtn';
 import { CATEGORIES, getEdition, type EditionYear } from '@/constants/editions';
 import ProgrammeLink from './ProgrammeLink';
+import { JustifiedGrid } from './FitImage';
 
 interface ProgramSectionProps {
   edition: EditionYear;
@@ -61,30 +62,26 @@ const ProgramSection = ({ edition }: ProgramSectionProps) => {
             transition={{ duration: 0.5, delay: 0.5 }}
             className="mb-12"
           >
-            {/* wraps and centres, so any count leaves no empty cell */}
-            <div className="flex flex-wrap justify-center gap-4 md:gap-6">
+            {/* justified rows: each tile is as wide as its photo needs */}
+            <JustifiedGrid>
               {categories.map((category, index) => (
-                <div
+                <CategoryImageButton
                   key={category}
-                  className="w-[calc(50%-0.5rem)] md:w-[calc(50%-0.75rem)] lg:w-[calc(25%-1.125rem)]"
-                >
-                  <CategoryImageButton
-                    categoryKey={category}
-                    categoryName={CATEGORIES[category]}
-                    imageUrl={categoryImages?.[category]}
-                    imageCredit={categoryImageCredits?.[category]}
-                    isSelected={false}
-                    isArabic={isArabic}
-                    onClick={() => {}} // Not used in navigation mode
-                    index={index}
-                    isInView={isInView}
-                    isNavigationMode={true}
-                    locale={locale}
-                    edition={edition}
-                  />
-                </div>
+                  categoryKey={category}
+                  categoryName={CATEGORIES[category]}
+                  imageUrl={categoryImages?.[category]}
+                  imageCredit={categoryImageCredits?.[category]}
+                  isSelected={false}
+                  isArabic={isArabic}
+                  onClick={() => {}} // Not used in navigation mode
+                  index={index}
+                  isInView={isInView}
+                  isNavigationMode={true}
+                  locale={locale}
+                  edition={edition}
+                />
               ))}
-            </div>
+            </JustifiedGrid>
           </motion.div>
         </motion.div>
 

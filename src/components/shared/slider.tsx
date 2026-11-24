@@ -2,6 +2,7 @@
 import { useScroll, useTransform, motion } from 'framer-motion';
 import { useLocale, useTranslations } from 'next-intl';
 import { FallbackImage } from './ImageFallback';
+import { Scrim, textOnImageClass } from './FitImage';
 import { PhotoCredit } from './PhotoCredit';
 import { altWithCredit, creditFor } from '@/lib/photo-credits';
 import Link from 'next/link';
@@ -129,10 +130,12 @@ const ArtistSliderInstance = ({
               isArabic={isArabic}
               position="top-end"
             /> */}
+            <Scrim />
             <div
               dir={isArabic ? 'rtl' : 'ltr'}
               className={cn(
-                'absolute bottom-2 text-xs md:text-sm text-white z-20',
+                textOnImageClass,
+                'absolute bottom-2 text-xs md:text-sm z-20',
                 isArabic
                   ? 'right-2 arabic-subtitle-bold'
                   : 'left-2 latin-subtitle-regular',
@@ -140,7 +143,6 @@ const ArtistSliderInstance = ({
             >
               {isArabic ? artist.arabicName : artist.frenchName}
             </div>
-            <div className="absolute inset-0 bg-gradient-to-t from-[#094142]/90 via-transparent to-transparent" />
           </div>
         </Link>
       </div>

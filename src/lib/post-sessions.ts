@@ -114,34 +114,40 @@ const joinList = (items: string[], isArabic: boolean) => {
   return isArabic ? `${head} و${last}` : `${head} et ${last}`;
 };
 
-// "4 décembre", "4 et 5 décembre", "2, 3 et 5 décembre"; the time only for a single session
-export const formatCardDays = (post: SessionSource, isArabic: boolean) => {
-  const sessions = getPostSessions(post);
-  if (sessions.length === 0) return '';
-  const locale = isArabic ? arMA : fr;
-  const dates = sessions.map((s) => fromFloatingUTC(s.start)!);
+// a session saved at 00:00 has no time of its own
+const hasTime = (date: Date) => date.getHours() !== 0 || date.getMinutes() !== 0;
 
-  const days: Date[] = [];
-  for (const date of dates) {
+// One line per day, in order, each with its times:
+// "3 décembre, 19h00", "4 décembre, 15h30 et 18h00", or just "5 décembre"
+export const formatCardLines = (
+  post: SessionSource,
+  isArabic: boolean,
+): string[] => {
+  const locale = isArabic ? arMA : fr;
+  const days: { date: Date; times: Date[] }[] = [];
+  for (const session of getPostSessions(post)) {
+    const date = fromFloatingUTC(session.start)!;
     const prev = days[days.length - 1];
-    if (!prev || prev.toDateString() !== date.toDateString()) {
-      days.push(date);
+    if (prev && prev.date.toDateString() === date.toDateString()) {
+      prev.times.push(date);
+    } else {
+      days.push({ date, times: [date] });
     }
   }
 
-  const dayNumber = (date: Date) =>
-    !isArabic && date.getDate() === 1 ? '1er' : String(date.getDate());
-  // the month goes after the last day of each month
-  const items = days.map((date, index) => {
-    const next = days[index + 1];
-    const monthEnds = !next || next.getMonth() !== date.getMonth();
-    return monthEnds
-      ? `${dayNumber(date)} ${format(date, 'MMMM', { locale })}`
-      : dayNumber(date);
+  return days.map(({ date, times }) => {
+    const dayNumber =
+      !isArabic && date.getDate() === 1 ? '1er' : String(date.getDate());
+    const day = `${dayNumber} ${format(date, 'MMMM', { locale })}`;
+    // sessions are sorted already; I drop repeats of the same time
+    const hours = Array.from(
+      new Set(
+        times
+          .filter(hasTime)
+          .map((t) => format(t, isArabic ? 'HH:mm' : "HH'h'mm", { locale })),
+      ),
+    );
+    if (hours.length === 0) return day;
+    return `${day}${isArabic ? '، ' : ', '}${joinList(hours, isArabic)}`;
   });
-
-  const text = joinList(items, isArabic);
-  if (sessions.length !== 1) return text;
-  const hour = format(dates[0], isArabic ? 'HH:mm' : "HH'h'mm", { locale });
-  return isArabic ? `${text}، ${hour}` : `${text}, ${hour}`;
 };

@@ -12,6 +12,14 @@ import { useRouter } from 'next/navigation';
 import ClientWrapper from '../PostWrapper';
 import { FallbackImage } from '../ImageFallback';
 import { PhotoCredit } from '../PhotoCredit';
+import {
+  JustifiedGrid,
+  Scrim,
+  justifiedTileClass,
+  textOnImageClass,
+  useImageRatios,
+} from '../FitImage';
+import { tileStyle } from '@/lib/image-ratio';
 import { altWithCredit, creditFor } from '@/lib/photo-credits';
 import { ParentLink } from '@/components/shared/ParentLink';
 import SubCategorySelector from './SubcategorySelector';
@@ -24,7 +32,7 @@ import {
   type CategoryKey,
   type EditionYear,
 } from '@/constants/editions';
-import { formatCardDays, hasSessions } from '@/lib/post-sessions';
+import { formatCardLines, hasSessions } from '@/lib/post-sessions';
 
 
 const SubCategories = {
@@ -35,7 +43,8 @@ const SubCategories = {
 
 type SubCategoryKey = keyof typeof SubCategories;
 
-// every day of the post, in order; older editions only show it for session lists
+// one line per day with its times, in order; older editions only show it for
+// session lists. The block sits at the card's foot, so extra lines push it up.
 const DateLine = ({
   post,
   isArabic,
@@ -46,18 +55,21 @@ const DateLine = ({
   edition: EditionYear;
 }) => {
   if (edition !== '2026' && !hasSessions(post)) return null;
-  const text = formatCardDays(post, isArabic);
-  if (!text) return null;
+  const lines = formatCardLines(post, isArabic);
+  if (lines.length === 0) return null;
   return (
-    <p
+    <div
       dir={isArabic ? 'rtl' : 'ltr'}
       className={cn(
-        'text-white text-sm',
+        textOnImageClass,
+        'text-sm text-start',
         isArabic ? 'arabic-subtitle-regular' : 'latin-subtitle-regular',
       )}
     >
-      {text}
-    </p>
+      {lines.map((line) => (
+        <p key={line}>{line}</p>
+      ))}
+    </div>
   );
 };
 
@@ -84,6 +96,7 @@ const CategoryPostsClient: React.FC<CategoryPostsClientProps> = ({
   const [selectedSubCategory, setSelectedSubCategory] =
     useState<SubCategoryKey | null>(null);
   const router = useRouter();
+  const { ratioOf, onLoadFor } = useImageRatios();
 
   useEffect(() => {
     setPosts(initialPosts);
@@ -184,85 +197,87 @@ const CategoryPostsClient: React.FC<CategoryPostsClientProps> = ({
         </motion.div>
 
         <div className="w-full px-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {displayedPosts.length > 0 ? (
-              displayedPosts.map((post, index) => (
-                <motion.div
-                  key={post._id}
-                  initial={{ opacity: 0, y: 30 }}
-                  animate={isInView ? { opacity: 1, y: 0 } : {}}
-                  transition={{
-                    duration: 0.5,
-                    delay: index * 0.1,
-                  }}
-                  className="shadow-lg overflow-hidden"
-                >
-                  <Link
-                    href={`/${locale}${postHref(edition, post._id)}`}
-                    className="block aspect-[16/9] md:aspect-[3/4] lg:aspect-[1/1] relative group overflow-hidden"
+          {displayedPosts.length > 0 ? (
+            <JustifiedGrid className="md:gap-6">
+              {displayedPosts.map((post, index) => {
+                const src = post.thumbnailImage || post.images?.[0];
+                const credit = creditFor(post.imageCredits, src);
+                return (
+                  <div
+                    key={post._id}
+                    className={justifiedTileClass}
+                    style={tileStyle(ratioOf(src))}
                   >
-                    <div className="absolute inset-0 flex justify-center items-center overflow-hidden">
-                      <FallbackImage
-                        src={post.thumbnailImage || post.images?.[0]}
-                        alt={altWithCredit(
-                          post.frenchTitle,
-                          creditFor(
-                            post.imageCredits,
-                            post.thumbnailImage || post.images?.[0],
-                          ),
-                          isArabic,
-                        )}
-                        className="object-cover transition-transform duration-700 ease-out group-hover:scale-110"
-                      />
-                    </div>
-                    <PhotoCredit
-                      credit={creditFor(
-                        post.imageCredits,
-                        post.thumbnailImage || post.images?.[0],
-                      )}
-                      isArabic={isArabic}
-                      position="top-end"
-                    />
-                    <div className="absolute bottom-0 left-0 right-0 p-2">
-                      <h3
-                        className={cn(
-                          'text-white text-lg mb-1 font-semibold capitalize',
-                          isArabic
-                            ? 'arabic-subtitle-regular'
-                            : 'latin-subtitle-regular',
-                        )}
+                    <motion.div
+                      initial={{ opacity: 0, y: 30 }}
+                      animate={isInView ? { opacity: 1, y: 0 } : {}}
+                      transition={{
+                        duration: 0.5,
+                        delay: index * 0.1,
+                      }}
+                      className="h-full w-full"
+                    >
+                      {/* the whole card scales on hover, so the photo is never cropped */}
+                      <Link
+                        href={`/${locale}${postHref(edition, post._id)}`}
+                        className="block h-full w-full relative overflow-hidden shadow-lg transition-transform duration-700 ease-out hover:scale-[1.03]"
                       >
-                        {isArabic && post.arabicTitle
-                          ? post.arabicTitle
-                          : post.frenchTitle}
-                      </h3>
-                      <DateLine
-                        post={post}
-                        isArabic={isArabic}
-                        edition={edition}
-                      />
-                    </div>
-                  </Link>
-                </motion.div>
-              ))
-            ) : (
-              <div className="col-span-full flex flex-col items-center justify-center min-h-[400px] bg-[#E9EAEB] rounded-lg">
-                <Calendar className="w-16 h-16 text-[rgb(9,65,66)] mb-4" />
-                <p
-                  className={cn(
-                    'text-xl text-[#094142]',
-                    isArabic
-                      ? 'arabic-subtitle-regular'
-                      : 'latin-subtitle-regular',
-                  )}
-                >
-                  {isArabic
-                    ? 'لا يوجد محتوى متاح حاليًا'
-                    : 'Aucun contenu disponible pour le moment'}
-                </p>
-              </div>
-            )}
-          </div>
+                        <FallbackImage
+                          src={src}
+                          alt={altWithCredit(post.frenchTitle, credit, isArabic)}
+                          className="object-contain"
+                          sizes="(max-width: 479px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                          onLoad={onLoadFor(src)}
+                        />
+                        <Scrim />
+                        <PhotoCredit
+                          credit={credit}
+                          isArabic={isArabic}
+                          position="top-end"
+                        />
+                        <div className="absolute bottom-0 left-0 right-0 p-2">
+                          <h3
+                            className={cn(
+                              textOnImageClass,
+                              'text-lg mb-1 font-semibold capitalize',
+                              isArabic
+                                ? 'arabic-subtitle-regular'
+                                : 'latin-subtitle-regular',
+                            )}
+                          >
+                            {isArabic && post.arabicTitle
+                              ? post.arabicTitle
+                              : post.frenchTitle}
+                          </h3>
+                          <DateLine
+                            post={post}
+                            isArabic={isArabic}
+                            edition={edition}
+                          />
+                        </div>
+                      </Link>
+                    </motion.div>
+                  </div>
+                );
+              })}
+            </JustifiedGrid>
+          ) : (
+            <div className="flex flex-col items-center justify-center min-h-[400px] bg-[#E9EAEB] rounded-lg">
+              <Calendar className="w-16 h-16 text-[rgb(9,65,66)] mb-4" />
+              <p
+                className={cn(
+                  'text-xl text-[#094142]',
+                  isArabic
+                    ? 'arabic-subtitle-regular'
+                    : 'latin-subtitle-regular',
+                )}
+              >
+                {isArabic
+                  ? 'لا يوجد محتوى متاح حاليًا'
+                  : 'Aucun contenu disponible pour le moment'}
+              </p>
+            </div>
+          )}
         </div>
       </section>
     </ClientWrapper>

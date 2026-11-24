@@ -12,12 +12,18 @@ import {
 } from '@/constants/editions';
 import { PhotoCredit } from '../PhotoCredit';
 import { altWithCredit } from '@/lib/photo-credits';
-
+import { tileStyle } from '@/lib/image-ratio';
+import {
+  Scrim,
+  justifiedTileClass,
+  textOnImageClass,
+  useImageRatios,
+} from '../FitImage';
 
 interface CategoryImageButtonProps {
   categoryKey: CategoryKey;
   categoryName: { fr: string; ar: string };
-  // undefined renders a plain tile, same size
+  // undefined renders a plain tile at the default ratio
   imageUrl?: string;
   imageCredit?: string;
   isSelected: boolean;
@@ -30,6 +36,8 @@ interface CategoryImageButtonProps {
   edition: EditionYear;
 }
 
+// A tile of a JustifiedGrid: its box takes the photo's own ratio, so the
+// whole photo shows with nothing around it.
 export const CategoryImageButton: React.FC<CategoryImageButtonProps> = ({
   categoryKey,
   categoryName,
@@ -44,63 +52,71 @@ export const CategoryImageButton: React.FC<CategoryImageButtonProps> = ({
   edition,
 }) => {
   const locale = useLocale();
+  const { ratioOf, onLoadFor } = useImageRatios();
   const imageAlt = altWithCredit(
     isArabic ? categoryName.ar : categoryName.fr,
     imageCredit,
     isArabic,
   );
+
+  const picture = imageUrl ? (
+    <>
+      <Image
+        src={imageUrl}
+        alt={imageAlt}
+        fill
+        className="object-contain"
+        sizes="(max-width: 479px) 100vw, (max-width: 1024px) 50vw, 33vw"
+        onLoad={onLoadFor(imageUrl)}
+      />
+      <Scrim variant="center" />
+    </>
+  ) : (
+    // no picture of its own: a plain tile, never another image
+    <div aria-hidden="true" className="absolute inset-0 bg-brand-chrome" />
+  );
+
+  const title = (
+    <div className="absolute inset-0 flex items-center justify-center">
+      <h3
+        className={cn(
+          textOnImageClass,
+          'text-center px-4 py-2 font-semibold',
+          'text-sm md:text-base lg:text-lg',
+          'transform transition-all duration-300 group-hover:scale-110',
+          isArabic ? 'arabic-subtitle-regular' : 'latin-subtitle-regular',
+        )}
+      >
+        {isArabic ? categoryName.ar : categoryName.fr}
+      </h3>
+    </div>
+  );
+
   const credit = imageUrl && (
     <PhotoCredit credit={imageCredit} isArabic={isArabic} />
   );
 
-  const buttonContent = (
-    <motion.div
-      initial={{ opacity: 0, scale: 0.8 }}
-      animate={isInView ? { opacity: 1, scale: 1 } : {}}
-      transition={{ duration: 0.5, delay: 0.6 + index * 0.1 }}
-      className={cn(
-        'relative aspect-square overflow-hidden cursor-pointer group',
-        'transform transition-all duration-300 hover:scale-105 hover:shadow-xl',
-        isSelected && !isNavigationMode
-          ? 'ring-4 ring-[#00b0db] shadow-xl'
-          : '',
-      )}
-    >
-      {imageUrl ? (
-        <Image
-          src={imageUrl}
-          alt={imageAlt}
-          fill
-          className="object-cover transition-transform duration-300 group-hover:scale-110"
-          sizes="(max-width: 768px) 50vw, (max-width: 1024px) 25vw, 20vw"
-        />
-      ) : (
-        // no picture of its own: a plain tile, never another image
-        <div aria-hidden="true" className="absolute inset-0 bg-brand-chrome" />
-      )}
-      {imageUrl && (
-        <div className="absolute inset-0 bg-black/40 group-hover:bg-black/20 transition-all duration-300" />
-      )}
-      <div className="absolute inset-0 flex items-center justify-center">
-        <h3
-          className={cn(
-            'text-white text-center px-4 py-2 font-semibold',
-            'text-sm md:text-base lg:text-lg',
-            'transform transition-all duration-300 group-hover:scale-110',
-            isArabic ? 'arabic-subtitle-regular' : 'latin-subtitle-regular',
-          )}
-        >
-          {isArabic ? categoryName.ar : categoryName.fr}
-        </h3>
-      </div>
-      {credit}
-    </motion.div>
-  );
-
   if (isNavigationMode) {
     return (
-      <Link href={`/${locale}${categoryHref(edition, categoryKey)}`}>
-        {buttonContent}
+      <Link
+        href={`/${locale}${categoryHref(edition, categoryKey)}`}
+        className={justifiedTileClass}
+        style={tileStyle(ratioOf(imageUrl))}
+      >
+        {/* the whole tile scales on hover, so nothing gets cropped */}
+        <motion.div
+          initial={{ opacity: 0, scale: 0.8 }}
+          animate={isInView ? { opacity: 1, scale: 1 } : {}}
+          transition={{ duration: 0.5, delay: 0.6 + index * 0.1 }}
+          className={cn(
+            'relative h-full w-full overflow-hidden cursor-pointer group',
+            'transform transition-all duration-300 hover:scale-105 hover:shadow-xl',
+          )}
+        >
+          {picture}
+          {title}
+          {credit}
+        </motion.div>
       </Link>
     );
   }
@@ -108,39 +124,15 @@ export const CategoryImageButton: React.FC<CategoryImageButtonProps> = ({
   return (
     <button
       onClick={() => onClick(categoryKey)}
+      style={tileStyle(ratioOf(imageUrl))}
       className={cn(
-        'relative group aspect-square overflow-hidden shadow-md transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#00b0db]',
+        justifiedTileClass,
+        'group overflow-hidden shadow-md transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#00b0db]',
         isSelected ? 'ring-4 ring-[#00b0db] ring-offset-2' : 'hover:shadow-xl',
       )}
     >
-      {imageUrl ? (
-        <Image
-          src={imageUrl}
-          alt={imageAlt}
-          fill
-          className="object-cover transition-transform duration-300 group-hover:scale-110"
-          sizes="(max-width: 768px) 50vw, (max-width: 1024px) 25vw, 20vw"
-        />
-      ) : (
-        <div aria-hidden="true" className="absolute inset-0 bg-brand-chrome" />
-      )}
-      <div
-        className={cn(
-          'absolute inset-0 flex items-center justify-center transition-opacity duration-300',
-          imageUrl && 'bg-black/50',
-        )}
-      >
-        <h3
-          className={cn(
-            'text-white text-center px-4 py-2 font-semibold',
-            'text-sm md:text-base lg:text-lg',
-            'transform transition-all duration-300 group-hover:scale-110',
-            isArabic ? 'arabic-subtitle-regular' : 'latin-subtitle-regular',
-          )}
-        >
-          {isArabic ? categoryName.ar : categoryName.fr}
-        </h3>
-      </div>
+      {picture}
+      {title}
       {credit}
     </button>
   );
