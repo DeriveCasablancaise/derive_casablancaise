@@ -1,6 +1,8 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, type CSSProperties } from 'react';
+import { useImageRatios } from '../FitImage';
+import { fitWidthCss } from '@/lib/image-ratio';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { FallbackImage, ImagePlaceholder } from '../ImageFallback';
@@ -28,10 +30,19 @@ const ImageGallery: React.FC<ImageGalleryProps> = ({
   isArabic = false,
 }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
+  const { ratioOf, onLoadFor } = useImageRatios();
 
   const mainBox = contain
     ? 'relative mx-auto aspect-square w-full max-w-[600px] overflow-hidden bg-[#094142]'
-    : 'relative aspect-square max-h-[600px] overflow-hidden';
+    : 'relative mx-auto overflow-hidden';
+
+  // posts: the box takes the slide's own ratio, full width but at most 80vh
+  // tall, so the photo is whole and there is nothing around it
+  const boxStyle = (src?: string): CSSProperties | undefined => {
+    if (contain) return undefined;
+    const ratio = ratioOf(src);
+    return { aspectRatio: `${ratio}`, width: fitWidthCss(ratio, 80) };
+  };
 
   // fill ignores the parent's padding, so the frame comes from an inset wrapper
   // every slide carries its own credit, on the image and in its alt
@@ -49,7 +60,13 @@ const ImageGallery: React.FC<ImageGalleryProps> = ({
             />
           </div>
         ) : (
-          <FallbackImage src={src} alt={imageAlt} className={coverClass} />
+          <FallbackImage
+            src={src}
+            alt={imageAlt}
+            className={coverClass}
+            sizes="(max-width: 1024px) 100vw, 50vw"
+            onLoad={onLoadFor(src)}
+          />
         )}
         <PhotoCredit
           credit={credit}
@@ -80,7 +97,7 @@ const ImageGallery: React.FC<ImageGalleryProps> = ({
   if (images.length === 0) {
     return (
       <div className="w-full">
-        <div className={mainBox}>
+        <div className={mainBox} style={boxStyle()}>
           <ImagePlaceholder />
         </div>
       </div>
@@ -91,12 +108,8 @@ const ImageGallery: React.FC<ImageGalleryProps> = ({
   if (images.length === 1) {
     return (
       <div className="w-full">
-        <div className={mainBox}>
-          {mainImage(
-            images[0],
-            alt,
-            'object-cover transition-transform duration-300',
-          )}
+        <div className={mainBox} style={boxStyle(images[0])}>
+          {mainImage(images[0], alt, 'object-contain')}
         </div>
       </div>
     );
@@ -105,11 +118,14 @@ const ImageGallery: React.FC<ImageGalleryProps> = ({
   return (
     <div className="w-full space-y-4">
       {/* Main Image Display */}
-      <div className={cn(mainBox, 'group')}>
+      <div
+        className={cn(mainBox, 'group')}
+        style={boxStyle(images[currentIndex])}
+      >
         {mainImage(
           images[currentIndex],
           `${alt} - Image ${currentIndex + 1}`,
-          'object-cover transition-all duration-300',
+          'object-contain',
         )}
 
         {/* Navigation Buttons */}
@@ -161,7 +177,7 @@ const ImageGallery: React.FC<ImageGalleryProps> = ({
 
       {/* Thumbnail Navigation */}
       {images.length > 1 && (
-        <div className={cn('w-full max-w-[600px]', contain && 'mx-auto')}>
+        <div className="w-full max-w-[600px] mx-auto">
           <div className="flex gap-2 overflow-x-auto py-2 scrollbar-hide cursor-grab active:cursor-grabbing scroll-smooth justify-center">
             {images.map((image, index) => (
               <button
@@ -175,9 +191,13 @@ const ImageGallery: React.FC<ImageGalleryProps> = ({
                     : 'opacity-70 hover:opacity-100'
                 )}
               >
+                {/* thumbnails stay square crops; loading them tells the
+                    main box each slide's ratio ahead of time */}
                 <FallbackImage
                   src={image}
                   alt={`${alt} thumbnail ${index + 1}`}
+                  sizes="80px"
+                  onLoad={contain ? undefined : onLoadFor(image)}
                   className={
                     contain
                       ? 'object-contain object-center'

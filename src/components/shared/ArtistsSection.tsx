@@ -14,6 +14,7 @@ import {
 import { IArtist } from '@/lib/database/models/artist.model';
 import { getAllArtists } from '@/lib/actions/artists.actions';
 import { FallbackImage } from './ImageFallback';
+import { Scrim, textOnImageClass } from './FitImage';
 import { PhotoCredit } from './PhotoCredit';
 import { altWithCredit, creditFor } from '@/lib/photo-credits';
 import Link from 'next/link';
@@ -194,8 +195,13 @@ const ArtistsSection = () => {
                       isArabic={isArabic}
                       position="top-end"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-[#094142]/90 via-transparent to-transparent" />
-                    <div className="absolute bottom-0 left-0 right-0 p-2 text-white">
+                    <Scrim />
+                    <div
+                      className={cn(
+                        textOnImageClass,
+                        'absolute bottom-0 left-0 right-0 p-2',
+                      )}
+                    >
                       <h3
                         className={cn(
                           'text-base mb-1',

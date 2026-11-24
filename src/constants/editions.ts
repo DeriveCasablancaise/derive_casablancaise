@@ -157,7 +157,7 @@ export const EDITIONS: Record<EditionYear, Edition> = {
       performances: '/assets/categories/2026/lectures.jpg',
       cinema: '/assets/categories/2026/cinema.png',
       ateliers: '/assets/categories/2026/ateliers.jpeg',
-      exposition: '/assets/categories/2026/expositions.jpg',
+      exposition: '/assets/categories/2026/expositions.jpeg',
     },
     categoryImageCredits: {
       danse: '',
