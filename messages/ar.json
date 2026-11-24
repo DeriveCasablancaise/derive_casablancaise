@@ -76,7 +76,8 @@
       "zoomOut": "تصغير",
       "zoomReset": "ملاءمة الشاشة",
       "fullscreen": "ملء الشاشة",
-      "exitFullscreen": "الخروج من ملء الشاشة"
+      "exitFullscreen": "الخروج من ملء الشاشة",
+      "loadError": "تعذر عرض البرنامج هنا."
     }
   },
   "HomePage": {

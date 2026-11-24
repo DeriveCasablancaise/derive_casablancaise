@@ -4,7 +4,7 @@ import Image from 'next/image';
 import { motion, useReducedMotion } from 'framer-motion';
 import { useLocale, useTranslations } from 'next-intl';
 import { cn } from '@/lib/utils';
-import { getEdition } from '@/constants/editions';
+import { getEdition, programmeHref } from '@/constants/editions';
 import ProgrammeLink from './ProgrammeLink';
 import { PhotoCredit } from './PhotoCredit';
 import { altWithCredit } from '@/lib/photo-credits';
@@ -16,7 +16,7 @@ const PosterSection = () => {
   const tPoster = useTranslations('Poster');
   const reduceMotion = useReducedMotion();
   const edition = getEdition('2026');
-  const programmePdf = edition.programmePdf;
+  const programmePdf = programmeHref('2026');
   const poster = edition.poster ?? { src: '/images/affiche-2026.jpg' };
 
   const linkClass = cn(
@@ -51,7 +51,7 @@ const PosterSection = () => {
           {programmePdf && (
             <ProgrammeLink
               href={programmePdf}
-              programmeBook={edition.programmeBook}
+              hasReader={edition.programmeReader}
               download
               className={linkClass}
             >

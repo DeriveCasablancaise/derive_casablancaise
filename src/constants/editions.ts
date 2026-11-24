@@ -1,3 +1,5 @@
+import { versionedHref } from '../lib/programmeLink';
+
 export type EditionYear = '2022' | '2024' | '2026';
 
 export const CATEGORIES = {
@@ -27,21 +29,13 @@ export const CATEGORY_KEYS = Object.keys(CATEGORIES) as [
 export const isCategoryKey = (x: string): x is CategoryKey =>
   Object.keys(CATEGORIES).includes(x);
 
-export interface ProgrammeBook {
-  dir: string;
-  pages: number;
-  width: number;
-  height: number;
-  // width of the page-NNN@3x.webp images used above 100% zoom
-  zoomWidth?: number;
-}
-
 export interface Edition {
   year: EditionYear;
   routeBase: 'derive-2024' | 'previous' | 'derive-2026';
   translationNamespace: string | undefined;
   programmePdf: string | undefined;
-  programmeBook?: ProgrammeBook;
+  // the programme link opens the in-page reader on the PDF itself
+  programmeReader?: boolean;
   // key order is the tile order
   categories: readonly CategoryKey[];
   categoryImages: Partial<Record<CategoryKey, string>> | undefined;
@@ -131,13 +125,7 @@ export const EDITIONS: Record<EditionYear, Edition> = {
     translationNamespace: 'Derive2026',
     endDate: '2026-12-05',
     programmePdf: '/programme-2026.pdf',
-    programmeBook: {
-      dir: '/programme/2026',
-      pages: 2,
-      width: 1100,
-      height: 778,
-      zoomWidth: 3300,
-    },
+    programmeReader: true,
     // the 2024 order; performances takes the place of lectures,
     // expositions the place of "En Marge..."
     categories: [
@@ -185,6 +173,15 @@ export const parseEditionParam = (value: string | null): EditionYear | null =>
   isEditionYear(value) ? value : null;
 
 export const getEdition = (year: EditionYear): Edition => EDITIONS[year];
+
+// set once per build in next.config.mjs (commit sha, or the build time)
+export const PDF_VERSION = process.env.NEXT_PUBLIC_PDF_VERSION;
+
+// the programme URL the link and the reader use, fresh after each deploy
+export const programmeHref = (year: EditionYear): string | undefined => {
+  const pdf = EDITIONS[year].programmePdf;
+  return pdf && versionedHref(pdf, PDF_VERSION);
+};
 
 // Paths have no locale prefix, callers add `/${locale}` as before.
 export const editionHref = (year: EditionYear) =>

@@ -5,7 +5,12 @@ import { cn, landingSlideUp } from '@/lib/utils';
 import { useLocale, useTranslations } from 'next-intl';
 import { motion, useInView } from 'framer-motion';
 import { CategoryImageButton } from './Derive2024/CategoryImageBtn';
-import { CATEGORIES, getEdition, type EditionYear } from '@/constants/editions';
+import {
+  CATEGORIES,
+  getEdition,
+  programmeHref,
+  type EditionYear,
+} from '@/constants/editions';
 import ProgrammeLink from './ProgrammeLink';
 import { JustifiedGrid } from './FitImage';
 
@@ -19,9 +24,9 @@ const ProgramSection = ({ edition }: ProgramSectionProps) => {
     categories,
     categoryImages,
     categoryImageCredits,
-    programmePdf,
-    programmeBook,
+    programmeReader,
   } = getEdition(edition);
+  const programmePdf = programmeHref(edition);
   const sectionRef = useRef(null);
   const isInView = useInView(sectionRef, { once: false, amount: 0.1 });
   const locale = useLocale();
@@ -93,7 +98,7 @@ const ProgramSection = ({ edition }: ProgramSectionProps) => {
               isArabic ? 'arabic-title-light' : 'latin-title-light',
             )}
           >
-            <ProgrammeLink href={programmePdf} programmeBook={programmeBook}>
+            <ProgrammeLink href={programmePdf} hasReader={programmeReader}>
               {t2('DownloadEdition', { year: edition })}
             </ProgrammeLink>
           </div>

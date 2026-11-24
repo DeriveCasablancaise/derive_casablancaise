@@ -3,7 +3,6 @@
 import { type ReactNode, type MouseEvent, useState, useCallback } from 'react';
 import dynamic from 'next/dynamic';
 import { shouldOpenReader } from '@/lib/programmeLink';
-import type { ProgrammeBook } from '@/constants/editions';
 
 const FlipbookReader = dynamic(
   () => import('@/components/shared/FlipbookReader'),
@@ -12,7 +11,7 @@ const FlipbookReader = dynamic(
 
 interface ProgrammeLinkProps {
   href: string;
-  programmeBook?: ProgrammeBook;
+  hasReader?: boolean;
   className?: string;
   children: ReactNode;
   download?: boolean;
@@ -20,7 +19,7 @@ interface ProgrammeLinkProps {
 
 export default function ProgrammeLink({
   href,
-  programmeBook,
+  hasReader = false,
   className,
   children,
   download,
@@ -29,12 +28,12 @@ export default function ProgrammeLink({
 
   const handleClick = useCallback(
     (e: MouseEvent<HTMLAnchorElement>) => {
-      if (shouldOpenReader(e, !!programmeBook)) {
+      if (shouldOpenReader(e, hasReader)) {
         e.preventDefault();
         setOpen(true);
       }
     },
-    [programmeBook],
+    [hasReader],
   );
 
   return (
@@ -49,14 +48,9 @@ export default function ProgrammeLink({
       >
         {children}
       </a>
-      {open && programmeBook && (
-        <FlipbookReader
-          book={programmeBook}
-          pdfHref={href}
-          onClose={() => setOpen(false)}
-        />
+      {open && hasReader && (
+        <FlipbookReader pdfHref={href} onClose={() => setOpen(false)} />
       )}
     </>
   );
 }
-

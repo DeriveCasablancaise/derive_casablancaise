@@ -93,3 +93,41 @@ export function needsFallback(
 ): boolean {
   return typeof actual !== 'number' || actual !== target;
 }
+
+// landscape pages are already spreads, so they go one at a time
+export function isSinglePage(
+  pageW: number,
+  pageH: number,
+  isMobile: boolean,
+): boolean {
+  return isMobile || pageH / pageW < 1;
+}
+
+// the shown spread first, then the next one, then the previous one
+export function renderOrder(index: number, total: number, spread: boolean): number[] {
+  const order = [
+    ...visiblePages(index, total, spread),
+    ...visiblePages(stepIndex(index, 1, total, spread), total, spread),
+    ...visiblePages(stepIndex(index, -1, total, spread), total, spread),
+  ];
+  return Array.from(new Set(order)).filter((i) => i >= 0 && i < total);
+}
+
+// iOS Safari refuses canvases above 16,777,216 px; I stay a little under
+export const MAX_CANVAS_PIXELS = 16_000_000;
+export const RENDER_DEBOUNCE_MS = 150;
+
+// scale that fits a page (PDF units) inside a box (CSS px)
+export function fitScale(pageW: number, pageH: number, boxW: number, boxH: number): number {
+  return Math.min(boxW / pageW, boxH / pageH);
+}
+
+// the scale asked for, lowered just enough to keep the canvas under the cap
+export function renderScale(
+  pageW: number,
+  pageH: number,
+  wanted: number,
+  maxPixels = MAX_CANVAS_PIXELS,
+): number {
+  return Math.min(wanted, Math.sqrt(maxPixels / (pageW * pageH)));
+}

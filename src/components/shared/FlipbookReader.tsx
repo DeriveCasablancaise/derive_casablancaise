@@ -25,17 +25,26 @@ import {
   Minimize,
   Download,
   ScanSearch,
+  Loader2,
 } from 'lucide-react';
-import type { ProgrammeBook } from '@/constants/editions';
+import type {
+  PDFDocumentProxy,
+  RenderTask,
+} from 'pdfjs-dist/legacy/build/pdf';
 import { cn } from '@/lib/utils';
 import {
   MAX_ZOOM,
   MIN_ZOOM,
+  RENDER_DEBOUNCE_MS,
   clampZoom,
+  fitScale,
+  isSinglePage,
   keepCentreScroll,
   lastIndex,
   needsFallback,
   parsePageInput,
+  renderOrder,
+  renderScale,
   snapIndex,
   stepIndex,
   stepZoom,
@@ -44,9 +53,148 @@ import {
 } from '@/lib/readerView';
 
 interface Props {
-  book: ProgrammeBook;
   pdfHref: string;
   onClose: () => void;
+}
+
+type Job = { cancelled: boolean; task: RenderTask | null };
+
+const newJob = (): Job => ({ cancelled: false, task: null });
+
+const cancelJob = (job: Job) => {
+  job.cancelled = true;
+  job.task?.cancel();
+};
+
+// iOS keeps canvas memory until the bitmap is emptied
+const release = (canvas: HTMLCanvasElement) => {
+  canvas.width = 0;
+  canvas.height = 0;
+};
+
+const CANVAS_CSS = 'display:block;width:100%;height:100%';
+
+// Draws page `index` fitted in a boxW x boxH (CSS px) box, at that size times
+// the pixel ratio. The slot is sized in % of the box, so an old canvas simply
+// stretches until the new one replaces it.
+async function drawPage(
+  doc: PDFDocumentProxy,
+  index: number,
+  slot: HTMLElement,
+  boxW: number,
+  boxH: number,
+  dpr: number,
+  job: Job,
+) {
+  const page = await doc.getPage(index + 1);
+  if (job.cancelled) return;
+  const base = page.getViewport({ scale: 1 });
+  const fit = fitScale(base.width, base.height, boxW, boxH);
+  slot.style.width = `${(base.width * fit * 100) / boxW}%`;
+  slot.style.height = `${(base.height * fit * 100) / boxH}%`;
+  const viewport = page.getViewport({
+    scale: renderScale(base.width, base.height, fit * dpr),
+  });
+  const canvas = document.createElement('canvas');
+  canvas.width = Math.floor(viewport.width);
+  canvas.height = Math.floor(viewport.height);
+  canvas.style.cssText = CANVAS_CSS;
+  const ctx = canvas.getContext('2d');
+  if (!ctx) throw new Error('no canvas context');
+  job.task = page.render({ canvasContext: ctx, viewport });
+  try {
+    await job.task.promise;
+  } catch (err) {
+    release(canvas);
+    if (job.cancelled) return;
+    throw err;
+  }
+  if (job.cancelled) {
+    release(canvas);
+    return;
+  }
+  slot.querySelectorAll('canvas').forEach(release);
+  slot.replaceChildren(canvas);
+}
+
+function useDevicePixelRatio() {
+  const [dpr, setDpr] = useState(1);
+  useEffect(() => {
+    // browser zoom changes the ratio and fires resize
+    const update = () => setDpr(window.devicePixelRatio || 1);
+    update();
+    window.addEventListener('resize', update);
+    return () => window.removeEventListener('resize', update);
+  }, []);
+  return dpr;
+}
+
+// one page of the zoom view, rendered at the zoomed size
+function ZoomPage({
+  doc,
+  index,
+  width,
+  height,
+  dpr,
+  source,
+  onError,
+}: {
+  doc: PDFDocumentProxy;
+  index: number;
+  width: number;
+  height: number;
+  dpr: number;
+  source: HTMLElement | null | undefined;
+  onError: () => void;
+}) {
+  const slotRef = useRef<HTMLDivElement>(null);
+
+  // until the first sharp render, a copy of the flipbook page
+  useLayoutEffect(() => {
+    const slot = slotRef.current;
+    const src = source?.querySelector('canvas');
+    if (!slot || !source || !src || src.width === 0) return;
+    const copy = document.createElement('canvas');
+    copy.width = src.width;
+    copy.height = src.height;
+    copy.style.cssText = CANVAS_CSS;
+    copy.getContext('2d')?.drawImage(src, 0, 0);
+    slot.style.width = source.style.width;
+    slot.style.height = source.style.height;
+    slot.replaceChildren(copy);
+    // source is read once, on mount
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    const slot = slotRef.current;
+    return () => slot?.querySelectorAll('canvas').forEach(release);
+  }, []);
+
+  // while the zoom changes, wait a moment and keep the last render stretched
+  useEffect(() => {
+    const slot = slotRef.current;
+    if (!slot) return;
+    const job = newJob();
+    const timer = window.setTimeout(() => {
+      drawPage(doc, index, slot, width, height, dpr, job).catch(() => {
+        if (!job.cancelled) onError();
+      });
+    }, RENDER_DEBOUNCE_MS);
+    return () => {
+      window.clearTimeout(timer);
+      cancelJob(job);
+    };
+  }, [doc, index, width, height, dpr, onError]);
+
+  return (
+    <div
+      className="flex shrink-0 items-center justify-center bg-white"
+      style={{ width, height }}
+    >
+      <div ref={slotRef} role="img" aria-label={`Page ${index + 1}`} />
+    </div>
+  );
 }
 
 function useMediaQuery(query: string) {
@@ -76,10 +224,7 @@ const BOOK_STYLE = {};
 const toolBtn =
   'inline-flex h-11 min-w-11 items-center justify-center rounded-md bg-white/15 px-2 text-white transition-colors hover:bg-white/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-orange disabled:opacity-40 disabled:hover:bg-white/15';
 
-const pagePath = (dir: string, index: number, suffix = '') =>
-  `${dir}/page-${String(index + 1).padStart(3, '0')}${suffix}.webp`;
-
-export default function FlipbookReader({ book, pdfHref, onClose }: Props) {
+export default function FlipbookReader({ pdfHref, onClose }: Props) {
   const t = useTranslations('Layout');
   const locale = useLocale();
   const flipBook = useRef<any>(null);
@@ -114,14 +259,59 @@ export default function FlipbookReader({ book, pdfHref, onClose }: Props) {
   const [bookKey, setBookKey] = useState(0);
   const [startPage, setStartPage] = useState(0);
 
+  const [doc, setDoc] = useState<PDFDocumentProxy | null>(null);
+  // first page size in PDF units; the book takes its shape from it
+  const [firstSize, setFirstSize] = useState<{ w: number; h: number } | null>(
+    null,
+  );
+  const [failed, setFailed] = useState(false);
+  const fail = useCallback(() => setFailed(true), []);
+  // the flipbook page slots, filled with canvases outside React
+  const slots = useRef<(HTMLDivElement | null)[]>([]);
+  const [slotsVersion, setSlotsVersion] = useState(0);
+
   const isMobile = useMediaQuery('(max-width: 768px)');
   const prefersReducedMotion = useMediaQuery(
     '(prefers-reduced-motion: reduce)',
   );
+  const dpr = useDevicePixelRatio();
+
+  // the PDF itself, loaded when the reader opens
+  useEffect(() => {
+    let gone = false;
+    let task: { destroy: () => Promise<void> } | null = null;
+    (async () => {
+      try {
+        const { getDocument } = await import('@/lib/pdfjs');
+        if (gone) return;
+        const loading = getDocument({ url: pdfHref, isEvalSupported: false });
+        task = loading;
+        const pdf = await loading.promise;
+        const first = (await pdf.getPage(1)).getViewport({ scale: 1 });
+        if (gone) return;
+        setFirstSize({ w: first.width, h: first.height });
+        setDoc(pdf);
+      } catch {
+        if (!gone) setFailed(true);
+      }
+    })();
+    return () => {
+      gone = true;
+      task?.destroy().catch(() => {});
+    };
+  }, [pdfHref]);
+
+  useEffect(() => {
+    const list = slots.current;
+    return () =>
+      list.forEach((s) => s?.querySelectorAll('canvas').forEach(release));
+  }, []);
 
   // landscape pages are already spreads: show one at a time, no cover logic
-  const aspectRatio = book.height / book.width;
-  const singlePage = isMobile || aspectRatio < 1;
+  const aspectRatio = firstSize ? firstSize.h / firstSize.w : 1;
+  const singlePage = firstSize
+    ? isSinglePage(firstSize.w, firstSize.h, isMobile)
+    : true;
   const spread = !singlePage;
   const zoomed = zoom > MIN_ZOOM;
 
@@ -170,7 +360,7 @@ export default function FlipbookReader({ book, pdfHref, onClose }: Props) {
     return () => window.removeEventListener('keydown', handler);
   }, [onClose]);
 
-  const pageCount = book.pages;
+  const pageCount = doc?.numPages ?? 0;
   const lastPage = lastIndex(pageCount, spread);
   const shownPages = visiblePages(currentPage, pageCount, spread);
   const shownCount = shownPages.length;
@@ -183,6 +373,48 @@ export default function FlipbookReader({ book, pdfHref, onClose }: Props) {
     : Math.min(availW / 2, availH / aspectRatio, 550);
   const pageWidth = Math.max(120, Math.round(maxW));
   const pageHeight = Math.round(pageWidth * aspectRatio);
+
+  // Flipbook canvases: the shown spread first, then its neighbours. A size
+  // change re-renders after a short pause; a page never drawn goes at once.
+  useEffect(() => {
+    if (!doc || zoomed || area.w === 0) return;
+    const key = `${pageWidth}x${pageHeight}@${dpr}`;
+    const todo = renderOrder(currentPage, pageCount, spread).filter(
+      (i) => slots.current[i] && slots.current[i]!.dataset.key !== key,
+    );
+    if (todo.length === 0) return;
+    const waited = todo.some((i) => slots.current[i]!.querySelector('canvas'));
+    const job = newJob();
+    const timer = window.setTimeout(async () => {
+      for (const i of todo) {
+        const slot = slots.current[i];
+        if (job.cancelled) return;
+        if (!slot) continue;
+        try {
+          await drawPage(doc, i, slot, pageWidth, pageHeight, dpr, job);
+        } catch {
+          if (!job.cancelled) setFailed(true);
+          return;
+        }
+        if (!job.cancelled) slot.dataset.key = key;
+      }
+    }, waited ? RENDER_DEBOUNCE_MS : 0);
+    return () => {
+      window.clearTimeout(timer);
+      cancelJob(job);
+    };
+  }, [
+    doc,
+    zoomed,
+    area.w,
+    currentPage,
+    pageCount,
+    spread,
+    pageWidth,
+    pageHeight,
+    dpr,
+    slotsVersion,
+  ]);
 
   const settle = useCallback((index: number) => {
     pageRef.current = index;
@@ -477,24 +709,30 @@ export default function FlipbookReader({ book, pdfHref, onClose }: Props) {
     }
   };
 
-  // stable children: new ones make react-pageflip rebuild the book on every flip
+  // a new slot element (first mount, or a remounted book) needs drawing
+  const setSlot = useCallback((i: number, el: HTMLDivElement | null) => {
+    if (el && slots.current[i] !== el) {
+      slots.current[i] = el;
+      setSlotsVersion((v) => v + 1);
+    }
+  }, []);
+
+  // stable children: new ones make react-pageflip rebuild the book on every flip.
+  // The library sets display on the page itself, so the centring is one level in.
   const pageEls = useMemo(
     () =>
-      Array.from({ length: book.pages }, (_, i) => (
+      Array.from({ length: pageCount }, (_, i) => (
         <div key={i} className="bg-white">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src={pagePath(book.dir, i)}
-            alt={`Page ${i + 1}`}
-            width={book.width}
-            height={book.height}
-            loading={i < 4 ? 'eager' : 'lazy'}
-            draggable={false}
-            className="h-full w-full object-contain"
-          />
+          <div className="flex h-full w-full items-center justify-center">
+            <div
+              ref={(el) => setSlot(i, el)}
+              role="img"
+              aria-label={`Page ${i + 1}`}
+            />
+          </div>
         </div>
       )),
-    [book],
+    [pageCount, setSlot],
   );
 
   const label = (key: string) => t(`Reader.${key}`);
@@ -534,9 +772,32 @@ export default function FlipbookReader({ book, pdfHref, onClose }: Props) {
           paddingTop: PAD_TOP,
           paddingBottom: PAD_BOTTOM,
         }}
+        aria-busy={!doc && !failed}
         className="relative flex min-h-0 w-full flex-1 items-center justify-center overflow-hidden"
       >
-        {area.w > 0 && (
+        {failed && (
+          <div
+            dir={locale === 'ar' ? 'rtl' : 'ltr'}
+            role="alert"
+            className="flex max-w-md flex-col items-center gap-5 px-6 text-center text-white"
+          >
+            <p className="text-lg">{label('loadError')}</p>
+            <a
+              href={pdfHref}
+              download
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex h-11 items-center gap-2 rounded-md bg-white px-4 font-semibold text-black transition-colors hover:bg-brand-orange hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-orange"
+            >
+              <Download className="h-5 w-5" />
+              {t('Download')}
+            </a>
+          </div>
+        )}
+        {!doc && !failed && (
+          <Loader2 aria-hidden className="h-10 w-10 animate-spin text-white" />
+        )}
+        {!failed && doc && area.w > 0 && (
           // hidden rather than unmounted: the book keeps its page while zoomed
           <div
             aria-hidden={zoomed || undefined}
@@ -574,7 +835,7 @@ export default function FlipbookReader({ book, pdfHref, onClose }: Props) {
             </HTMLFlipBook>
           </div>
         )}
-        {zoomed && (
+        {!failed && doc && zoomed && (
           <div
             ref={zoomViewRef}
             style={{ touchAction: 'pan-x pan-y' }}
@@ -592,31 +853,16 @@ export default function FlipbookReader({ book, pdfHref, onClose }: Props) {
                 }}
               >
                 {shownPages.map((i) => (
-                  <div
+                  <ZoomPage
                     key={i}
-                    className="relative shrink-0 bg-white"
-                    style={{ width: zoomPageWidth, height: zoomPageHeight }}
-                  >
-                    {/* the 1100px image stays underneath while the sharp one loads */}
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
-                      src={pagePath(book.dir, i)}
-                      alt={book.zoomWidth ? '' : `Page ${i + 1}`}
-                      draggable={false}
-                      className="absolute inset-0 h-full w-full"
-                    />
-                    {book.zoomWidth && (
-                      // eslint-disable-next-line @next/next/no-img-element
-                      <img
-                        src={pagePath(book.dir, i)}
-                        srcSet={`${pagePath(book.dir, i)} ${book.width}w, ${pagePath(book.dir, i, '@3x')} ${book.zoomWidth}w`}
-                        sizes={`${zoomPageWidth}px`}
-                        alt={`Page ${i + 1}`}
-                        draggable={false}
-                        className="absolute inset-0 h-full w-full"
-                      />
-                    )}
-                  </div>
+                    doc={doc}
+                    index={i}
+                    width={zoomPageWidth}
+                    height={zoomPageHeight}
+                    dpr={dpr}
+                    source={slots.current[i]}
+                    onError={fail}
+                  />
                 ))}
               </div>
             </div>
@@ -710,7 +956,7 @@ export default function FlipbookReader({ book, pdfHref, onClose }: Props) {
           <button
             type="button"
             onClick={() => applyZoom(stepZoom(zoom, 1))}
-            disabled={zoom >= MAX_ZOOM}
+            disabled={!doc || failed || zoom >= MAX_ZOOM}
             aria-label={label('zoomIn')}
             title={label('zoomIn')}
             className={toolBtn}

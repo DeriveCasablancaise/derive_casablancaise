@@ -59,6 +59,7 @@
     "next-auth": "^4.24.7",
     "next-intl": "^3.17.2",
     "next-themes": "^0.3.0",
+    "pdfjs-dist": "3.11.174",
     "query-string": "^9.1.0",
     "react": "^18",
     "react-datepicker": "^7.5.0",
