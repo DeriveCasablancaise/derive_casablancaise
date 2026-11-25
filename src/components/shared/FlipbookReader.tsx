@@ -36,9 +36,13 @@ import {
   MAX_ZOOM,
   MIN_ZOOM,
   RENDER_DEBOUNCE_MS,
+  bookFit,
+  bookSize,
   clampZoom,
   fitScale,
+  isLandscape,
   isSinglePage,
+  type PageSize,
   keepCentreScroll,
   lastIndex,
   needsFallback,
@@ -189,7 +193,7 @@ function ZoomPage({
 
   return (
     <div
-      className="flex shrink-0 items-center justify-center bg-white"
+      className="flex shrink-0 items-center justify-center"
       style={{ width, height }}
     >
       <div ref={slotRef} role="img" aria-label={`Page ${index + 1}`} />
@@ -209,10 +213,13 @@ function useMediaQuery(query: string) {
   return matches;
 }
 
-// room kept around the book: the close button above, a little air elsewhere
+// room kept around the book: the close button above, 16px of air elsewhere
 const PAD_X = 32;
 const PAD_TOP = 64;
 const PAD_BOTTOM = 16;
+// the rotate hint under the page: one line and its gap
+const HINT_H = 36;
+const HINT_KEY = 'reader-rotate-hint';
 const TAP_MS = 300;
 const TAP_MOVE = 10;
 const FLIP_MS = 600;
@@ -260,10 +267,8 @@ export default function FlipbookReader({ pdfHref, onClose }: Props) {
   const [startPage, setStartPage] = useState(0);
 
   const [doc, setDoc] = useState<PDFDocumentProxy | null>(null);
-  // first page size in PDF units; the book takes its shape from it
-  const [firstSize, setFirstSize] = useState<{ w: number; h: number } | null>(
-    null,
-  );
+  // most common page size in PDF units; the book takes its shape from it
+  const [book, setBook] = useState<PageSize | null>(null);
   const [failed, setFailed] = useState(false);
   const fail = useCallback(() => setFailed(true), []);
   // the flipbook page slots, filled with canvases outside React
@@ -271,6 +276,7 @@ export default function FlipbookReader({ pdfHref, onClose }: Props) {
   const [slotsVersion, setSlotsVersion] = useState(0);
 
   const isMobile = useMediaQuery('(max-width: 768px)');
+  const isPortraitScreen = useMediaQuery('(orientation: portrait)');
   const prefersReducedMotion = useMediaQuery(
     '(prefers-reduced-motion: reduce)',
   );
@@ -287,9 +293,16 @@ export default function FlipbookReader({ pdfHref, onClose }: Props) {
         const loading = getDocument({ url: pdfHref, isEvalSupported: false });
         task = loading;
         const pdf = await loading.promise;
-        const first = (await pdf.getPage(1)).getViewport({ scale: 1 });
+        const sizes = await Promise.all(
+          Array.from({ length: pdf.numPages }, async (_, i) => {
+            const v = (await pdf.getPage(i + 1)).getViewport({ scale: 1 });
+            return { w: v.width, h: v.height };
+          }),
+        );
         if (gone) return;
-        setFirstSize({ w: first.width, h: first.height });
+        const size = bookSize(sizes);
+        if (!size) throw new Error('no page size');
+        setBook(size);
         setDoc(pdf);
       } catch {
         if (!gone) setFailed(true);
@@ -308,12 +321,41 @@ export default function FlipbookReader({ pdfHref, onClose }: Props) {
   }, []);
 
   // landscape pages are already spreads: show one at a time, no cover logic
-  const aspectRatio = firstSize ? firstSize.h / firstSize.w : 1;
-  const singlePage = firstSize
-    ? isSinglePage(firstSize.w, firstSize.h, isMobile)
-    : true;
+  const aspectRatio = book ? book.h / book.w : 1;
+  const singlePage = book ? isSinglePage(book.w, book.h, isMobile) : true;
   const spread = !singlePage;
   const zoomed = zoom > MIN_ZOOM;
+
+  // a phone held upright shows a landscape page small: say once how to read it
+  const [hintSeen, setHintSeen] = useState(true);
+  useEffect(() => {
+    try {
+      setHintSeen(window.localStorage.getItem(HINT_KEY) === '1');
+    } catch {
+      setHintSeen(false);
+    }
+  }, []);
+  const showHint = Boolean(
+    !hintSeen &&
+      !failed &&
+      doc &&
+      book &&
+      isLandscape(book) &&
+      isMobile &&
+      isPortraitScreen &&
+      !zoomed,
+  );
+  const hintShown = useRef(false);
+  useEffect(() => {
+    if (showHint) hintShown.current = true;
+  }, [showHint]);
+  useEffect(() => {
+    if (!hintShown.current || hintSeen || (!zoomed && isPortraitScreen)) return;
+    setHintSeen(true);
+    try {
+      window.localStorage.setItem(HINT_KEY, '1');
+    } catch {}
+  }, [zoomed, isPortraitScreen, hintSeen]);
 
   // the book area is whatever the toolbar leaves, so it shrinks on short screens
   useLayoutEffect(() => {
@@ -365,13 +407,14 @@ export default function FlipbookReader({ pdfHref, onClose }: Props) {
   const shownPages = visiblePages(currentPage, pageCount, spread);
   const shownCount = shownPages.length;
 
-  // compute book dimensions to fit the book area
+  // the book fills the area the close button and toolbar leave, no cap.
+  // The area is observed, so resize, fullscreen and rotation all refit.
   const availW = area.w - PAD_X;
-  const availH = area.h - PAD_TOP - PAD_BOTTOM;
-  const maxW = singlePage
-    ? Math.min(availW, availH / aspectRatio, 1000)
-    : Math.min(availW / 2, availH / aspectRatio, 550);
-  const pageWidth = Math.max(120, Math.round(maxW));
+  const availH = area.h - PAD_TOP - PAD_BOTTOM - (showHint ? HINT_H : 0);
+  const fit = book
+    ? bookFit(book, singlePage ? 1 : 2, availW, availH)
+    : { w: 0, h: 0 };
+  const pageWidth = Math.max(120, Math.floor(fit.w));
   const pageHeight = Math.round(pageWidth * aspectRatio);
 
   // Flipbook canvases: the shown spread first, then its neighbours. A size
@@ -722,7 +765,8 @@ export default function FlipbookReader({ pdfHref, onClose }: Props) {
   const pageEls = useMemo(
     () =>
       Array.from({ length: pageCount }, (_, i) => (
-        <div key={i} className="bg-white">
+        // no background: a page of another size sits on the reader's dark one
+        <div key={i}>
           <div className="flex h-full w-full items-center justify-center">
             <div
               ref={(el) => setSlot(i, el)}
@@ -802,6 +846,7 @@ export default function FlipbookReader({ pdfHref, onClose }: Props) {
           <div
             aria-hidden={zoomed || undefined}
             style={{ visibility: zoomed ? 'hidden' : undefined }}
+            className="flex flex-col items-center gap-3"
           >
             <HTMLFlipBook
               key={bookKey}
@@ -833,6 +878,15 @@ export default function FlipbookReader({ pdfHref, onClose }: Props) {
             >
               {pageEls}
             </HTMLFlipBook>
+            {showHint && (
+              <p
+                dir={locale === 'ar' ? 'rtl' : 'ltr'}
+                role="status"
+                className="px-4 text-center text-sm leading-6 text-white/85"
+              >
+                {label('rotateHint')}
+              </p>
+            )}
           </div>
         )}
         {!failed && doc && zoomed && (

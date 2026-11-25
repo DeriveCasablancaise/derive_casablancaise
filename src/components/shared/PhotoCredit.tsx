@@ -10,7 +10,8 @@ type PhotoCreditProps = {
 };
 
 // Sits in the end corner of its (relative) parent, mirrored in Arabic.
-// Rendered as plain text, never as HTML.
+// Rendered as plain text, never as HTML. One line with an ellipsis; the full
+// credit is in the title (it stays hoverable for that) and in the image alt.
 export const PhotoCredit = ({
   credit,
   isArabic = false,
@@ -23,8 +24,9 @@ export const PhotoCredit = ({
   return (
     <span
       dir="auto"
+      title={label}
       className={cn(
-        'pointer-events-none absolute z-20 max-w-[75%] line-clamp-2 break-words rounded-sm bg-black/55 px-1.5 py-0.5 text-[10px] leading-snug text-white sm:text-[11px] lg:text-xs',
+        'absolute z-20 max-w-[70%] truncate rounded-sm bg-black/45 px-[5px] py-[2px] text-[9px] leading-tight text-white md:text-[10px]',
         position === 'top-end' ? 'top-1.5' : 'bottom-1.5',
         isArabic ? 'left-1.5' : 'right-1.5',
         className,

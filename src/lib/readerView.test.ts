@@ -11,6 +11,9 @@ import {
   visiblePages,
   parsePageInput,
   isSinglePage,
+  isLandscape,
+  bookSize,
+  bookFit,
   renderOrder,
   fitScale,
   renderScale,
@@ -170,8 +173,64 @@ describe('needsFallback', () => {
 describe('isSinglePage', () => {
   it('shows landscape pages alone and portrait pages as spreads on desktop', () => {
     expect(isSinglePage(1100, 778, false)).toBe(true);
+    expect(isSinglePage(1100, 778, true)).toBe(true);
     expect(isSinglePage(595, 842, false)).toBe(false);
     expect(isSinglePage(595, 842, true)).toBe(true);
+  });
+});
+
+describe('bookSize', () => {
+  const cover = { w: 595, h: 842 };
+  const spreadPage = { w: 1190, h: 842 };
+
+  it('takes the most common size, not the first page', () => {
+    // like the 2026 programme: a portrait cover, then landscape double pages
+    const sizes = [cover, ...Array(25).fill(spreadPage), cover];
+    expect(bookSize(sizes)).toEqual(spreadPage);
+    expect(isLandscape(bookSize(sizes)!)).toBe(true);
+  });
+
+  it('ignores sub-unit differences and keeps the first size on a tie', () => {
+    expect(bookSize([{ w: 595.2, h: 841.9 }, cover, spreadPage])).toEqual({
+      w: 595.2,
+      h: 841.9,
+    });
+    expect(bookSize([spreadPage, cover])).toEqual(spreadPage);
+  });
+
+  it('returns null without a usable size', () => {
+    expect(bookSize([])).toBeNull();
+    expect(bookSize([{ w: 0, h: 842 }])).toBeNull();
+  });
+
+  it('treats a square page as portrait', () => {
+    expect(isLandscape({ w: 500, h: 500 })).toBe(false);
+  });
+});
+
+describe('bookFit', () => {
+  it('fills a 1080p area with one landscape page, beyond the old caps', () => {
+    // 1920 x 1080 minus air and toolbar
+    const box = bookFit({ w: 1190, h: 842 }, 1, 1888, 920);
+    expect(box.h).toBeCloseTo(920);
+    expect(box.w).toBeCloseTo((1190 * 920) / 842);
+    expect(box.w).toBeGreaterThan(1000);
+  });
+
+  it('splits the width between the two pages of a spread', () => {
+    const box = bookFit({ w: 595, h: 842 }, 2, 1200, 2000);
+    expect(box.w).toBeCloseTo(600);
+    expect(box.w).toBeGreaterThan(550);
+  });
+
+  it('fits a landscape page to the width of a portrait phone', () => {
+    const box = bookFit({ w: 1190, h: 842 }, 1, 358, 600);
+    expect(box.w).toBeCloseTo(358);
+    expect(box.h).toBeCloseTo((842 * 358) / 1190);
+  });
+
+  it('gives an empty box when there is no room', () => {
+    expect(bookFit({ w: 1190, h: 842 }, 1, -10, 500)).toEqual({ w: 0, h: 0 });
   });
 });
 

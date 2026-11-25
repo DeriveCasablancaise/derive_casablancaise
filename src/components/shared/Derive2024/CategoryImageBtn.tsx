@@ -12,18 +12,12 @@ import {
 } from '@/constants/editions';
 import { PhotoCredit } from '../PhotoCredit';
 import { altWithCredit } from '@/lib/photo-credits';
-import { tileStyle } from '@/lib/image-ratio';
-import {
-  Scrim,
-  justifiedTileClass,
-  textOnImageClass,
-  useImageRatios,
-} from '../FitImage';
+import { Scrim, textOnImageClass } from '../FitImage';
 
 interface CategoryImageButtonProps {
   categoryKey: CategoryKey;
   categoryName: { fr: string; ar: string };
-  // undefined renders a plain tile at the default ratio
+  // undefined renders a plain tile
   imageUrl?: string;
   imageCredit?: string;
   isSelected: boolean;
@@ -36,8 +30,10 @@ interface CategoryImageButtonProps {
   edition: EditionYear;
 }
 
-// A tile of a JustifiedGrid: its box takes the photo's own ratio, so the
-// whole photo shows with nothing around it.
+const SIZES = '(max-width: 1023px) 50vw, 25vw';
+
+// A square tile. The photo is shown whole (contain) over a blurred, darkened
+// copy of itself that fills the square, so there are no empty bands.
 export const CategoryImageButton: React.FC<CategoryImageButtonProps> = ({
   categoryKey,
   categoryName,
@@ -52,7 +48,6 @@ export const CategoryImageButton: React.FC<CategoryImageButtonProps> = ({
   edition,
 }) => {
   const locale = useLocale();
-  const { ratioOf, onLoadFor } = useImageRatios();
   const imageAlt = altWithCredit(
     isArabic ? categoryName.ar : categoryName.fr,
     imageCredit,
@@ -61,13 +56,22 @@ export const CategoryImageButton: React.FC<CategoryImageButtonProps> = ({
 
   const picture = imageUrl ? (
     <>
+      {/* scaled up so the blurred edges stay outside the square */}
+      <Image
+        src={imageUrl}
+        alt=""
+        aria-hidden="true"
+        fill
+        className="scale-[1.15] object-cover blur-[24px]"
+        sizes={SIZES}
+      />
+      <div aria-hidden="true" className="absolute inset-0 bg-black/35" />
       <Image
         src={imageUrl}
         alt={imageAlt}
         fill
         className="object-contain"
-        sizes="(max-width: 479px) 100vw, (max-width: 1024px) 50vw, 33vw"
-        onLoad={onLoadFor(imageUrl)}
+        sizes={SIZES}
       />
       <Scrim variant="center" />
     </>
@@ -100,16 +104,15 @@ export const CategoryImageButton: React.FC<CategoryImageButtonProps> = ({
     return (
       <Link
         href={`/${locale}${categoryHref(edition, categoryKey)}`}
-        className={justifiedTileClass}
-        style={tileStyle(ratioOf(imageUrl))}
+        className="block"
       >
-        {/* the whole tile scales on hover, so nothing gets cropped */}
+        {/* the whole tile scales on hover */}
         <motion.div
           initial={{ opacity: 0, scale: 0.8 }}
           animate={isInView ? { opacity: 1, scale: 1 } : {}}
           transition={{ duration: 0.5, delay: 0.6 + index * 0.1 }}
           className={cn(
-            'relative h-full w-full overflow-hidden cursor-pointer group',
+            'relative aspect-square w-full overflow-hidden cursor-pointer group',
             'transform transition-all duration-300 hover:scale-105 hover:shadow-xl',
           )}
         >
@@ -124,10 +127,8 @@ export const CategoryImageButton: React.FC<CategoryImageButtonProps> = ({
   return (
     <button
       onClick={() => onClick(categoryKey)}
-      style={tileStyle(ratioOf(imageUrl))}
       className={cn(
-        justifiedTileClass,
-        'group overflow-hidden shadow-md transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#00b0db]',
+        'relative block aspect-square w-full group overflow-hidden shadow-md transition-all duration-300 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#00b0db]',
         isSelected ? 'ring-4 ring-[#00b0db] ring-offset-2' : 'hover:shadow-xl',
       )}
     >
