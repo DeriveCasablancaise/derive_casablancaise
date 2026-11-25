@@ -94,13 +94,50 @@ export function needsFallback(
   return typeof actual !== 'number' || actual !== target;
 }
 
+export type PageSize = { w: number; h: number };
+
+// The book takes the most common page size (rounded to whole PDF units, the
+// first one wins a tie), so a lone cover of another size does not set it.
+export function bookSize(sizes: PageSize[]): PageSize | null {
+  const counts = new Map<string, { size: PageSize; n: number }>();
+  let best: { size: PageSize; n: number } | null = null;
+  for (const s of sizes) {
+    if (!(s.w > 0) || !(s.h > 0)) continue;
+    const key = `${Math.round(s.w)}x${Math.round(s.h)}`;
+    const entry = counts.get(key) ?? { size: s, n: 0 };
+    entry.n += 1;
+    counts.set(key, entry);
+    if (!best || entry.n > best.n) best = entry;
+  }
+  return best ? best.size : null;
+}
+
+export function isLandscape(size: PageSize): boolean {
+  return size.w > size.h;
+}
+
 // landscape pages are already spreads, so they go one at a time
 export function isSinglePage(
   pageW: number,
   pageH: number,
   isMobile: boolean,
 ): boolean {
-  return isMobile || pageH / pageW < 1;
+  return isMobile || pageW > pageH;
+}
+
+// Page box (CSS px) that makes the book, one page or a spread of two, fill the
+// space available, with no upper limit.
+export function bookFit(
+  book: PageSize,
+  pagesAcross: 1 | 2,
+  availW: number,
+  availH: number,
+): PageSize {
+  const scale = Math.max(
+    0,
+    Math.min(availW / (book.w * pagesAcross), availH / book.h),
+  );
+  return { w: book.w * scale, h: book.h * scale };
 }
 
 // the shown spread first, then the next one, then the previous one

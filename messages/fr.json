@@ -76,7 +76,8 @@
       "zoomReset": "Ajuster à l'écran",
       "fullscreen": "Plein écran",
       "exitFullscreen": "Quitter le plein écran",
-      "loadError": "Impossible d'afficher le programme ici."
+      "loadError": "Impossible d'afficher le programme ici.",
+      "rotateHint": "Tournez votre téléphone ou zoomez pour lire"
     }
   },
   "HomePage": {
