@@ -17,8 +17,33 @@ import {
   renderOrder,
   fitScale,
   renderScale,
+  containSize,
   MAX_CANVAS_PIXELS,
 } from './readerView';
+
+describe('containSize', () => {
+  it('keeps a portrait cover in shape inside a landscape slot', () => {
+    // the 2026 cover (595 x 842) in a 1190 x 842 book shown 1000 px wide
+    const slot = { w: 1000, h: (842 * 1000) / 1190 };
+    const s = containSize({ w: 595, h: 842 }, slot);
+    expect(s.h).toBeCloseTo(slot.h);
+    expect(s.w).toBeCloseTo(500);
+    expect(s.w / s.h).toBeCloseTo(595 / 842);
+  });
+
+  it('keeps a landscape page in shape inside a portrait slot', () => {
+    const s = containSize({ w: 1190, h: 842 }, { w: 400, h: 566 });
+    expect(s.w).toBeCloseTo(400);
+    expect(s.h).toBeCloseTo((842 * 400) / 1190);
+    expect(s.h).toBeLessThan(566);
+  });
+
+  it('fills the slot exactly when the page has the book shape', () => {
+    const s = containSize({ w: 1190, h: 842 }, { w: 1190 / 2, h: 421 });
+    expect(s.w).toBeCloseTo(595);
+    expect(s.h).toBeCloseTo(421);
+  });
+});
 
 describe('zoom', () => {
   it('clamps to 100%-300% on a 25% grid', () => {

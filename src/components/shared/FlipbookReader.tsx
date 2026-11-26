@@ -39,7 +39,7 @@ import {
   bookFit,
   bookSize,
   clampZoom,
-  fitScale,
+  containSize,
   isLandscape,
   isSinglePage,
   type PageSize,
@@ -76,11 +76,15 @@ const release = (canvas: HTMLCanvasElement) => {
   canvas.height = 0;
 };
 
-const CANVAS_CSS = 'display:block;width:100%;height:100%';
+// explicit px, never a % of the slot, so a canvas can only show its own shape
+const setSize = (el: HTMLElement, s: PageSize) => {
+  el.style.width = `${s.w}px`;
+  el.style.height = `${s.h}px`;
+};
 
-// Draws page `index` fitted in a boxW x boxH (CSS px) box, at that size times
-// the pixel ratio. The slot is sized in % of the box, so an old canvas simply
-// stretches until the new one replaces it.
+// Draws page `index` contained in a boxW x boxH (CSS px) box at its own ratio,
+// at that size times the pixel ratio. I keep the page's PDF size on the slot
+// so the zoom view can size its first copy.
 async function drawPage(
   doc: PDFDocumentProxy,
   index: number,
@@ -93,16 +97,18 @@ async function drawPage(
   const page = await doc.getPage(index + 1);
   if (job.cancelled) return;
   const base = page.getViewport({ scale: 1 });
-  const fit = fitScale(base.width, base.height, boxW, boxH);
-  slot.style.width = `${(base.width * fit * 100) / boxW}%`;
-  slot.style.height = `${(base.height * fit * 100) / boxH}%`;
+  const size = containSize(
+    { w: base.width, h: base.height },
+    { w: boxW, h: boxH },
+  );
   const viewport = page.getViewport({
-    scale: renderScale(base.width, base.height, fit * dpr),
+    scale: renderScale(base.width, base.height, (size.w / base.width) * dpr),
   });
   const canvas = document.createElement('canvas');
   canvas.width = Math.floor(viewport.width);
   canvas.height = Math.floor(viewport.height);
-  canvas.style.cssText = CANVAS_CSS;
+  canvas.style.display = 'block';
+  setSize(canvas, size);
   const ctx = canvas.getContext('2d');
   if (!ctx) throw new Error('no canvas context');
   job.task = page.render({ canvasContext: ctx, viewport });
@@ -118,6 +124,9 @@ async function drawPage(
     return;
   }
   slot.querySelectorAll('canvas').forEach(release);
+  slot.dataset.w = String(base.width);
+  slot.dataset.h = String(base.height);
+  setSize(slot, size);
   slot.replaceChildren(canvas);
 }
 
@@ -157,14 +166,17 @@ function ZoomPage({
   useLayoutEffect(() => {
     const slot = slotRef.current;
     const src = source?.querySelector('canvas');
-    if (!slot || !source || !src || src.width === 0) return;
+    const pageW = Number(source?.dataset.w);
+    const pageH = Number(source?.dataset.h);
+    if (!slot || !src || src.width === 0 || !(pageW > 0) || !(pageH > 0)) return;
+    const size = containSize({ w: pageW, h: pageH }, { w: width, h: height });
     const copy = document.createElement('canvas');
     copy.width = src.width;
     copy.height = src.height;
-    copy.style.cssText = CANVAS_CSS;
+    copy.style.display = 'block';
+    setSize(copy, size);
     copy.getContext('2d')?.drawImage(src, 0, 0);
-    slot.style.width = source.style.width;
-    slot.style.height = source.style.height;
+    setSize(slot, size);
     slot.replaceChildren(copy);
     // source is read once, on mount
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -175,7 +187,7 @@ function ZoomPage({
     return () => slot?.querySelectorAll('canvas').forEach(release);
   }, []);
 
-  // while the zoom changes, wait a moment and keep the last render stretched
+  // while the zoom changes, wait a moment and keep the last render on screen
   useEffect(() => {
     const slot = slotRef.current;
     if (!slot) return;
@@ -196,7 +208,12 @@ function ZoomPage({
       className="flex shrink-0 items-center justify-center"
       style={{ width, height }}
     >
-      <div ref={slotRef} role="img" aria-label={`Page ${index + 1}`} />
+      <div
+        ref={slotRef}
+        role="img"
+        aria-label={`Page ${index + 1}`}
+        className="shrink-0"
+      />
     </div>
   );
 }
@@ -772,6 +789,7 @@ export default function FlipbookReader({ pdfHref, onClose }: Props) {
               ref={(el) => setSlot(i, el)}
               role="img"
               aria-label={`Page ${i + 1}`}
+              className="shrink-0"
             />
           </div>
         </div>
