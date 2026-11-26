@@ -159,6 +159,13 @@ export function fitScale(pageW: number, pageH: number, boxW: number, boxH: numbe
   return Math.min(boxW / pageW, boxH / pageH);
 }
 
+// The CSS size of a page drawn in a slot at one uniform scale, so a page of
+// another shape (the portrait cover in a landscape book) keeps its proportions.
+export function containSize(page: PageSize, slot: PageSize): PageSize {
+  const s = Math.max(0, fitScale(page.w, page.h, slot.w, slot.h));
+  return { w: page.w * s, h: page.h * s };
+}
+
 // the scale asked for, lowered just enough to keep the canvas under the cap
 export function renderScale(
   pageW: number,

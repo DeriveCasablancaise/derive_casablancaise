@@ -32,8 +32,7 @@ interface CategoryImageButtonProps {
 
 const SIZES = '(max-width: 1023px) 50vw, 25vw';
 
-// A square tile. The photo is shown whole (contain) over a blurred, darkened
-// copy of itself that fills the square, so there are no empty bands.
+// A 16:9 tile, every one the same size; the photo fills it (cover, centred).
 export const CategoryImageButton: React.FC<CategoryImageButtonProps> = ({
   categoryKey,
   categoryName,
@@ -56,21 +55,11 @@ export const CategoryImageButton: React.FC<CategoryImageButtonProps> = ({
 
   const picture = imageUrl ? (
     <>
-      {/* scaled up so the blurred edges stay outside the square */}
-      <Image
-        src={imageUrl}
-        alt=""
-        aria-hidden="true"
-        fill
-        className="scale-[1.15] object-cover blur-[24px]"
-        sizes={SIZES}
-      />
-      <div aria-hidden="true" className="absolute inset-0 bg-black/35" />
       <Image
         src={imageUrl}
         alt={imageAlt}
         fill
-        className="object-contain"
+        className="object-cover object-center"
         sizes={SIZES}
       />
       <Scrim variant="center" />
@@ -112,7 +101,7 @@ export const CategoryImageButton: React.FC<CategoryImageButtonProps> = ({
           animate={isInView ? { opacity: 1, scale: 1 } : {}}
           transition={{ duration: 0.5, delay: 0.6 + index * 0.1 }}
           className={cn(
-            'relative aspect-square w-full overflow-hidden cursor-pointer group',
+            'relative aspect-video w-full overflow-hidden cursor-pointer group',
             'transform transition-all duration-300 hover:scale-105 hover:shadow-xl',
           )}
         >
@@ -128,7 +117,7 @@ export const CategoryImageButton: React.FC<CategoryImageButtonProps> = ({
     <button
       onClick={() => onClick(categoryKey)}
       className={cn(
-        'relative block aspect-square w-full group overflow-hidden shadow-md transition-all duration-300 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#00b0db]',
+        'relative block aspect-video w-full group overflow-hidden shadow-md transition-all duration-300 hover:scale-105 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#00b0db]',
         isSelected ? 'ring-4 ring-[#00b0db] ring-offset-2' : 'hover:shadow-xl',
       )}
     >
